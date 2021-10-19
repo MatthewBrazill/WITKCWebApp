@@ -1,0 +1,77 @@
+<div class="ui middle aligned centered grid">
+    <div class="six wide column">
+        <div class="ui segment">
+            <h1 style="text-align:center">Sign Up</h1>
+
+            <script type="text/javascript" language="JavaScript">
+                function checkpw(theForm) {
+                    if (signUpForm.password.value != signUpForm.passwordConfirm.value) {
+                        alert("Passwords do not match!")
+                        document.getElementById("pwconf").value.style.backgroundColour = "yellow"
+                        return false;
+                    } else {
+                        document.getElementById("pwconf").value.style.backgroundColour = ""
+                        return true;
+                    }
+                }
+            </script>
+
+            <form class="ui form" method="post" id="signUpForm" onsubmit="return checkpw(this)">
+                <h4 class="ui dividing header">Personal Information</h4>
+                <div class="two fields">
+                    <div class="field">
+                        <input type="text" name="fname" placeholder="First Name">
+                    </div>
+                    <div class="field">
+                        <input type="text" name="lname" placeholder="Last Name">
+                    </div>
+                </div>
+                <div class="field">
+                    <input type="text" name="email" placeholder="Email Address">
+                </div>
+                <div class="fields">
+                    <div class="four wide field">
+                        <input type="text" name="ccode" placeholder="Country Code">
+                    </div>
+                    <div class="twelve wide field">
+                        <input type="text" name="phone" placeholder="Phone Number">
+                    </div>
+                </div>
+                <h4 class="ui dividing header">Address</h4>
+                <div class="field">
+                    <input type="text" name="address[line1]" placeholder="Address Line 1">
+                </div>
+                <div class="field">
+                    <input type="text" name="address[line2]" placeholder="Address Line 2">
+                </div>
+                <div class="fields">
+                    <div class="twelve wide field">
+                        <input type="text" name="address[county]" placeholder="County">
+                    </div>
+                    <div class="four wide field">
+                        <input type="text" name="address[eir]" placeholder="Eir Code">
+                    </div>
+                </div>
+                <br>
+                <div class="fields">
+                    <div class="eight wide field">
+                        <input type="password" minlength="8" maxlength="64" name="password" placeholder="Password" id="pw">
+                    </div>
+                    <div class="eight wide field">
+                        <p>Your password must be at least 8 characters long and should contain a variety of character
+                            types.</p>
+                    </div>
+                </div>
+                <div class="fields">
+                    <div class="eight wide field">
+                        <input type="password" minlength="8" maxlength="64" name="passwordConfirm" placeholder="Confirm Password" id="pwconf">
+                    </div>
+                    <div class="eight wide field">
+                        <p>pw str</p>
+                    </div>
+                </div>
+                <button class="fluid ui gray button" type="submit">Sign Up</button>
+            </form>
+        </div>
+    </div>
+</div>
