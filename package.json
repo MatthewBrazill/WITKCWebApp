@@ -18,6 +18,7 @@
   "homepage": "https://github.com/MatthewBrazill/ExampleWebApp#readme",
   "dependencies": {
     "express": "^4.17.1",
-    "express-handlebars": "^5.3.4"
+    "express-handlebars": "^5.3.4",
+    "express-session": "^1.17.2"
   }
 }

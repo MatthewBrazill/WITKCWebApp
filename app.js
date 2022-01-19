@@ -1,7 +1,9 @@
 'use strict'
 
+const https = require("https")
 const express = require('express')
-const exphbs = require('express-handlebars')
+const session = require("express-session")
+const handlebars = require('express-handlebars')
 
 const app = express()
 
@@ -9,11 +11,16 @@ const app = express()
 const ip = process.env.IP || '127.0.0.1'
 const port = process.env.PORT || '80'
 
-app.engine('.hbs', exphbs({
+// Set up the Handlebars View-Engine
+app.engine('.hbs', handlebars({
     extname: '.hbs',
     defaultLayout: 'main'
 }))
 app.set('view engine', '.hbs')
+app.set('views', 'views')
+
+app.set(express.json())
+app.use(express.static("./public"))
 app.use('/', require('./routes.js'))
 
 // Make the app listen and be available on the given port and IP.
