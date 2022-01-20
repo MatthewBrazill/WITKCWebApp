@@ -3,7 +3,8 @@
 const home = {
     index(req, res) {
         const viewData = {
-            title: 'Home'
+            title: 'Home',
+            logged_in: true
         }
         res.render('home', viewData)
     }
