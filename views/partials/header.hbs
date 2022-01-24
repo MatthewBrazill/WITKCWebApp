@@ -1,33 +1,19 @@
-<div class="twelve wide column">
-    
-    <div class="ui center aligned eight item menu">
-        <a class="item" href="/">Home</a>
-        <a class="item" href="/about">About Us</a>
-        <a class="item" href="/committee">Committee</a>
-        <a class="item" href="/events">Events</a>
-        {{#if logged_in}}
-        <a class="item" href="/my_viking">My Viking</a>
-        <a class="item" href="/forum">Forum</a>
-        {{/if}}
-        <div class="ui right dropdown item">
-            Language <i class="dropdown icon"></i>
-            <div class="menu">
-                <a class="item">English</a>
-                <a class="item">Russian</a>
-                <a class="item">Spanish</a>
-            </div>
+<div class="ui center aligned nine item menu">
+    <a class="item" href="/">Home</a>
+    <a class="item" href="/about">About Us</a>
+    <a class="item" href="/committee">Committee</a>
+    <a class="item" href="/events">Events</a>
+    <a class="item" href="/contact">Contact Us</a>
+    {{#if logged_in}}
+    <a class="item" href="/my_viking">My Viking</a>
+    <a class="item" href="/forum">Forum</a>
+    {{/if}}
+    <div class="ui right dropdown item">
+        Language <i class="dropdown icon"></i>
+        <div class="menu">
+            <a class="item">English</a>
+            <a class="item">Russian</a>
+            <a class="item">Spanish</a>
         </div>
     </div>
-
-    {{{body}}}
-
-</div>
-
-<div class="four wide column">
-    <a href="/">
-        <img class="ui middle aligned rounded image" src="img\witkc_logo.png" alt="WITKC Logo">
-    </a>
-
-    {{> sidebar}}
-
 </div>

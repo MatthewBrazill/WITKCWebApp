@@ -1,34 +1,74 @@
-<div class="ui top attached center aligned two item menu">
+<div class="four wide column">
+
+    <a href="/">
+        <img class="ui middle aligned large rounded image" src="img\witkc_logo.png" alt="WITKC Logo">
+    </a>
+
     {{#if logged_in}}
-    <a class="item" href="/logout">Logout</a>
+
+    <div class="ui center aligned one item menu">
+        <a class="item" href="/logout">Logout</a>
+    </div>
+
+    <div class="ui card">
+
+        <a class="image" href="/my_viking">
+            {{#if image_url}}
+            <img src="{{image_url}}" alt="User Image">
+            {{else}}
+            <img src="/img/placeholder_avatar.png" alt="User Image">
+            {{/if}}
+        </a>
+
+        <a class="content" href="/my_viking">
+            <div class="header">{{name}}</div>
+            <div class="meta">
+                <span class="date">Member since {{date_joined}}</span>
+            </div>
+        </a>
+
+        <div class="ui celled relaxed list">
+            <a class="item" href="/my_viking/trips">
+                <div class="content">
+                    <div class="header">You have been to {{trip_count}} trips!</div>
+                    <div class="description">Your most recent trip was {{recent_trip_name}}</div>
+                </div>
+            </a>
+            <a class="item" href="/my_viking/certificates">
+                <div class="content">
+                    <div class="header">You highest qualification is {{highest_cert_name}}</div>
+                    <div class="description">In total you have {{cert_count}} certs!</div>
+                </div>
+            </a>
+        </div>
+    </div>
+
     {{else}}
-    <a class="item" href="/login">Login</a>
-    <a class="item" href="/signup">Sign Up</a>
+
+    <div class="ui center aligned two item menu">
+        <a class="item" href="/login">Login</a>
+        <a class="item" href="/signup">Sign Up</a>
+    </div>
+
+    <div class="ui top attached fitted segment">
+        <h4>We are always exited about new members!</h4>
+        <p>
+            Any active students at WIT are welcome to join us at our weekly pool meetings. We have several initiatives
+            for new members who might want to chat to members of the club about different aspects of kayaking and get to
+            know the ins and outs opf the sport.
+        </p>
+        <p>
+            To join, just come to a pool sessions Tuesdays and Thursdays at 9:30pm, or contact the club for more
+            information!
+        </p>
+        <p>
+            Once you've joined the club you can sign up to the online portal here, and get your WITKC My Viking account.
+        </p>
+    </div>
+
+    <div class="ui bottom attached center aligned one item menu">
+        <a class="item" href="/contact">Contact The Club</a>
+    </div>
+
     {{/if}}
 </div>
-{{#if logged_in}}
-<div class="ui bottom attached card">
-    <div class="image">
-        <img src="/images/avatar2/large/kristy.png">
-    </div>
-    <div class="content">
-        <a class="header">Kristy</a>
-        <div class="meta">
-            <span class="date">Joined in 2013</span>
-        </div>
-        <div class="description">
-            Kristy is an art director living in New York.
-        </div>
-    </div>
-    <div class="extra content">
-        <a>
-            <i class="user icon"></i>
-            22 Friends
-        </a>
-    </div>
-</div>
-{{else}}
-<div class="ui bottom attached segment">
-
-</div>
-{{/if}}
