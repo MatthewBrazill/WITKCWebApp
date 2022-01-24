@@ -1,7 +1,7 @@
 'use strict'
 
 const events = {
-    index(req, res) {
+    get(req, res) {
         const viewData = {
             title: 'Events'
         }

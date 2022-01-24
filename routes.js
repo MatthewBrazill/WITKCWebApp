@@ -13,13 +13,14 @@ const events = require('./controllers/events.js')
 const contact = require('./controllers/contact.js')
 
 // Attach the controllers to the matching routes:
-router.get('/', home.index)
-router.get('/login', login.index)
-router.get('/signup', signup.index)
-router.get('/about', about.index)
-router.get('/committee', committee.index)
-router.get('/events', events.index)
-router.get('/contact', contact.index)
+router.get('/', home.get)
+router.get('/login', login.get)
+router.post('/login', login.post)
+router.get('/signup', signup.get)
+router.get('/about', about.get)
+router.get('/committee', committee.get)
+router.get('/events', events.get)
+router.get('/contact', contact.get)
 
 // Export:
 module.exports = router

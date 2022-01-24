@@ -1,7 +1,7 @@
 'use strict'
 
 const contact = {
-    index(req, res) {
+    get(req, res) {
         const viewData = {
             title: 'Contact Us'
         }

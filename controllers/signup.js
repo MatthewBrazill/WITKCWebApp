@@ -1,7 +1,7 @@
 'use strict'
 
 const signup = {
-    index(req, res) {
+    get(req, res) {
         const viewData = {
             title: 'Sign Up'
         }

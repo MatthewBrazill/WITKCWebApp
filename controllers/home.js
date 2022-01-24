@@ -1,7 +1,7 @@
 'use strict'
 
 const home = {
-    index(req, res) {
+    get(req, res) {
         const viewData = {
             title: 'Home',
             logged_in: true,

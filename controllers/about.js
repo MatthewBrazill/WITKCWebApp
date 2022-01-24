@@ -1,7 +1,7 @@
 'use strict'
 
 const about = {
-    index(req, res) {
+    get(req, res) {
         const viewData = {
             title: 'About Us'
         }

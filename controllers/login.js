@@ -1,11 +1,17 @@
 'use strict'
 
+const { post } = require("../routes")
+
 const login = {
-    index(req, res) {
+    get(req, res) {
         const viewData = {
             title: 'Login'
         }
         res.render('login', viewData)
+    },
+
+    post() {
+        
     }
 }
 

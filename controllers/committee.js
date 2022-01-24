@@ -1,7 +1,7 @@
 'use strict'
 
 const committee = {
-    index(req, res) {
+    get(req, res) {
         const viewData = {
             title: 'Committee'
         }
