@@ -1,8 +1,6 @@
 'use strict'
 
 // Imports
-const StatsD = require('hot-shots')
-const datadog = new StatsD('localhost', 8125)
 const logger = require('../log.js')
 const sessions = require('../data_managers/sessions')
 const members = require('../data_managers/witkc_members')
@@ -28,14 +26,12 @@ const contact = {
             logger.debug(`Session '${req.sessionID}' is Created`)
             sessions.create(req.sessionID)
         }
-        datadog.increment('witkc.contact.calls')
         res.render('contact', viewData)
     },
 
     async post(req, res) {
         //Build send email function
         logger.error(`Session '${req.sessionID}': Posting Message`)
-        datadog.increment('witkc.contact.mail_sent')
         res.redirect('/')
     }
 }

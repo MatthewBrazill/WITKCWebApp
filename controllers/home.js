@@ -1,8 +1,6 @@
 'use strict'
 
 // Imports
-const StatsD = require('hot-shots')
-const datadog = new StatsD('localhost', 8125)
 const logger = require('../log.js')
 const sessions = require('../data_managers/sessions')
 const members = require('../data_managers/witkc_members')
@@ -28,7 +26,6 @@ const home = {
             logger.debug(`Session '${req.sessionID}' is Created`)
             sessions.create(req.sessionID)
         }
-        datadog.increment('witkc.home.calls')
         res.render('home', viewData)
     }
 }

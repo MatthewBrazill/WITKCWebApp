@@ -1,8 +1,6 @@
 'use strict'
 
 // Imports
-const StatsD = require('hot-shots')
-const datadog = new StatsD('localhost', 8125)
 const logger = require('../log.js')
 const sessions = require('../data_managers/sessions')
 
@@ -14,7 +12,6 @@ const logout = {
             sessions.destroy(req.sessionID)
             req.session.destroy()
         }
-        datadog.decrement('witkc.loged_in')
         res.redirect('/')
     }
 }

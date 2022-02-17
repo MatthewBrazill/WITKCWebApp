@@ -1,8 +1,6 @@
 'use strict'
 
 // Imports
-const StatsD = require('hot-shots')
-const datadog = new StatsD('localhost', 8125)
 const logger = require('../log.js')
 const fs = require('fs')
 
@@ -11,7 +9,6 @@ const members = {
         var members = JSON.parse(fs.readFileSync(__dirname + "/../data_stores/members.json"))
         members.push(member)
         fs.writeFileSync(__dirname + "/../data_stores/members.json", JSON.stringify(members))
-        datadog.increment('witkc.members.count')
         logger.info(`Member '${member.firstName} ${member.lastName}' Created`)
         return true
     },
@@ -66,7 +63,6 @@ const members = {
             }
         }
         fs.writeFileSync(__dirname + "/../data_stores/members.json", JSON.stringify(members))
-        datadog.decrement('witkc.members.count')
         logger.warn(`Member Delete Failed`)
         return false
     }
