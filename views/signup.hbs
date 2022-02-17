@@ -1,47 +1,46 @@
-<div class="six wide column">
+<div class="eight wide column">
     <div class="ui segment">
         <h1 class="ui center aligned header">Sign Up</h1>
-        <form class="ui form" method="post" id="signUpForm" onsubmit="return checkpw(this)">
+        <form class="ui form" method="post" id="signUpForm" onsubmit="return checkPassword(this)">
             <h4 class="ui dividing header">Personal Information</h4>
             <div class="two fields">
                 <div class="field">
-                    <input type="text" name="first_name" placeholder="First Name">
+                    <input type="text" maxlength="24" name="first_name" placeholder="First Name" required>
                 </div>
                 <div class="field">
-                    <input type="text" name="last_name" placeholder="Last Name">
+                    <input type="text" maxlength="24" name="last_name" placeholder="Last Name" required>
                 </div>
             </div>
             <div class="field">
-                <input type="text" name="username" placeholder="Username">
+                <input type="text" minlength="3" maxlength="16" name="username" placeholder="Username" required>
             </div>
             <div class="field">
-                <input type="text" name="email" placeholder="Email Address">
+                <input type="text" minlength="3" maxlength="64" name="email" placeholder="Email Address" required>
             </div>
             <div class="field">
-                <input type="text" name="phone" placeholder="Phone Number">
+                <input type="text" minlength="8" maxlength="12" name="phone" placeholder="Phone Number">
             </div>
             <h4 class="ui dividing header">Address</h4>
             <div class="field">
-                <input type="text" name="address[line1]" placeholder="Address Line 1">
+                <input type="text" minlength="8" maxlength="64" name="address[line_one]" placeholder="Address Line 1" required>
             </div>
             <div class="field">
-                <input type="text" name="address[line2]" placeholder="Address Line 2">
+                <input type="text" minlength="8" maxlength="64" name="address[line_two]" placeholder="Address Line 2">
             </div>
             <div class="fields">
                 <div class="eleven wide field">
-                    <input type="text" name="address[county]" placeholder="County">
+                    <input type="text" minlength="3" maxlength="64" name="address[county]" placeholder="County" required>
                 </div>
                 <div class="five wide field">
-                    <input type="text" name="address[eir]" placeholder="Eir Code">
+                    <input type="text" minlength="7" maxlength="8" name="address[eir]" placeholder="Eir Code" required>
                 </div>
             </div>
             <h4 class="ui dividing header">Password</h4>
             <div class="field">
-                <input type="password" minlength="8" maxlength="64" name="password" placeholder="Password" id="pw">
+                <input type="password" minlength="8" maxlength="64" name="password" placeholder="Password" id="pw" required>
             </div>
             <div class="field">
-                <input type="password" minlength="8" maxlength="64" name="confirm_password"
-                    placeholder="Confirm Password" id="pw_conf">
+                <input type="password" minlength="8" maxlength="64" name="confirm_password" placeholder="Confirm Password" id="pw_conf" required>
             </div>
             <br>
             <button class="fluid ui gray button" type="submit">Sign Up</button>

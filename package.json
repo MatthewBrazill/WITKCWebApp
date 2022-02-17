@@ -17,9 +17,15 @@
   },
   "homepage": "https://github.com/MatthewBrazill/ExampleWebApp#readme",
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.48.0",
+    "aws-sdk": "^2.1062.0",
+    "bcrypt": "^5.0.1",
     "cookie-parser": "^1.4.6",
     "express": "^4.17.1",
     "express-handlebars": "^5.3.4",
-    "express-session": "^1.17.2"
+    "express-session": "^1.17.2",
+    "hot-shots": "^9.0.0",
+    "uuid": "^8.3.2",
+    "winston": "^3.5.1"
   }
 }
