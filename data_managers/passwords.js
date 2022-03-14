@@ -1,56 +1,76 @@
 'use strict'
 
-const fs = require('fs')
+// Imports
 const logger = require('../log.js')
+const AWS = require('aws-sdk')
+const dynamo = new AWS.DynamoDB()
 
 const passwords = {
-    create(password) {
-        var passwords = JSON.parse(fs.readFileSync(__dirname + "/../data_stores/passwords.json"))
-        passwords.push(password)
-        logger.info(`Password Saved`)
-        fs.writeFileSync(__dirname + "/../data_stores/passwords.json", JSON.stringify(passwords))
-        return true
+    create(memberId, hash) {
+        dynamo.putItem({
+            Item: {
+                'member-id': { S: memberId },
+                'hash': { S: hash }
+            },
+            TableName: 'witkc-passwords'
+        }, (err) => {
+            if (err) {
+                logger.warn(`Password creation failed! ${err}`)
+                return false
+            } else {
+                logger.info(`Password created!`)
+                return true
+            }
+        })
     },
 
     get(memberId) {
-        var passwords = JSON.parse(fs.readFileSync(__dirname + "/../data_stores/passwords.json"))
-        logger.info(`Getting Password for User '${memberId}'`)
-        for (var password of passwords) {
-            if (password.memberId == memberId) return password.hash
-        }
-        return null
+        dynamo.getItem({
+            Key: { 'member-id': { S: memberId } },
+            TableName: 'witkc-passwords'
+        }, (err, data) => {
+            if (err) {
+                logger.warn(`Password couldn't be retrieved! ${err}`)
+                return null
+            } else {
+                if (data.Item) return data.Item['hash'].S
+                else return null
+            }
+        })
     },
 
     update(memberId, hash) {
-        var passwords = JSON.parse(fs.readFileSync(__dirname + "/../data_stores/passwords.json"))
-        logger.info(`Updating Password for User '${memberId}'`)
-        for (var password of passwords) {
-            if (password.memberId == memberId && passwords.indexOf(password) > 0) {
-                passwords[passwords.indexOf(password)].hash = hash
-                fs.writeFileSync(__dirname + "/../data_stores/passwords.json", JSON.stringify(passwords))
-                logger.info(`Password Updated`)
-                return true
+        dynamo.updateItem({
+            Key: { 'member-id': { S: memberId } },
+            ExpressionAttributeValues: {':hash': hash},
+            UpdateExpression: 'SET hash = :hash',
+            TableName: 'witkc-passwords'
+        }, (err, data) => {
+            if (err) {
+                logger.warn(`Password couldn't be updated! ${err}`)
+                return false
+            } else {
+                logger.info(`Password for user ${memberId} updated!`)
+                console.log('pw update data:', data)
+                if (data.Item) return true
+                else return false
             }
-        }
-        fs.writeFileSync(__dirname + "/../data_stores/passwords.json", JSON.stringify(passwords))
-        logger.warn(`Password Update Failed`)
-        return false
+        })
     },
 
     delete(memberId) {
-        var passwords = JSON.parse(fs.readFileSync(__dirname + "/../data_stores/passwords.json"))
-        logger.info(`Deleting Password for User '${memberId}'`)
-        for (var password of passwords) {
-            if (password.memberId == memberId && passwords.indexOf(password) > 0) {
-                passwords.splice(passwords.indexOf(password), 1)
-                fs.writeFileSync(__dirname + "/../data_stores/passwords.json", JSON.stringify(passwords))
-                logger.info(`Password Deleted`)
+        dynamo.deleteItem({
+            Key: { 'member-id': { S: memberId } },
+            TableName: 'witkc-passwords'
+        }, (err) => {
+            if (err) {
+                logger.warn(`Failed to delete password for user ${memberId}! ${err}`)
+                return false
+            } else {
+                logger.info(`Password for user ${memberId} deleted!`)
                 return true
             }
-        }
-        fs.writeFileSync(__dirname + "/../data_stores/passwords.json", JSON.stringify(passwords))
-        logger.warn(`Password Delete Failed`)
-        return false
+        })
     }
 }
 

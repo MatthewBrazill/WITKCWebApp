@@ -44,13 +44,8 @@ const signup = {
                 dateJoined: new Date().toISOString().substring(0, 10)
             }
 
-            const password = {
-                memberId: member.memberId,
-                hash: bcrypt.hashSync(req.body.password, 10)
-            }
-
             members.create(member)
-            passwords.create(password)
+            passwords.create(member.memberId, bcrypt.hashSync(req.body.password, 10))
 
             logger.info(`Session '${req.sessionID}': Successfully Signed Up`)
             sessions.create(req.session.id, member.memberId)
