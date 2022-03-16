@@ -14,10 +14,10 @@ const sessions = {
             },
             TableName: 'witkc-sessions'
         }).promise().then(() => {
-            logger.info(`Session created!`)
+            logger.info(`Session '${sessionId}': Created`)
             return true
         }).catch((err) => {
-            logger.warn(`Session creation failed! ${err}`)
+            logger.warn(`Failed to create session '${sessionId}'! ${err}`)
             return false
         })
     },
@@ -27,10 +27,10 @@ const sessions = {
             Item: { 'session-id': { S: sessionId } },
             TableName: 'witkc-sessions'
         }).promise().then(() => {
-            logger.info(`Session created!`)
+            logger.info(`Session '${sessionId}': Created`)
             return true
         }).catch((err) => {
-            logger.warn(`Session creation failed! ${err}`)
+            logger.warn(`Failed to create session '${sessionId}'! ${err}`)
             return false
         })
     },
@@ -39,11 +39,11 @@ const sessions = {
         return dynamo.getItem({
             Key: { 'session-id': { S: sessionId } },
             TableName: 'witkc-sessions'
-        }).promise().then(() => {
+        }).promise().then((data) => {
             if (data.Item != undefined) return true
             else return false
         }).catch((err) => {
-            logger.warn(`Error when querying session! ${err}`)
+            logger.warn(`Error when querying session '${sessionId}'! ${err}`)
             return false
         })
     },
@@ -53,10 +53,10 @@ const sessions = {
             Key: { 'session-id': { S: sessionId } },
             TableName: 'witkc-sessions'
         }).promise().then(() => {
-            logger.info(`Session destroyed!`)
+            logger.info(`Session '${sessionId}': Destroyed`)
             return true
         }).catch((err) => {
-            logger.warn(`Failed to destroy session ${sessionId}! ${err}`)
+            logger.warn(`Failed to destroy session '${sessionId}'! ${err}`)
             return false
         })
     }

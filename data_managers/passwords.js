@@ -14,10 +14,10 @@ const passwords = {
             },
             TableName: 'witkc-passwords'
         }).promise().then(() => {
-            logger.info(`Password created!`)
+            logger.info(`Password for user ${memberId}: Created`)
             return true
         }).catch((err) => {
-            logger.warn(`Password creation failed! ${err}`)
+            logger.warn(`Failed to create password for user ${memberId}! ${err}`)
             return false
         })
     },
@@ -30,7 +30,7 @@ const passwords = {
             if (data.Item == undefined) return data.Item['hash'].S
             else return null
         }).catch(() => {
-            logger.warn(`Password couldn't be retrieved! ${err}`)
+            logger.warn(`Failed to retrieve password for user ${memberId}! ${err}`)
             return null
         })
     },
@@ -42,10 +42,10 @@ const passwords = {
             UpdateExpression: 'SET hash = :hash',
             TableName: 'witkc-passwords'
         }).promise().then((data) => {
-            if (data.Item != undefined) return true
-            else return false
+            logger.info(`Password for user ${memberId}: Updated`)
+            return true
         }).catch((err, data) => {
-            logger.warn(`Password couldn't be updated! ${err}`)
+            logger.warn(`Failed to update password for user ${memberId}! ${err}`)
             return false
         })
     },
@@ -55,7 +55,7 @@ const passwords = {
             Key: { 'member-id': { S: memberId } },
             TableName: 'witkc-passwords'
         }).promise().then(() => {
-            logger.info(`Password for user ${memberId} deleted!`)
+            logger.info(`Password for user ${memberId}: Deleted`)
             return true
         }).catch((err) => {
             logger.warn(`Failed to delete password for user ${memberId}! ${err}`)

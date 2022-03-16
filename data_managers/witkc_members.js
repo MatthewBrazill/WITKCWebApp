@@ -29,10 +29,10 @@ const members = {
             },
             TableName: 'witkc-members'
         }).promise().then(() => {
-            logger.info(`Member created!`)
+            logger.info(`Member ${member.memberId}: Created`)
             return true
         }).catch((err) => {
-            logger.warn(`Member creation failed! ${err}`)
+            logger.warn(`Failed to create member ${member.memberId}! ${err}`)
             return false
         })
     },
@@ -56,25 +56,27 @@ const members = {
     async get(memberId) {
         return dynamo.getItem({
             Key: { 'member-id': { S: memberId } },
-            TableName: 'witkc=members'
+            TableName: 'witkc-members'
         }).promise().then((data) => {
             if (data.Item != undefined) return data.Item
             else return null
         }).catch((err) => {
-            logger.warn(`Member couldn't be retrieved! ${err}`)
+            logger.warn(`Failed to retrieve member ${memberId}! ${err}`)
             return null
         })
     },
 
     async exists(memberId) {
+        console.log(memberId)
         return dynamo.getItem({
             Key: { 'member-id': { S: memberId } },
-            TableName: 'witkc=members'
+            TableName: 'witkc-members'
         }).promise().then((data) => {
+            console.log(data.Item)
             if (data.Item != undefined) return true
             else return false
         }).catch((err) => {
-            logger.warn(`Member couldn't be retrieved! ${err}`)
+            logger.warn(`Failed to retrieve member ${memberId}! ${err}`)
             return false
         })
     },
@@ -100,7 +102,7 @@ const members = {
             },
             TableName: 'witkc-members'
         }).promise().then(() => {
-            logger.info(`Member updated!`)
+            logger.info(`Member ${memberId}: Updated`)
             return true
         }).catch((err) => {
             logger.warn(`Failed to update member ${member.memberId}! ${err}`)
@@ -113,7 +115,7 @@ const members = {
             Key: { 'member-id': { S: memberId } },
             TableName: 'witkc-members'
         }).promise().then(() => {
-            logger.info(`Member ${memberId} deleted!`)
+            logger.info(`Member ${memberId}: Deleted`)
             return true
         }).catch((err) => {
             logger.warn(`Failed to delete member ${memberId}! ${err}`)
