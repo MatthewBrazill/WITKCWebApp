@@ -22,14 +22,17 @@
             </div>
             <h4 class="ui dividing header">Address</h4>
             <div class="field">
-                <input type="text" minlength="8" maxlength="64" name="address[line_one]" placeholder="Address Line 1" required>
+                <input type="text" maxlength="64" name="address[line_one]" placeholder="First Line" required>
             </div>
             <div class="field">
-                <input type="text" minlength="8" maxlength="64" name="address[line_two]" placeholder="Address Line 2">
+                <input type="text" maxlength="64" name="address[line_two]" placeholder="Second Line">
+            </div>
+            <div class="field">
+                <input type="text" maxlength="64" name="address[city]" placeholder="City" required>
             </div>
             <div class="fields">
                 <div class="eleven wide field">
-                    <input type="text" minlength="3" maxlength="64" name="address[county]" placeholder="County" required>
+                    <input type="text" maxlength="64" name="address[county]" placeholder="County" required>
                 </div>
                 <div class="five wide field">
                     <input type="text" minlength="7" maxlength="8" name="address[eir]" placeholder="Eir Code" required>

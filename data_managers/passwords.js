@@ -6,55 +6,47 @@ const AWS = require('aws-sdk')
 const dynamo = new AWS.DynamoDB()
 
 const passwords = {
-    create(memberId, hash) {
-        dynamo.putItem({
+    async create(memberId, hash) {
+        return dynamo.putItem({
             Item: {
                 'member-id': { S: memberId },
                 'hash': { S: hash }
             },
             TableName: 'witkc-passwords'
-        }, (err) => {
-            if (err) {
-                logger.warn(`Password creation failed! ${err}`)
-                return false
-            } else {
-                logger.info(`Password created!`)
-                return true
-            }
+        }).promise().then(() => {
+            logger.info(`Password created!`)
+            return true
+        }).catch((err) => {
+            logger.warn(`Password creation failed! ${err}`)
+            return false
         })
     },
 
-    get(memberId) {
-        dynamo.getItem({
+    async get(memberId) {
+        return dynamo.getItem({
             Key: { 'member-id': { S: memberId } },
             TableName: 'witkc-passwords'
-        }, (err, data) => {
-            if (err) {
-                logger.warn(`Password couldn't be retrieved! ${err}`)
-                return null
-            } else {
-                if (data.Item) return data.Item['hash'].S
-                else return null
-            }
+        }).promise().then((data) => {
+            if (data.Item == undefined) return data.Item['hash'].S
+            else return null
+        }).catch(() => {
+            logger.warn(`Password couldn't be retrieved! ${err}`)
+            return null
         })
     },
 
-    update(memberId, hash) {
-        dynamo.updateItem({
+    async update(memberId, hash) {
+        return dynamo.updateItem({
             Key: { 'member-id': { S: memberId } },
-            ExpressionAttributeValues: {':hash': hash},
+            ExpressionAttributeValues: { ':hash': hash },
             UpdateExpression: 'SET hash = :hash',
             TableName: 'witkc-passwords'
-        }, (err, data) => {
-            if (err) {
-                logger.warn(`Password couldn't be updated! ${err}`)
-                return false
-            } else {
-                logger.info(`Password for user ${memberId} updated!`)
-                console.log('pw update data:', data)
-                if (data.Item) return true
-                else return false
-            }
+        }).promise().then((data) => {
+            if (data.Item != undefined) return true
+            else return false
+        }).catch((err, data) => {
+            logger.warn(`Password couldn't be updated! ${err}`)
+            return false
         })
     },
 
@@ -62,14 +54,12 @@ const passwords = {
         dynamo.deleteItem({
             Key: { 'member-id': { S: memberId } },
             TableName: 'witkc-passwords'
-        }, (err) => {
-            if (err) {
-                logger.warn(`Failed to delete password for user ${memberId}! ${err}`)
-                return false
-            } else {
-                logger.info(`Password for user ${memberId} deleted!`)
-                return true
-            }
+        }).promise().then(() => {
+            logger.info(`Password for user ${memberId} deleted!`)
+            return true
+        }).catch((err) => {
+            logger.warn(`Failed to delete password for user ${memberId}! ${err}`)
+            return false
         })
     }
 }

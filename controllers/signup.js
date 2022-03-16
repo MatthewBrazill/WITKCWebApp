@@ -15,7 +15,7 @@ const signup = {
             title: 'Sign Up'
         }
 
-        if (sessions.includes(req.sessionID)) {
+        if (await sessions.includes(req.sessionID)) {
             logger.debug(`Session '${req.sessionID}' is Destroyed`)
             sessions.destroy(req.sessionID)
             req.session.destroy()
@@ -35,21 +35,22 @@ const signup = {
                 lastName: req.body.last_name,
                 email: req.body.email,
                 phone: req.body.phone,
+                verified: false,
                 address: {
                     lineOne: req.body.address.line_one,
                     lineTwo: req.body.address.line_two,
+                    city: req.body.address.city,
                     county: req.body.address.county,
                     eir: req.body.address.eir,
                 },
                 dateJoined: new Date().toISOString().substring(0, 10)
             }
-
+            req.session.userId = member.memberId
+            sessions.create(req.session.id, member.memberId)
             members.create(member)
             passwords.create(member.memberId, bcrypt.hashSync(req.body.password, 10))
 
             logger.info(`Session '${req.sessionID}': Successfully Signed Up`)
-            sessions.create(req.session.id, member.memberId)
-            req.session.userId = member.memberId
             res.redirect("/")
         } else {
             logger.info(`Session '${req.sessionID}': Sign Up Failed`)

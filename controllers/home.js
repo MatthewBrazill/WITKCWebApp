@@ -13,11 +13,11 @@ const home = {
             logged_in: false
         }
 
-        if (sessions.includes(req.sessionID)) {
+        if (await sessions.includes(req.sessionID)) {
             logger.debug(`Session '${req.sessionID}' Exists`)
-            if (members.exists(req.session.userId)) {
+            if (await members.exists(req.session.userId)) {
                 logger.debug(`Session '${req.sessionID}' is Logged In`)
-                var member = members.getWithId(req.session.userId)
+                var member = await members.get(req.session.userId)
                 viewData.logged_in = true
                 viewData.name = `${member.firstName} ${member.lastName}`
                 viewData.date_joined = member.dateJoined
