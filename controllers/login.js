@@ -30,9 +30,9 @@ const login = {
 
         logger.info(`Session '${req.sessionID}': Posting Login Form`)
         if (true) {
-            var member = members.getWithUsername(req.body.username)
+            var member = await members.get(await members.resolveUsername(req.body.username))
 
-            if (bcrypt.compareSync(req.body.password, passwords.get(member.memberId))) {
+            if (bcrypt.compareSync(req.body.password, await passwords.get(member.memberId))) {
                 logger.info(`Session '${req.sessionID}': Successfully Logged In`)
                 sessions.create(req.session.id, member.memberId)
                 req.session.userId = member.memberId

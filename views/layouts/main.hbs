@@ -4,21 +4,17 @@
     <meta charset="utf-8">
     <title>{{title}}</title>
 
-    <!-- Fomantic UI links -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css"
-        type="text/css">
-    <link rel="stylesheet" href="witkc_css.css" type="text/css">
-    <script src="helper_scripts.js"></script>
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js"
-        integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
-    <script type="text/javascript"
-        src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
+    <!-- Semantic UI Links -->
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/fomantic-ui@2.8.8/dist/semantic.min.css">
+    <script src="https://unpkg.com/zxcvbn@4.4.2/dist/zxcvbn.js"></script>
+    <script src="https://unpkg.com/jquery@3.3.1/dist/jquery.js"></script>
+    <script src="https://unpkg.com/fomantic-ui@2.8.8/dist/semantic.min.js"></script>
 </head>
 
-<body>
+<body style="background-color: gray;">
     <div style="padding: 15px">
         <div class="ui centered grid container">
-            <nav class="row">
+            <div class="row">
                 <div class="twelve wide column">
                     {{> header}}
                     <div class="ui centered grid">
@@ -26,10 +22,10 @@
                     </div>
                 </div>
                 {{> sidebar}}
-            </nav>
-            <footer class="row">
+            </div>
+            <div class="row">
                 {{> footer}}
-            </footer>
+            </div>
         </div>
     </div>
 </body>

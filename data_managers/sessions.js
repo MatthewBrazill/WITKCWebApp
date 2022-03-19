@@ -1,33 +1,64 @@
 'use strict'
 
 // Imports
-const fs = require('fs')
+const logger = require('../log.js')
+const AWS = require('aws-sdk')
+const dynamo = new AWS.DynamoDB()
 
 const sessions = {
-    create(sessionId, userId) {
-        var sessions = JSON.parse(fs.readFileSync(__dirname + "/../data_stores/sessions.json"))
-        sessions.push({
-            sessionId: sessionId,
-            userId: userId
+    async create(sessionId, userId) {
+        return dynamo.putItem({
+            Item: {
+                'session-id': { S: sessionId },
+                'user-id': { S: userId }
+            },
+            TableName: 'witkc-sessions'
+        }).promise().then(() => {
+            logger.info(`Session '${sessionId}': Created`)
+            return true
+        }).catch((err) => {
+            logger.warn(`Failed to create session '${sessionId}'! ${err}`)
+            return false
         })
-        fs.writeFileSync(__dirname + "/../data_stores/sessions.json", JSON.stringify(sessions))
-        setTimeout(() => this.destroy(sessionId), 300000)
     },
 
-    includes(sessionId) {
-        var sessions = JSON.parse(fs.readFileSync(__dirname + "/../data_stores/sessions.json"))
-        for (var session of sessions) {
-            if (session.sessionId == sessionId) return true
-        }
-        return false
+    async create(sessionId) {
+        return dynamo.putItem({
+            Item: { 'session-id': { S: sessionId } },
+            TableName: 'witkc-sessions'
+        }).promise().then(() => {
+            logger.info(`Session '${sessionId}': Created`)
+            return true
+        }).catch((err) => {
+            logger.warn(`Failed to create session '${sessionId}'! ${err}`)
+            return false
+        })
     },
 
-    destroy(sessionId) {
-        var sessions = JSON.parse(fs.readFileSync(__dirname + "/../data_stores/sessions.json"))
-        for (var session in sessions) {
-            if (session.sessionId == sessionId && sessions.indexOf(session) > 0) sessions.splice(sessions.indexOf(session), 1)
-        }
-        fs.writeFileSync(__dirname + "/../data_stores/sessions.json", JSON.stringify(sessions))
+    async includes(sessionId) {
+        return dynamo.getItem({
+            Key: { 'session-id': { S: sessionId } },
+            TableName: 'witkc-sessions'
+        }).promise().then((data) => {
+            if (data.Item != undefined) return true
+            else return false
+        }).catch((err) => {
+            logger.warn(`Error when querying session '${sessionId}'! ${err}`)
+            return false
+        })
+    },
+
+    async destroy(sessionId) {
+        return dynamo.deleteItem({
+            Key: { 'session-id': { S: sessionId } },
+            TableName: 'witkc-sessions'
+        }).promise().then(() => {
+            logger.info(`Session '${sessionId}': Destroyed`)
+            return true
+        }).catch((err) => {
+            logger.warn(`Failed to destroy session '${sessionId}'! ${err}`)
+            return false
+        })
     }
 }
 

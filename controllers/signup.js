@@ -6,7 +6,7 @@ const sessions = require('../data_managers/sessions')
 const members = require('../data_managers/witkc_members')
 const passwords = require("../data_managers/passwords")
 const bcrypt = require('bcrypt')
-const { v4 } = require('uuid')
+const uuid = require('uuid')
 
 const signup = {
     async get(req, res) {
@@ -15,7 +15,7 @@ const signup = {
             title: 'Sign Up'
         }
 
-        if (sessions.includes(req.sessionID)) {
+        if (await sessions.includes(req.sessionID)) {
             logger.debug(`Session '${req.sessionID}' is Destroyed`)
             sessions.destroy(req.sessionID)
             req.session.destroy()
@@ -29,32 +29,28 @@ const signup = {
         logger.info(`Session '${req.sessionID}': Posting Sign Up Form`)
         if (true) {
             var member = {
-                memberId: v4(),
+                memberId: uuid.v4(),
                 username: req.body.username,
                 firstName: req.body.first_name,
                 lastName: req.body.last_name,
                 email: req.body.email,
                 phone: req.body.phone,
+                verified: false,
                 address: {
-                    lineOne: req.body.address.line_one,
-                    lineTwo: req.body.address.line_two,
-                    county: req.body.address.county,
-                    eir: req.body.address.eir,
+                    lineOne: req.body.line_one,
+                    lineTwo: req.body.line_two,
+                    city: req.body.city,
+                    county: req.body.county,
+                    eir: req.body.eir,
                 },
                 dateJoined: new Date().toISOString().substring(0, 10)
             }
-
-            const password = {
-                memberId: member.memberId,
-                hash: bcrypt.hashSync(req.body.password, 10)
-            }
-
+            req.session.userId = member.memberId
+            sessions.create(req.session.id, member.memberId)
             members.create(member)
-            passwords.create(password)
+            passwords.create(member.memberId, bcrypt.hashSync(req.body.password, 10))
 
             logger.info(`Session '${req.sessionID}': Successfully Signed Up`)
-            sessions.create(req.session.id, member.memberId)
-            req.session.userId = member.memberId
             res.redirect("/")
         } else {
             logger.info(`Session '${req.sessionID}': Sign Up Failed`)

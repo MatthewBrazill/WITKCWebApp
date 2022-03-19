@@ -1,56 +1,66 @@
 'use strict'
 
-const fs = require('fs')
+// Imports
 const logger = require('../log.js')
+const AWS = require('aws-sdk')
+const dynamo = new AWS.DynamoDB()
 
 const passwords = {
-    create(password) {
-        var passwords = JSON.parse(fs.readFileSync(__dirname + "/../data_stores/passwords.json"))
-        passwords.push(password)
-        logger.info(`Password Saved`)
-        fs.writeFileSync(__dirname + "/../data_stores/passwords.json", JSON.stringify(passwords))
-        return true
+    async create(memberId, hash) {
+        return dynamo.putItem({
+            Item: {
+                'member-id': { S: memberId },
+                'hash': { S: hash }
+            },
+            TableName: 'witkc-passwords'
+        }).promise().then(() => {
+            logger.info(`Password for user ${memberId}: Created`)
+            return true
+        }).catch((err) => {
+            logger.warn(`Failed to create password for user ${memberId}! ${err}`)
+            return false
+        })
     },
 
-    get(memberId) {
-        var passwords = JSON.parse(fs.readFileSync(__dirname + "/../data_stores/passwords.json"))
-        logger.info(`Getting Password for User '${memberId}'`)
-        for (var password of passwords) {
-            if (password.memberId == memberId) return password.hash
-        }
-        return null
+    async get(memberId) {
+        return dynamo.getItem({
+            Key: { 'member-id': { S: memberId } },
+            TableName: 'witkc-passwords'
+        }).promise().then((data) => {
+            if (data.Item == undefined) return data.Item['hash'].S
+            else return null
+        }).catch(() => {
+            logger.warn(`Failed to retrieve password for user ${memberId}! ${err}`)
+            return null
+        })
     },
 
-    update(memberId, hash) {
-        var passwords = JSON.parse(fs.readFileSync(__dirname + "/../data_stores/passwords.json"))
-        logger.info(`Updating Password for User '${memberId}'`)
-        for (var password of passwords) {
-            if (password.memberId == memberId && passwords.indexOf(password) > 0) {
-                passwords[passwords.indexOf(password)].hash = hash
-                fs.writeFileSync(__dirname + "/../data_stores/passwords.json", JSON.stringify(passwords))
-                logger.info(`Password Updated`)
-                return true
-            }
-        }
-        fs.writeFileSync(__dirname + "/../data_stores/passwords.json", JSON.stringify(passwords))
-        logger.warn(`Password Update Failed`)
-        return false
+    async update(memberId, hash) {
+        return dynamo.updateItem({
+            Key: { 'member-id': { S: memberId } },
+            ExpressionAttributeValues: { ':hash': hash },
+            UpdateExpression: 'SET hash = :hash',
+            TableName: 'witkc-passwords'
+        }).promise().then((data) => {
+            logger.info(`Password for user ${memberId}: Updated`)
+            return true
+        }).catch((err, data) => {
+            logger.warn(`Failed to update password for user ${memberId}! ${err}`)
+            return false
+        })
     },
 
     delete(memberId) {
-        var passwords = JSON.parse(fs.readFileSync(__dirname + "/../data_stores/passwords.json"))
-        logger.info(`Deleting Password for User '${memberId}'`)
-        for (var password of passwords) {
-            if (password.memberId == memberId && passwords.indexOf(password) > 0) {
-                passwords.splice(passwords.indexOf(password), 1)
-                fs.writeFileSync(__dirname + "/../data_stores/passwords.json", JSON.stringify(passwords))
-                logger.info(`Password Deleted`)
-                return true
-            }
-        }
-        fs.writeFileSync(__dirname + "/../data_stores/passwords.json", JSON.stringify(passwords))
-        logger.warn(`Password Delete Failed`)
-        return false
+        dynamo.deleteItem({
+            Key: { 'member-id': { S: memberId } },
+            TableName: 'witkc-passwords'
+        }).promise().then(() => {
+            logger.info(`Password for user ${memberId}: Deleted`)
+            return true
+        }).catch((err) => {
+            logger.warn(`Failed to delete password for user ${memberId}! ${err}`)
+            return false
+        })
     }
 }
 
