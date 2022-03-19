@@ -1,51 +1,74 @@
 <div class="eight wide column">
     <div class="ui segment">
         <h1 class="ui center aligned header">Sign Up</h1>
-        <form class="ui form" method="post" id="signUpForm" onsubmit="return checkPassword(this)">
+        <script src="county_dropdown.js"></script>
+        <script src="signup_validator.js"></script>
+        <form class="ui form" action="#" method="post" onsubmit="return checkSignUp(this)">
             <h4 class="ui dividing header">Personal Information</h4>
             <div class="two fields">
                 <div class="field">
-                    <input type="text" maxlength="24" name="first_name" placeholder="First Name" required>
+                    <input type="text" name="first_name" placeholder="First Name" oninput="validateName(this)">
                 </div>
                 <div class="field">
-                    <input type="text" maxlength="24" name="last_name" placeholder="Last Name" required>
+                    <input type="text" name="last_name" placeholder="Last Name" oninput="validateName(this)">
                 </div>
             </div>
             <div class="field">
-                <input type="text" minlength="3" maxlength="16" name="username" placeholder="Username" required>
+                <input type="text" name="username" placeholder="Username" oninput="validateUsername(this)">
             </div>
             <div class="field">
-                <input type="text" minlength="3" maxlength="64" name="email" placeholder="Email Address" required>
+                <input type="text" name="email" placeholder="Email Address" oninput="validateEmail(this)">
             </div>
             <div class="field">
-                <input type="text" minlength="8" maxlength="12" name="phone" placeholder="Phone Number">
+                <input type="text" name="phone" placeholder="Phone Number" oninput="validatePhone(this, true)">
             </div>
             <h4 class="ui dividing header">Address</h4>
             <div class="field">
-                <input type="text" maxlength="64" name="address[line_one]" placeholder="First Line" required>
+                <input type="text" name="line_one" placeholder="First Line" oninput="validateAddress(this)">
             </div>
             <div class="field">
-                <input type="text" maxlength="64" name="address[line_two]" placeholder="Second Line">
+                <input type="text" name="line_two" placeholder="Second Line" oninput="validateAddress(this, true)">
             </div>
             <div class="field">
-                <input type="text" maxlength="64" name="address[city]" placeholder="City" required>
+                <input type="text" name="city" placeholder="City" oninput="validateAddress(this)">
             </div>
             <div class="fields">
                 <div class="eleven wide field">
-                    <input type="text" maxlength="64" name="address[county]" placeholder="County" required>
+                    <div class="ui search selection dropdown">
+                        <input type="hidden" name="county" onchange="validateCounty(this)">
+                        <div class="text"></div>
+                        <i class="dropdown icon"></i>
+                    </div>
                 </div>
                 <div class="five wide field">
-                    <input type="text" minlength="7" maxlength="8" name="address[eir]" placeholder="Eir Code" required>
+                    <input type="text" name="eir" placeholder="Eir Code" oninput="validateEir(this)">
                 </div>
             </div>
             <h4 class="ui dividing header">Password</h4>
             <div class="field">
-                <input type="password" minlength="8" maxlength="64" name="password" placeholder="Password" id="pw" required>
+                <div class="ui action input">
+                    <input type="password" name="password" id="password" placeholder="Password" oninput="validatePassword(this)">
+                    <button class="ui icon button" type="button" onclick="hidePassword(this)">
+                        <i class="eye slash icon"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="ui info message">
+                <div class="header">Your password is good but could be stronger, maybe consider improving it?</div>
+                <p>It is considered best practice to use fully randomized passwords that are stored in a password manager!</p>
+            </div>
+            <div class="ui warning message">
+                <div class="header" id="password_warning_header"></div>
+                <p id="password_warning"></p>
             </div>
             <div class="field">
-                <input type="password" minlength="8" maxlength="64" name="confirm_password" placeholder="Confirm Password" id="pw_conf" required>
+                <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm Password" oninput="confirmPassword(this)">
             </div>
             <br>
+            <div class="ui error message">
+                <div class="header">Couldn't submit form!</div>
+                <p>Red fields are required! Please check your input!</p>
+            </div>
             <button class="fluid ui gray button" type="submit">Sign Up</button>
         </form>
     </div>

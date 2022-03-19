@@ -6,7 +6,7 @@ const sessions = require('../data_managers/sessions')
 const members = require('../data_managers/witkc_members')
 const passwords = require("../data_managers/passwords")
 const bcrypt = require('bcrypt')
-const { v4 } = require('uuid')
+const uuid = require('uuid')
 
 const signup = {
     async get(req, res) {
@@ -29,7 +29,7 @@ const signup = {
         logger.info(`Session '${req.sessionID}': Posting Sign Up Form`)
         if (true) {
             var member = {
-                memberId: v4(),
+                memberId: uuid.v4(),
                 username: req.body.username,
                 firstName: req.body.first_name,
                 lastName: req.body.last_name,
@@ -37,11 +37,11 @@ const signup = {
                 phone: req.body.phone,
                 verified: false,
                 address: {
-                    lineOne: req.body.address.line_one,
-                    lineTwo: req.body.address.line_two,
-                    city: req.body.address.city,
-                    county: req.body.address.county,
-                    eir: req.body.address.eir,
+                    lineOne: req.body.line_one,
+                    lineTwo: req.body.line_two,
+                    city: req.body.city,
+                    county: req.body.county,
+                    eir: req.body.eir,
                 },
                 dateJoined: new Date().toISOString().substring(0, 10)
             }
