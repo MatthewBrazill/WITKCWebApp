@@ -3,8 +3,9 @@
 // Import the Extensions
 const AWS = require('aws-sdk')
 const express = require('express')
-const cookie = require("cookie-parser")
-const session = require("express-session")
+const cookie = require('cookie-parser')
+const session = require('express-session')
+const sessionStore = require('connect-dynamodb')({ session: session })
 const handlebars = require('express-handlebars')
 const logger = require('./log.js')
 
@@ -26,6 +27,13 @@ ssm.getParameters({ Names: ['witkc-session-key'], WithDecryption: true }, (err, 
         app.use(session({
             secret: data.Parameters[0].Value,
             saveUninitialized: true,
+            store: new sessionStore({
+                table: 'witkc-sessions',
+                hashKey: 'session-id',
+                AWSConfigJSON: {
+                    region: 'eu-west-1'
+                },
+            }),
             cookie: { maxAge: 1000 * 60 * 60 * 12 },
             resave: false
         }))

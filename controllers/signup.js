@@ -2,7 +2,6 @@
 
 // Imports
 const logger = require('../log.js')
-const sessions = require('../data_managers/sessions')
 const members = require('../data_managers/witkc_members')
 const passwords = require("../data_managers/passwords")
 const bcrypt = require('bcrypt')
@@ -15,13 +14,7 @@ const signup = {
             title: 'Sign Up'
         }
 
-        if (await sessions.includes(req.sessionID)) {
-            logger.debug(`Session '${req.sessionID}' is Destroyed`)
-            sessions.destroy(req.sessionID)
-            req.session.destroy()
-        }
-        logger.debug(`Session '${req.sessionID}' is Created`)
-        sessions.create(req.sessionID)
+        req.session.destroy()
         res.render('signup', viewData)
     },
 
@@ -45,8 +38,7 @@ const signup = {
                 },
                 dateJoined: new Date().toISOString().substring(0, 10)
             }
-            req.session.userId = member.memberId
-            sessions.create(req.session.id, member.memberId)
+            req.session.userID = member.memberId
             members.create(member)
             passwords.create(member.memberId, bcrypt.hashSync(req.body.password, 10))
 
