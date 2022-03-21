@@ -34,11 +34,7 @@ ssm.getParameters({ Names: ['witkc-session-key'], WithDecryption: true }, (err, 
                     region: 'eu-west-1'
                 },
             }),
-            cookie: {
-                secure: true,
-                httpOnly: false,
-                maxAge: 1000 * 60 * 60 * 12
-            },
+            cookie: { maxAge: 1000 * 60 * 60 * 12 },
             resave: false
         }))
         logger.info(`Session Key Loaded!`)
