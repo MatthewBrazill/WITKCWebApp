@@ -4,10 +4,10 @@
 const logger = require('../log.js')
 const members = require('../data_managers/witkc_members')
 
-const home = {
+const constitution = {
     async get(req, res) {
         var viewData = {
-            title: 'Home',
+            title: 'Constitution',
             logged_in: false
         }
 
@@ -19,10 +19,9 @@ const home = {
                 viewData.member = member
             }
         }
-        
-        logger.info(`Session '${req.sessionID}': Getting Home`)
-        res.render('home', viewData)
+        logger.info(`Session '${req.sessionID}': Getting Constitution`)
+        res.render('constitution', viewData)
     }
 }
 
-module.exports = home
+module.exports = constitution

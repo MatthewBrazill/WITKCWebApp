@@ -7,6 +7,7 @@ const dynamo = new AWS.DynamoDB()
 
 const members = {
     async create(member) {
+        if (member == null) return false
         return dynamo.putItem({
             Item: {
                 'member-id': { S: member.memberId },
@@ -38,14 +39,15 @@ const members = {
     },
 
     async resolveUsername(username) {
+        if (username == null) return null
         return dynamo.scan({
+            ExpressionAttributeNames: { '#ID': 'member-id' },
             ExpressionAttributeValues: { ':username': { S: username } },
             FilterExpression: 'username = :username',
-            ProjectionExpression: 'member-id',
+            ProjectionExpression: '#ID',
             TableName: 'witkc-members'
         }).promise().then((data) => {
-            console.log(data)
-            if (data.Items != undefined) return data.Items[0]
+            if (data.Items[0] != undefined) return data.Items[0]['member-id'].S
             else return null
         }).catch((err) => {
             logger.warn(`Could not resolve username ${username}! ${err}`)
@@ -54,11 +56,28 @@ const members = {
     },
 
     async get(memberId) {
+        if (memberId == null) return null
         return dynamo.getItem({
             Key: { 'member-id': { S: memberId } },
             TableName: 'witkc-members'
         }).promise().then((data) => {
-            if (data.Item != undefined) return data.Item
+            if (data.Item != undefined) return {
+                memberId: data.Item['member-id'].S,
+                username: data.Item['username'].S,
+                firstName: data.Item['first-name'].S,
+                lastName: data.Item['last-name'].S,
+                email: data.Item['email'].S,
+                phone: data.Item['phone'].N,
+                verified: data.Item['verified'].BOOL,
+                address: {
+                    lineOne: data.Item['address'].L[0].S,
+                    lineTwo: data.Item['address'].L[1].S,
+                    city: data.Item['address'].L[2].S,
+                    county: data.Item['address'].L[3].S,
+                    eir: data.Item['address'].L[4].S
+                },
+                dateJoined: data.Item['date-joined'].S
+            }
             else return null
         }).catch((err) => {
             logger.warn(`Failed to retrieve member ${memberId}! ${err}`)
@@ -67,12 +86,11 @@ const members = {
     },
 
     async exists(memberId) {
-        console.log(memberId)
+        if (memberId == null) return false
         return dynamo.getItem({
             Key: { 'member-id': { S: memberId } },
             TableName: 'witkc-members'
         }).promise().then((data) => {
-            console.log(data.Item)
             if (data.Item != undefined) return true
             else return false
         }).catch((err) => {
@@ -82,6 +100,7 @@ const members = {
     },
 
     async update(member) {
+        if (member == null) return false
         return dynamo.putItem({
             Item: {
                 'member-id': { S: member.memberId },
@@ -111,6 +130,7 @@ const members = {
     },
 
     async delete(memberId) {
+        if (memberId == null) return false
         return dynamo.deleteItem({
             Key: { 'member-id': { S: memberId } },
             TableName: 'witkc-members'

@@ -39,7 +39,7 @@ function validateUsername(field) {
 
 // Validator for email field
 function validateEmail(field) {
-    if (!field.value.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*$/)) field.parentElement.className = 'field error'
+    if (!field.value.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)+$/)) field.parentElement.className = 'field error'
     else field.parentElement.className = 'field success'
 }
 
@@ -53,7 +53,7 @@ function validatePhone(field, allowEmpty) {
 // Validate address line one field
 function validateAddress(field, allowEmpty) {
     if (allowEmpty && field.value == '') field.parentElement.className = 'field'
-    else if (!field.value.match(/^[\w-]{1,24}$/)) field.parentElement.className = 'field error'
+    else if (!field.value.match(/^[\w- ]{1,32}$/)) field.parentElement.className = 'field error'
     else field.parentElement.className = 'field success'
 }
 

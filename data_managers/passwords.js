@@ -27,7 +27,7 @@ const passwords = {
             Key: { 'member-id': { S: memberId } },
             TableName: 'witkc-passwords'
         }).promise().then((data) => {
-            if (data.Item == undefined) return data.Item['hash'].S
+            if (data.Item != undefined) return data.Item['hash'].S
             else return null
         }).catch(() => {
             logger.warn(`Failed to retrieve password for user ${memberId}! ${err}`)

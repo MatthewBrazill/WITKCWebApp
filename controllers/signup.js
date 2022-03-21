@@ -20,7 +20,29 @@ const signup = {
 
     async post(req, res) {
         logger.info(`Session '${req.sessionID}': Posting Sign Up Form`)
-        if (true) {
+        var valid = true
+        var counties = [
+            'antrim', 'armagh', 'carlow', 'cavan', 'clare', 'cork', 'derry', 'donegal', 'down',
+            'dublin', 'fermanagh', 'galway', 'kerry', 'kildare', 'kilkenny', 'laois', 'leitrim',
+            'limerick', 'longford', 'louth', 'mayo', 'meath', 'monaghan', 'offaly', 'roscommon',
+            'sligo', 'tipperary', 'tyrone', 'waterford', 'westmeath', 'wexford', 'wicklow'
+        ]
+
+        // Server-Side Validation
+        if (!req.body.first_name.match(/^\p{L}{1,16}$/u)) valid = false
+        if (!req.body.last_name.match(/^\p{L}{1,16}$/u)) valid = false
+        if (!req.body.username.match(/^[\w-]{1,16}$/)) valid = false
+        if (!req.body.email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)+$/)) valid = false
+        if (!req.body.phone.match(/^[+0]+\d{8,12}$/) && req.body.phone != '') valid = false
+        if (!req.body.line_one.match(/^[\w- ]{1,32}$/)) valid = false
+        if (!req.body.line_two.match(/^[\w- ]{1,32}$/) && req.body.phone != '') valid = false
+        if (!req.body.city.match(/^[\w- ]{1,32}$/)) valid = false
+        if (!req.body.county in counties) valid = false
+        if (!req.body.eir.match(/^[a-zA-Z0-9]{3}[ ]?[a-zA-Z0-9]{4}$/)) valid = false
+        if (req.body.password.length < 8) valid = false
+        if (req.body.confirm_password != req.body.password) valid = false
+
+        if (valid) {
             var member = {
                 memberId: uuid.v4(),
                 username: req.body.username,
@@ -46,7 +68,23 @@ const signup = {
             res.redirect("/")
         } else {
             logger.info(`Session '${req.sessionID}': Sign Up Failed`)
-            res.redirect("/signup")
+            var viewData = {
+                title: 'Sign Up',
+                sign_up_failed: true,
+                /*first_name: req.body.first_name,
+                last_name: req.body.last_name,
+                username: req.body.username,
+                email: req.body.email,
+                phone: req.body.phone,
+                line_one: req.body.line_one,
+                line_two: req.body.line_two,
+                city: req.body.city,
+                county: req.body.county,
+                eir: req.body.eir,
+                password: req.body.password,
+                confirm_password: req.body.confirm_password */
+            }
+            res.render("/signup", viewData)
         }
     }
 }

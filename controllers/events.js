@@ -16,8 +16,7 @@ const events = {
                 logger.debug(`Session '${req.sessionID}' is Logged In`)
                 var member = await members.get(req.session.userID)
                 viewData.logged_in = true
-                viewData.name = `${member.firstName} ${member.lastName}`
-                viewData.date_joined = member.dateJoined
+                viewData.member = member
             }
         }
         logger.info(`Session '${req.sessionID}': Getting Events`)
