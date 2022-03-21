@@ -14,6 +14,9 @@ const app = express()
 AWS.config.update({ region: 'eu-west-1' })
 const ssm = new AWS.SSM()
 
+// Create route for health check that has no cookies
+app.route('/healthy').get((req, res) => res.status(200).send('OK'))
+
 // Get Parameters from AWS
 ssm.getParameters({ Names: ['witkc-session-key'], WithDecryption: true }, (err, data) => {
     // Check for Success
@@ -22,11 +25,9 @@ ssm.getParameters({ Names: ['witkc-session-key'], WithDecryption: true }, (err, 
         console.log(`Error getting session key from AWS! ${err}`)
         process.exit(1)
     } else if (data.Parameters.length = 1) {
-
-        // Set up Sessions
-        app.use(session({
+        const sessionHandler = session({
             secret: data.Parameters[0].Value,
-            saveUninitialized: true,
+            saveUninitialized: false,
             store: new sessionStore({
                 table: 'witkc-sessions',
                 hashKey: 'session-id',
@@ -36,7 +37,13 @@ ssm.getParameters({ Names: ['witkc-session-key'], WithDecryption: true }, (err, 
             }),
             cookie: { maxAge: 1000 * 60 * 60 * 12 },
             resave: false
-        }))
+        })
+        // Set up Sessions
+        app.use((req, res, next) => {
+            if (req.url == '/healthy') next()
+            else return sessionHandler(req, res, next)
+        })
+
         logger.info(`Session Key Loaded!`)
 
         // Set up the Handlebars View-Engine
