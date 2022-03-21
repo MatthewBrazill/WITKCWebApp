@@ -1,74 +1,82 @@
 <sidebar class="four wide column">
+    <div class="ui fitted segment" style="height: 100%">
+        {{#if logged_in}}
 
-    <a href="/">
-        <img class="ui middle aligned large rounded image" src="img\witkc_logo.png" alt="WITKC Logo">
-    </a>
+        <a class="ui top attached button" href="/logout">Logout</a>
 
-    {{#if logged_in}}
-
-    <div class="ui center aligned one item menu">
-        <a class="item" href="/logout">Logout</a>
-    </div>
-
-    <div class="ui card">
-
-        <a class="image" href="/my_viking">
+        <a href="/my_viking">
             {{#if image_url}}
-            <img src="{{image_url}}" alt="User Image">
+            <img class="ui fluid image" src="{{image_url}}" alt="User Image">
             {{else}}
-            <img src="/img/placeholder_avatar.png" alt="User Image">
+            <img class="ui fluid image" src="/img/placeholder_avatar.png" alt="User Image">
             {{/if}}
         </a>
 
-        <a class="content" href="/my_viking">
-            <div class="header">{{name}}</div>
-            <div class="meta">
-                <span class="date">Member since {{date_joined}}</span>
-            </div>
-        </a>
-
-        <div class="ui celled relaxed list">
-            <a class="item" href="/my_viking/trips">
-                <div class="content">
-                    <div class="header">You have been to {{trip_count}} trips!</div>
-                    <div class="description">Your most recent trip was {{recent_trip_name}}</div>
+        <div class="ui celled relaxed list" style="margin: 0px;">
+            <a class="item" href="/my_viking">
+                <br>
+                <div class="ui header">{{member.firstName}} {{member.lastName}}</div>
+                <div class="description">
+                    <span class="date">Member since {{member.dateJoined}}</span>
                 </div>
             </a>
-            <a class="item" href="/my_viking/certificates">
+            <a class="item" href="/my_viking#trips">
                 <div class="content">
-                    <div class="header">You highest qualification is {{highest_cert_name}}</div>
-                    <div class="description">In total you have {{cert_count}} certs!</div>
+                    {{#if member.trips.count}}
+                    <div class="header">You have been to {{member.trips.count}} trips!</div>
+                    <br>
+                    <div class="description">Your most recent trip was {{member.trips.last.name}}.</div>
+                    {{else}}
+                    <div class="header">You have not been on any trips yet!</div>
+                    <br>
+                    <div class="description">Check the events calender for any upcoming trips.</div>
+                    {{/if}}
+                </div>
+            </a>
+            <a class="item" href="/my_viking#certificates">
+                <div class="content">
+                    {{#if member.certs.count}}
+                    <div class="header">In total you have {{member.certs.count}} certs!</div>
+                    <br>
+                    <div class="description">You highest certificate is {{members.certs.last.name}}.</div>
+                    {{else}}
+                    <div class="header">You have no certifications yet!</div>
+                    <br>
+                    <div class="description">
+                        If you want to get any certifications, check the events calender or
+                        talk to the Safety Officer about upcoming courses.
+                    </div>
+                    {{/if}}
                 </div>
             </a>
         </div>
+        {{else}}
+        <div class="ui top attached buttons">
+            <a class="ui large button" href="/login">Login</a>
+            <a class="ui large button" href="/signup">Sign Up</a>
+        </div>
+
+        <img class="ui fluid image" src="/img/witkc_logo.png" alt="Club Logo">
+
+        <div class="ui attached basic segment">
+            <h4>We are always exited about new members!</h4>
+            <p>
+                Any active students at WIT are welcome to join us at our weekly pool meetings. We have several
+                initiatives
+                for new members who might want to chat to members of the club about different aspects of kayaking and
+                get to
+                know the ins and outs of the sport.
+            </p>
+            <p>
+                To join, just come to a pool sessions Tuesdays and Thursdays at 9:30pm, or contact the club for more
+                information!
+            </p>
+            <p>
+                Once you've joined the club you can sign up to the online portal here, and get your WITKC account.
+            </p>
+        </div>
+
+        <a class="ui large attached button" href="/contact">Contact The Club</a>
+        {{/if}}
     </div>
-
-    {{else}}
-
-    <div class="ui center aligned two item menu">
-        <a class="item" href="/login">Login</a>
-        <a class="item" href="/signup">Sign Up</a>
-    </div>
-
-    <div class="ui top attached segment">
-        <h4>We are always exited about new members!</h4>
-        <p>
-            Any active students at WIT are welcome to join us at our weekly pool meetings. We have several initiatives
-            for new members who might want to chat to members of the club about different aspects of kayaking and get to
-            know the ins and outs opf the sport.
-        </p>
-        <p>
-            To join, just come to a pool sessions Tuesdays and Thursdays at 9:30pm, or contact the club for more
-            information!
-        </p>
-        <p>
-            Once you've joined the club you can sign up to the online portal here, and get your WITKC My Viking account.
-        </p>
-    </div>
-
-    <div class="ui bottom attached center aligned one item menu">
-        <a class="item" href="/contact">Contact The Club</a>
-    </div>
-
-    {{/if}}
 </sidebar>

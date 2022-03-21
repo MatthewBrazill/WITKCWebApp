@@ -4,10 +4,10 @@
 const logger = require('../log.js')
 const members = require('../data_managers/witkc_members')
 
-const home = {
+const viking = {
     async get(req, res) {
         var viewData = {
-            title: 'Home',
+            title: 'My Viking',
             logged_in: false
         }
 
@@ -17,12 +17,18 @@ const home = {
                 var member = await members.get(req.session.userID)
                 viewData.logged_in = true
                 viewData.member = member
+                logger.info(`Session '${req.sessionID}': Getting Home`)
+                res.render('viking', viewData)
+                return
             }
         }
         
-        logger.info(`Session '${req.sessionID}': Getting Home`)
-        res.render('home', viewData)
+        res.redirect('/')
+    },
+
+    async post() {
+        res.redirect('/my_viking')
     }
 }
 
-module.exports = home
+module.exports = viking

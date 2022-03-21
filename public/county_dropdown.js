@@ -1,5 +1,5 @@
 $(document).ready(() => {
-    $('.ui.dropdown').dropdown({
+    $('#county_dropdown').dropdown({
         placeholder: 'Select County...',
         values: [{
             name: 'Antrim',

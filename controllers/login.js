@@ -2,7 +2,6 @@
 
 // Imports
 const logger = require('../log.js')
-const sessions = require('../data_managers/sessions')
 const members = require('../data_managers/witkc_members')
 const passwords = require("../data_managers/passwords")
 const bcrypt = require('bcrypt')
@@ -14,34 +13,41 @@ const login = {
             title: 'Login'
         }
 
-        if (sessions.includes(req.sessionID)) {
-            logger.debug(`Session '${req.sessionID}' is Destroyed`)
-            sessions.destroy(req.sessionID)
-            req.session.destroy()
-        }
-        logger.debug(`Session '${req.sessionID}' is Created`)
-        sessions.create(req.sessionID)
+        req.session.destroy()
         res.render('login', viewData)
     },
 
     async post(req, res) {
-        //Increase time to authenticate to prevent brute force
+        // Increase time to authenticate to prevent remote brute force
         await new Promise(resolve => setTimeout(resolve, 1000))
-
         logger.info(`Session '${req.sessionID}': Posting Login Form`)
-        if (true) {
-            var member = await members.get(await members.resolveUsername(req.body.username))
+        var valid = true
 
-            if (bcrypt.compareSync(req.body.password, await passwords.get(member.memberId))) {
-                logger.info(`Session '${req.sessionID}': Successfully Logged In`)
-                sessions.create(req.session.id, member.memberId)
-                req.session.userId = member.memberId
-                res.redirect('/')
-            } else {
-                logger.info(`Session '${req.sessionID}': Login Failed`)
-                res.redirect('/login')
+        // Server-Side Validation
+        if (!req.body.username.match(/^[\w-]{1,16}$/)) valid = false
+        if (!req.body.password.match(/^.{1,64}$/)) valid = false
+
+        if (valid) {
+            var member = await members.get(await members.resolveUsername(req.body.username))
+            if (member != null) {
+                var hash = await passwords.get(member.memberId)
+                if (hash != null) {
+                    // Evaluate login credentials
+                    if (bcrypt.compareSync(req.body.password, hash)) {
+                        logger.info(`Session '${req.sessionID}': Successfully Logged In`)
+                        req.session.userID = member.memberId
+                        res.redirect('/')
+                        return
+                    }
+                }
             }
-        } else res.redirect('/login')
+        }
+        logger.info(`Session '${req.sessionID}': Login Failed`)
+        var viewData = {
+            title: 'Login',
+            login_failed: true
+        }
+        res.render('login', viewData)
     }
 }
 
