@@ -14,7 +14,7 @@ const login = {
         var viewData = {
             title: 'Login',
             language_dropdown: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/language_dropdown.js' }),
-            witkc_img: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'img/witkc_logo.png' }),
+            witkc_logo: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'img/witkc_logo.png' }),
             login_validator: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/login_validator.js' })
         }
 

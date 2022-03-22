@@ -15,7 +15,7 @@ const signup = {
         var viewData = {
             title: 'Sign Up',
             language_dropdown: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/language_dropdown.js' }),
-            witkc_img: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'img/witkc_logo.png' }),
+            witkc_logo: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'img/witkc_logo.png' }),
             county_dropdown: s3.getSignedUrl('getObject', {Bucket: 'witkc', Key: 'js/county_dropdown.js'}),
             sign_up_validator: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/sign_up_validator.js' })
         }
