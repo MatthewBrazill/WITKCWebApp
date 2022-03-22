@@ -1,16 +1,21 @@
 'use strict'
 
 // Imports
+const AWS = require('aws-sdk')
+const s3 = new AWS.S3()
 const logger = require('../log.js')
-const members = require('../data_managers/witkc_members')
-const passwords = require("../data_managers/passwords")
+const members = require('../data_managers/witkc_members.js')
+const passwords = require("../data_managers/passwords.js")
 const bcrypt = require('bcrypt')
 
 const login = {
     async get(req, res) {
         logger.info(`Session '${req.sessionID}': Getting Login`)
         var viewData = {
-            title: 'Login'
+            title: 'Login',
+            language_dropdown: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/language_dropdown.js' }),
+            witkc_img: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'img/witkc_logo.png' }),
+            login_validator: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/login_validator.js' })
         }
 
         req.session.destroy()

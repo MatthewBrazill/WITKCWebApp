@@ -1,9 +1,11 @@
 'use strict'
 
 // Imports
+const AWS = require('aws-sdk')
+const s3 = new AWS.S3()
 const logger = require('../log.js')
-const members = require('../data_managers/witkc_members')
-const passwords = require("../data_managers/passwords")
+const members = require('../data_managers/witkc_members.js')
+const passwords = require("../data_managers/passwords.js")
 const bcrypt = require('bcrypt')
 const uuid = require('uuid')
 
@@ -11,7 +13,11 @@ const signup = {
     async get(req, res) {
         logger.info(`Session '${req.sessionID}': Getting Sign Up`)
         var viewData = {
-            title: 'Sign Up'
+            title: 'Sign Up',
+            language_dropdown: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/language_dropdown.js' }),
+            witkc_img: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'img/witkc_logo.png' }),
+            county_dropdown: s3.getSignedUrl('getObject', {Bucket: 'witkc', Key: 'js/county_dropdown.js'}),
+            sign_up_validator: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/sign_up_validator.js' })
         }
 
         req.session.destroy()
@@ -50,7 +56,6 @@ const signup = {
                 lastName: req.body.last_name,
                 email: req.body.email,
                 phone: req.body.phone,
-                verified: false,
                 address: {
                     lineOne: req.body.line_one,
                     lineTwo: req.body.line_two,
@@ -58,7 +63,9 @@ const signup = {
                     county: req.body.county,
                     eir: req.body.eir,
                 },
-                dateJoined: new Date().toISOString().substring(0, 10)
+                verified: false,
+                dateJoined: new Date().toISOString().substring(0, 10),
+                img: 'img/placeholder_avatar.png'
             }
             req.session.userID = member.memberId
             members.create(member)

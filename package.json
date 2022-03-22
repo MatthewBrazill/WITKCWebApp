@@ -1,11 +1,11 @@
 {
   "name": "witkc-webapp",
-  "version": "1.1.0",
+  "version": "1.4.2",
   "description": "A WebApp for the WIT Kayaking Club.",
   "main": "app.js",
   "scripts": {
     "prestart": "cd /home/ec2-user/WITKCWebApp",
-    "start": "node app.js"
+    "start": "node local.js"
   },
   "repository": {
     "type": "git",

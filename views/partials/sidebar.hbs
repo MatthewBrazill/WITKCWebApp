@@ -4,13 +4,7 @@
 
         <a class="ui top attached button" href="/logout">Logout</a>
 
-        <a href="/my_viking">
-            {{#if image_url}}
-            <img class="ui fluid image" src="{{image_url}}" alt="User Image">
-            {{else}}
-            <img class="ui fluid image" src="/img/placeholder_avatar.png" alt="User Image">
-            {{/if}}
-        </a>
+        <a href="/my_viking"><img class="ui fluid image" src="{{member.img}}" alt="User Image"></a>
 
         <div class="ui celled relaxed list" style="margin: 0px;">
             <a class="item" href="/my_viking">
@@ -56,7 +50,7 @@
             <a class="ui large button" href="/signup">Sign Up</a>
         </div>
 
-        <img class="ui fluid image" src="/img/witkc_logo.png" alt="Club Logo">
+        <img class="ui fluid image" src="{{witkc_logo}}" alt="Club Logo">
 
         <div class="ui attached basic segment">
             <h4>We are always exited about new members!</h4>

@@ -3,8 +3,8 @@
         <div class="eight wide column">
             <div class="ui segment">
                 <h1 class="ui center aligned header">Sign Up</h1>
-                <script src="county_dropdown.js"></script>
-                <script src="signup_validator.js"></script>
+                <script src="{{county_dropdown}}"></script>
+                <script src="{{sign_up_validator}}"></script>
                 <form class="{{#if sign_up_failed}}ui error form{{else}}ui form{{/if}}" action="#" method="post"
                     onsubmit="return checkSignUp(this)">
                     <h4 class="ui dividing header">Personal Information</h4>

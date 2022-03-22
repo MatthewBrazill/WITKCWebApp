@@ -76,6 +76,7 @@ const members = {
                     county: data.Item['address'].L[3].S,
                     eir: data.Item['address'].L[4].S
                 },
+                img: data.Item['img'].S,
                 dateJoined: data.Item['date-joined'].S
             }
             else return null

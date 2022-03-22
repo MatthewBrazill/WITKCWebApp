@@ -3,7 +3,7 @@
         <div class="eight wide column">
             <div class="ui segment">
                 <h1 class="ui center aligned header">Please Log-In</h1>
-                <script src="login_validator.js"></script>
+                <script src="{{login_validator}}"></script>
                 <form class="{{#if login_failed}}ui error form{{else}}ui form{{/if}}" action="/login" method="post"
                     onsubmit="checkLogin(this)">
                     <div class="field">

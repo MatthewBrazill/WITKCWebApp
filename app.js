@@ -1,7 +1,8 @@
 'use strict'
 
-// Import the Extensions
+// Import the extensions
 const AWS = require('aws-sdk')
+const ssm = new AWS.SSM()
 const express = require('express')
 const cookie = require('cookie-parser')
 const session = require('express-session')
@@ -9,62 +10,64 @@ const sessionStore = require('connect-dynamodb')({ session: session })
 const handlebars = require('express-handlebars')
 const logger = require('./log.js')
 
-// Create the app
-const app = express()
-AWS.config.update({ region: 'eu-west-1' })
-const ssm = new AWS.SSM()
+async function createApp() {
+    // Create the app
+    const app = express()
+    
+    // Create route for health check that has no cookies
+    app.route('/healthy').get((req, res) => res.status(200).send('OK'))
 
-// Create route for health check that has no cookies
-app.route('/healthy').get((req, res) => res.status(200).send('OK'))
-
-// Get Parameters from AWS
-ssm.getParameters({ Names: ['witkc-session-key'], WithDecryption: true }, (err, data) => {
-    // Check for Success
-    if (err) {
+    // Get Parameters from AWS
+    const sessionKey = ssm.getParameter({
+        Name: 'witkc-session-key',
+        WithDecryption: true
+    }).promise().then((data) => {
+        return data.Parameter.Value
+    }).catch((err) => {
         logger.error(`Error getting session key from AWS! ${err}`)
         console.log(`Error getting session key from AWS! ${err}`)
         process.exit(1)
-    } else if (data.Parameters.length = 1) {
-        const sessionHandler = session({
-            secret: data.Parameters[0].Value,
-            saveUninitialized: false,
-            store: new sessionStore({
-                table: 'witkc-sessions',
-                hashKey: 'session-id',
-                AWSConfigJSON: {
-                    region: 'eu-west-1'
-                },
-            }),
-            cookie: { maxAge: 1000 * 60 * 60 * 12 },
-            resave: false
-        })
-        // Set up Sessions
-        app.use((req, res, next) => {
-            if (req.url == '/healthy') next()
-            else return sessionHandler(req, res, next)
-        })
+    })
 
-        logger.info(`Session Key Loaded!`)
+    // Set up session storage middleware
+    const sessionHandler = session({
+        secret: await sessionKey,
+        saveUninitialized: false,
+        store: new sessionStore({
+            table: 'witkc-sessions',
+            hashKey: 'session-id',
+            AWSConfigJSON: {
+                region: 'eu-west-1'
+            },
+        }),
+        cookie: { maxAge: 1000 * 60 * 60 * 12 },
+        resave: false
+    })
 
-        // Set up the Handlebars View-Engine
-        app.engine('.hbs', handlebars({
-            extname: '.hbs',
-            defaultLayout: 'main'
-        }))
-        app.set('view engine', '.hbs')
-        app.set('views', 'views')
+    // Set up sessions
+    app.use((req, res, next) => {
+        if (req.url == '/healthy') next()
+        else return sessionHandler(req, res, next)
+    })
+    logger.info(`Session Key Loaded!`)
 
-        // Remaining WebApp Settings
-        app.set(express.json())
-        app.use(express.urlencoded({ extended: true }));
-        app.use(express.static("./public"))
-        app.use(cookie())
-        app.use('/', require('./routes.js'))
+    // Set up the handlebars view-engine
+    app.engine('.hbs', handlebars({
+        extname: '.hbs',
+        defaultLayout: 'main'
+    }))
+    app.set('view engine', '.hbs')
+    app.set('views', 'views')
 
-        // Start app on port 8000
-        app.listen(8000, () => {
-            logger.info(`Listening on port 8000`)
-            console.log(`Listening on port 8000  ->  http://localhost:8000/ or https://witkc.brazill.net`)
-        })
-    }
-})
+    // Remaining WebApp settings
+    app.set(express.json())
+    app.use(express.urlencoded({ extended: true }));
+    app.use(express.static("./public"))
+    app.use(cookie())
+    app.use('/', require('./routes.js'))
+
+    return app
+}
+
+const server = createApp()
+module.exports = server

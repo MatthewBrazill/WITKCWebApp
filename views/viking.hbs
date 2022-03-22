@@ -1,14 +1,43 @@
 <div class="twelve wide column">
-    <div class="ui segment" style="height: 100%">
-        <h1 class="ui dividing header">My Trips</h1>
+    <div class="ui segment">
+        <h1 class="ui dividing header">
+            My Trips
+            <button class="ui right floated tertiary compact icon button" onclick="trips_fold(this)">
+                <i class="large angle down icon"></i>
+            </button>
+        </h1>
+        {{#if member.trips.count}}
+        {{else}}
         <div class="ui placeholder segment">
             <div class="ui icon header">
                 <i class="map icon"></i>
                 You have not been on any trips yet!
             </div>
         </div>
+        {{/if}}
 
-        <h1 class="ui dividing header">My Qualifications</h1>
+        <h1 class="ui dividing header">
+            My Qualifications
+            <button class="ui right floated tertiary compact icon button" onclick="certs_fold(this)">
+                <i class="large angle down icon"></i>
+            </button>
+        </h1>
+        {{#if member.certs.count}}
+        {{else}}
+        <div class="ui placeholder segment">
+            <div class="ui icon header">
+                <i class="graduation cap icon"></i>
+                You do not have any qualifications yet!
+            </div>
+        </div>
+        {{/if}}
+
+        <h1 class="ui dividing header">
+            Personal Details
+            <button class="ui right floated tertiary compact icon button" onclick="certs_fold(this)">
+                <i class="large angle down icon"></i>
+            </button>
+        </h1>
         <div class="ui placeholder segment">
             <div class="ui icon header">
                 <i class="graduation cap icon"></i>
