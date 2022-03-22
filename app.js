@@ -6,14 +6,15 @@ const ssm = new AWS.SSM()
 const express = require('express')
 const cookie = require('cookie-parser')
 const session = require('express-session')
+const serverless = require('serverless-http')
 const sessionStore = require('connect-dynamodb')({ session: session })
 const handlebars = require('express-handlebars')
 const logger = require('./log.js')
 
-async function createApp() {
+async function start() {
     // Create the app
     const app = express()
-    
+
     // Create route for health check that has no cookies
     app.route('/healthy').get((req, res) => res.status(200).send('OK'))
 
@@ -66,8 +67,14 @@ async function createApp() {
     app.use(cookie())
     app.use('/', require('./routes.js'))
 
-    return app
+    app.listen(8000, () => {
+        logger.info(`Listening on port 8000`)
+        console.log(`Listening on port 8000  ->  http://localhost:8000/ or https://witkc.brazill.net`)
+    })
 }
 
-const server = createApp()
-module.exports = server
+// Create Server
+start().catch((err) => {
+    logger.error(`Fatal error when starting server! ${err}`)
+    console.log(`Fatal error when starting server! ${err}`)
+})

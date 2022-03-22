@@ -6,10 +6,10 @@ const s3 = new AWS.S3()
 const logger = require('../log.js')
 const members = require('../data_managers/witkc_members')
 
-const viking = {
+const profile = {
     async get(req, res) {
         var viewData = {
-            title: 'My Viking',
+            title: 'My WITKC',
             language_dropdown: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/language_dropdown.js' }),
             witkc_logo: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'img/witkc_logo.png' }),
             logged_in: false
@@ -23,7 +23,7 @@ const viking = {
                 viewData.member = member
                 viewData.member.img = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: member.img })
                 logger.info(`Session '${req.sessionID}': Getting Home`)
-                res.render('viking', viewData)
+                res.render('profile', viewData)
                 return
             }
         }
@@ -32,8 +32,8 @@ const viking = {
     },
 
     async post() {
-        res.redirect('/my_viking')
+        res.redirect('/profile')
     }
 }
 
-module.exports = viking
+module.exports = profile

@@ -4,17 +4,17 @@
 
         <a class="ui large top attached button" href="/logout">Logout</a>
 
-        <a href="/my_viking"><img class="ui fluid image" src="{{member.img}}" alt="User Image"></a>
+        <a href="/profile"><img class="ui fluid image" src="{{member.img}}" alt="User Image"></a>
 
         <div class="ui celled relaxed list" style="margin: 0px;">
-            <a class="item" href="/my_viking">
+            <a class="item" href="/profile">
                 <br>
                 <div class="ui header">{{member.firstName}} {{member.lastName}}</div>
                 <div class="description">
                     <span class="date">Member since {{member.dateJoined}}</span>
                 </div>
             </a>
-            <a class="item" href="/my_viking#trips">
+            <a class="item" href="/profile#trips">
                 <div class="content">
                     {{#if member.trips.count}}
                     <div class="header">You have been to {{member.trips.count}} trips!</div>
@@ -27,7 +27,7 @@
                     {{/if}}
                 </div>
             </a>
-            <a class="item" href="/my_viking#certificates">
+            <a class="item" href="/profile#certificates">
                 <div class="content">
                     {{#if member.certs.count}}
                     <div class="header">In total you have {{member.certs.count}} certs!</div>

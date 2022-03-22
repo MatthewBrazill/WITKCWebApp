@@ -13,7 +13,7 @@ const about = require('./controllers/about.js')
 const committee = require('./controllers/committee.js')
 const events = require('./controllers/events.js')
 const constitution = require('./controllers/constitution.js')
-const viking = require('./controllers/viking.js')
+const profile = require('./controllers/profile.js')
 
 // Attach the controllers to the matching routes:
 router.get('/', home.get)
@@ -29,8 +29,8 @@ router.post('/signup', signup.post)
 router.get('/contact', contact.get)
 router.post('/contact', contact.post)
 
-router.get('/my_viking', viking.get)
-router.post('/my_viking', viking.post)
+router.get('/profile', profile.get)
+router.post('/profile', profile.post)
 
 router.get('/about', about.get)
 router.get('/committee', committee.get)
