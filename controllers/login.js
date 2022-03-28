@@ -7,24 +7,21 @@ const logger = require('../log.js')
 const members = require('../data_managers/witkc_members.js')
 const passwords = require("../data_managers/passwords.js")
 const bcrypt = require('bcrypt')
+const viewData = require('../view_data.js')
 
 const login = {
     async get(req, res) {
-        logger.info(`Session '${req.sessionID}': Getting Login`)
-        var viewData = {
-            title: 'Login',
-            language_dropdown: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/language_dropdown.js' }),
-            witkc_logo: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'img/witkc_logo.png' }),
-            login_validator: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/login_validator.js' })
-        }
+        var data = await viewData.get(req, 'Login')
+        data.scripts.login = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/login_scripts.js' })
 
         req.session.destroy()
-        res.render('login', viewData)
+        logger.info(`Session '${req.sessionID}': Getting Login`)
+        res.render('login', data)
     },
 
     async post(req, res) {
-        // Increase time to authenticate to prevent remote brute force
-        await new Promise(resolve => setTimeout(resolve, 1000))
+        // Force all attempts to take 1s to prevent remote brute force attacks
+        var minTime = new Promise(resolve => setTimeout(resolve, 1000))
         logger.info(`Session '${req.sessionID}': Posting Login Form`)
         var valid = true
 
@@ -33,26 +30,19 @@ const login = {
         if (!req.body.password.match(/^.{1,64}$/)) valid = false
 
         if (valid) {
-            var member = await members.get(await members.resolveUsername(req.body.username))
-            if (member != null) {
-                var hash = await passwords.get(member.memberId)
-                if (hash != null) {
-                    // Evaluate login credentials
-                    if (bcrypt.compareSync(req.body.password, hash)) {
-                        logger.info(`Session '${req.sessionID}': Successfully Logged In`)
-                        req.session.userID = member.memberId
-                        res.redirect('/')
-                        return
-                    }
-                }
-            }
+            var memberId = await members.resolveUsername(req.body.username)
+            var success = bcrypt.compare(req.body.password, await passwords.get(memberId))
         }
-        logger.info(`Session '${req.sessionID}': Login Failed`)
-        var viewData = {
-            title: 'Login',
-            login_failed: true
+
+        await minTime
+        if (await success) {
+            logger.info(`Session '${req.sessionID}': Login Succeeded`)
+            req.session.userID = memberId
+            res.redirect('/profile/me')
+        } else {
+            logger.info(`Session '${req.sessionID}': Login Failed`)
+            res.sendStatus(403)
         }
-        res.render('login', viewData)
     }
 }
 
