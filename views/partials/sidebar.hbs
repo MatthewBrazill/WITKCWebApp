@@ -1,63 +1,79 @@
 <sidebar class="four wide column">
-    <div class="ui fitted segment" style="height: 100%">
+    <div class="ui fitted segment" style="height: 100%{{#if logged_in}}{{else}}; border: 0px{{/if}}">
         {{#if logged_in}}
 
-        <a class="ui large top attached button" href="/logout">Logout</a>
+        <!-- Logged In Version -->
+        <a class="ui large top attached negative button" href="/logout">Logout</a>
 
-        <a href="/profile"><img class="ui fluid image" src="{{member.img}}" alt="User Image"></a>
+        <a href="/profile/me">
+            <img class="ui fluid image" src="{{member.img}}" alt="User Image">
 
-        <div class="ui celled relaxed list" style="margin: 0px;">
-            <a class="item" href="/profile">
-                <br>
-                <div class="ui header">{{member.firstName}} {{member.lastName}}</div>
-                <div class="description">
-                    <span class="date">Member since {{member.dateJoined}}</span>
-                </div>
-            </a>
-            <a class="item" href="/profile#trips">
-                <div class="content">
-                    {{#if member.trips.count}}
-                    <div class="header">You have been to {{member.trips.count}} trips!</div>
-                    <br>
-                    <div class="description">Your most recent trip was {{member.trips.last.name}}.</div>
-                    {{else}}
-                    <div class="header">You have not been on any trips yet!</div>
-                    <br>
-                    <div class="description">Check the events calender for any upcoming trips.</div>
-                    {{/if}}
-                </div>
-            </a>
-            <a class="item" href="/profile#certificates">
-                <div class="content">
-                    {{#if member.certs.count}}
-                    <div class="header">In total you have {{member.certs.count}} certs!</div>
-                    <br>
-                    <div class="description">You highest certificate is {{members.certs.last.name}}.</div>
-                    {{else}}
-                    <div class="header">You have no certifications yet!</div>
-                    <br>
-                    <div class="description">
-                        If you want to get any certifications, check the events calender or
-                        talk to the Safety Officer about upcoming courses.
+            <div class="ui attached segment">
+                <div class="ui items">
+                    <div class="item">
+
+                        <div class="content">
+                            <div class="header">{{member.firstName}} {{member.lastName}}</div>
+                            <div class="meta">Member since {{member.dateJoined}}</div>
+                        </div>
+
                     </div>
-                    {{/if}}
                 </div>
-            </a>
-        </div>
+            </div>
+
+            <div class="ui celled relaxed list" style="margin: 0px">
+
+                <div class="item">
+                    <div class="content">
+                        {{#if member.trips.count}}
+                        <div class="header">You have been to {{member.trips.count}} trips!</div>
+                        <br>
+                        <div class="description">Your most recent trip was {{member.trips.last.name}}.</div>
+                        {{else}}
+                        <div class="header">You have not been on any trips yet!</div>
+                        <br>
+                        <div class="description">Check the events calender for any upcoming trips.</div>
+                        {{/if}}
+                    </div>
+                </div>
+
+                <div class="item">
+                    <div class="content">
+                        {{#if member.certs.count}}
+                        <div class="header">In total you have {{member.certs.count}} certs!</div>
+                        <br>
+                        <div class="description">You highest certificate is {{members.certs.last.name}}.</div>
+                        {{else}}
+                        <div class="header">You have no certifications yet!</div>
+                        <br>
+                        <div class="description">
+                            If you want to get any certifications, check the events calender or
+                            talk to the Safety Officer about upcoming courses.
+                        </div>
+                        {{/if}}
+                    </div>
+                </div>
+
+            </div>
+        </a>
+
         {{else}}
+
+        <!-- Logged Out Version -->
         <div class="ui top attached buttons">
-            <a class="ui large button" href="/login">Login</a>
-            <a class="ui large button" href="/signup">Sign Up</a>
+            <a class="ui large positive button" href="/login">Login</a>
+            <a class="ui large blue button" href="/signup">Sign Up</a>
         </div>
 
         <img class="ui fluid image" src="{{witkc_logo}}" alt="Club Logo">
 
-        <div class="ui attached basic segment">
+        <div class="ui attached basic segment" style="border: 0px">
             <h4>We are always exited about new members!</h4>
             <p>
                 Any active students at WIT are welcome to join us at our weekly pool meetings. We have several
                 initiatives
-                for new members who might want to chat to members of the club about different aspects of kayaking and
+                for new members who might want to chat to members of the club about different aspects of kayaking
+                and
                 get to
                 know the ins and outs of the sport.
             </p>

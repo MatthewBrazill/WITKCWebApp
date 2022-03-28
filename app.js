@@ -6,17 +6,19 @@ const ssm = new AWS.SSM()
 const express = require('express')
 const cookie = require('cookie-parser')
 const session = require('express-session')
-const serverless = require('serverless-http')
 const sessionStore = require('connect-dynamodb')({ session: session })
 const handlebars = require('express-handlebars')
 const logger = require('./log.js')
+const api = require('./api.js')
+const req = require('express/lib/request')
 
 async function start() {
     // Create the app
     const app = express()
 
-    // Create route for health check that has no cookies
-    app.route('/healthy').get((req, res) => res.status(200).send('OK'))
+    // Create API routes that have no cookies
+    app.route('/api/healthy').get((req, res) => res.sendStatus(200))
+    app.route('/api/username/exists/:username').get(api.existsUsername)
 
     // Get Parameters from AWS
     const sessionKey = ssm.getParameter({

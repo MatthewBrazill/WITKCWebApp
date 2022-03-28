@@ -7,7 +7,7 @@ const dynamo = new AWS.DynamoDB()
 
 const members = {
     async create(member) {
-        if (member == null) return false
+        if (member === null || member === undefined) return false
         return dynamo.putItem({
             Item: {
                 'member-id': { S: member.memberId },
@@ -15,8 +15,7 @@ const members = {
                 'first-name': { S: member.firstName },
                 'last-name': { S: member.lastName },
                 'email': { S: member.email },
-                'phone': { N: member.phone },
-                'date-joined': { S: member.dateJoined },
+                'phone': { S: member.phone },
                 'verified': { BOOL: member.verified },
                 'address': {
                     L: [
@@ -24,9 +23,11 @@ const members = {
                         { S: member.address.lineTwo },
                         { S: member.address.city },
                         { S: member.address.county },
-                        { S: member.address.eir }
+                        { S: member.address.code }
                     ]
-                }
+                },
+                'img': {S: member.img},
+                'date-joined': { S: member.dateJoined }
             },
             TableName: 'witkc-members'
         }).promise().then(() => {
@@ -39,7 +40,7 @@ const members = {
     },
 
     async resolveUsername(username) {
-        if (username == null) return null
+        if (username === null || username === undefined) return null
         return dynamo.scan({
             ExpressionAttributeNames: { '#ID': 'member-id' },
             ExpressionAttributeValues: { ':username': { S: username } },
@@ -56,7 +57,7 @@ const members = {
     },
 
     async get(memberId) {
-        if (memberId == null) return null
+        if (memberId === null || memberId === undefined) return null
         return dynamo.getItem({
             Key: { 'member-id': { S: memberId } },
             TableName: 'witkc-members'
@@ -67,14 +68,14 @@ const members = {
                 firstName: data.Item['first-name'].S,
                 lastName: data.Item['last-name'].S,
                 email: data.Item['email'].S,
-                phone: data.Item['phone'].N,
+                phone: data.Item['phone'].S,
                 verified: data.Item['verified'].BOOL,
                 address: {
                     lineOne: data.Item['address'].L[0].S,
                     lineTwo: data.Item['address'].L[1].S,
                     city: data.Item['address'].L[2].S,
                     county: data.Item['address'].L[3].S,
-                    eir: data.Item['address'].L[4].S
+                    code: data.Item['address'].L[4].S
                 },
                 img: data.Item['img'].S,
                 dateJoined: data.Item['date-joined'].S
@@ -86,8 +87,12 @@ const members = {
         })
     },
 
+    async getCommittee() {
+
+    },
+
     async exists(memberId) {
-        if (memberId == null) return false
+        if (memberId === null || memberId === undefined) return false
         return dynamo.getItem({
             Key: { 'member-id': { S: memberId } },
             TableName: 'witkc-members'
@@ -101,7 +106,7 @@ const members = {
     },
 
     async update(member) {
-        if (member == null) return false
+        if (member === null || member === undefined) return false
         return dynamo.putItem({
             Item: {
                 'member-id': { S: member.memberId },
@@ -109,20 +114,23 @@ const members = {
                 'first-name': { S: member.firstName },
                 'last-name': { S: member.lastName },
                 'email': { S: member.email },
-                'phone': { N: member.phone },
-                'date-joined': { S: member.dateJoined },
-                'verified': { B: member.verified },
+                'phone': { S: member.phone },
+                'verified': { BOOL: member.verified },
                 'address': {
-                    'line-one': { S: member.address.lineOne },
-                    'line-two': { S: member.address.lineTwo },
-                    'city': { S: member.address.city },
-                    'county': { S: member.address.county },
-                    'eir-code': { S: member.address.eir },
-                }
+                    L: [
+                        { S: member.address.lineOne },
+                        { S: member.address.lineTwo },
+                        { S: member.address.city },
+                        { S: member.address.county },
+                        { S: member.address.code }
+                    ]
+                },
+                'img': { S: member.img },
+                'date-joined': { S: member.dateJoined }
             },
             TableName: 'witkc-members'
         }).promise().then(() => {
-            logger.info(`Member ${memberId}: Updated`)
+            logger.info(`Member ${member.memberId}: Updated`)
             return true
         }).catch((err) => {
             logger.warn(`Failed to update member ${member.memberId}! ${err}`)
@@ -131,7 +139,7 @@ const members = {
     },
 
     async delete(memberId) {
-        if (memberId == null) return false
+        if (memberId === null || memberId === undefined) return false
         return dynamo.deleteItem({
             Key: { 'member-id': { S: memberId } },
             TableName: 'witkc-members'

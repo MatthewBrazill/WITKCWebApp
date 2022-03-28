@@ -1,47 +1,160 @@
 <div class="twelve wide column">
+    <div class="ui four column grid">
+        <div class="column">
+            {{#if member.verified}}
+            <a href="/trip/plan">
+                <div class="ui segment">
+                    <div class="ui first center aligned icon header">
+                        <i class="big map icon"></i>
+                        Request Trip
+                    </div>
+                </div>
+            </a>
+            {{else}}
+            <div class="ui disabled segment">
+                <div class="ui first center aligned icon header">
+                    <i class="big map icon"></i>
+                    Request Trip
+                </div>
+            </div>
+            {{/if}}
+        </div>
+
+        <div class="column">
+            {{#if member.verified}}
+            <a href="/gear/book">
+                <div class="ui segment">
+                    <div class="ui first center aligned icon header">
+                        <i class="big shopping cart icon"></i>
+                        Book Gear
+                    </div>
+                </div>
+            </a>
+            {{else}}
+            <div class="ui disabled segment">
+                <div class="ui first center aligned icon header">
+                    <i class="big shopping cart icon"></i>
+                    Book Gear
+                </div>
+            </div>
+            {{/if}}
+        </div>
+
+        <div class="column">
+            {{#if member.verified}}
+            <a href="/expenses">
+                <div class="ui segment">
+                    <div class="ui first center aligned icon header">
+                        <i class="big receipt icon"></i>
+                        Submit Expense
+                    </div>
+                </div>
+            </a>
+            {{else}}
+            <div class="ui disabled segment">
+                <div class="ui first center aligned icon header">
+                    <i class="big receipt icon"></i>
+                    Submit Expense
+                </div>
+            </div>
+            {{/if}}
+        </div>
+
+        <div class="column">
+            {{#if member.verified}}
+            <a href="/volunteer">
+                <div class="ui segment">
+                    <div class="ui first center aligned icon header">
+                        <i class="big heart icon"></i>
+                        Volunteering
+                    </div>
+                </div>
+            </a>
+            {{else}}
+            <div class="ui disabled segment">
+                <div class="ui first center aligned icon header">
+                    <i class="big heart icon"></i>
+                    Volunteering
+                </div>
+            </div>
+            {{/if}}
+        </div>
+    </div>
+
     <div class="ui segment">
-        <h1 class="ui dividing header">
-            My Trips
-            <button class="ui right floated tertiary compact icon button" onclick="trips_fold(this)">
-                <i class="large angle down icon"></i>
-            </button>
-        </h1>
+        <a href="/profile/me/trips">
+            <h3 class="ui dividing header" style="width: 100%;">
+                My Trips <i class="small angle double right icon"></i>
+            </h3>
+        </a>
         {{#if member.trips.count}}
+        <div class="ui items">
+            {{#each member.trips}}
+            <div class="item">
+                <div class="header">{{this.name}}</div>
+                <div class="ui two column grid">
+                    <div class="twelve wide column"></div>
+                    <div class="four wide column"></div>
+                    <div class="ui vertical divider"></div>
+                </div>
+            </div>
+            {{/each}}
+        </div>
         {{else}}
-        <div class="ui placeholder segment">
-            <div class="ui icon header">
-                <i class="map icon"></i>
-                You have not been on any trips yet!
+        <div class="ui fitted segment" id="trips">
+            <div class="ui fluid placeholder segment">
+                <div class="ui icon header">
+                    <i class="map icon"></i>
+                    You have not been on any trips yet!
+                </div>
             </div>
         </div>
         {{/if}}
 
-        <h1 class="ui dividing header">
-            My Qualifications
-            <button class="ui right floated tertiary compact icon button" onclick="certs_fold(this)">
-                <i class="large angle down icon"></i>
-            </button>
-        </h1>
-        {{#if member.certs.count}}
+        <a href="/profile/me/trips">
+            <h3 class="ui dividing header">
+                My Qualifications <i class="small angle double right icon"></i>
+            </h3>
+        </a>
+        {{#if member.certs.count}}<div class="ui items">
+            {{#each member.certs}}
+            <div class="item">
+                <div class="header">{{this.name}}</div>
+            </div>
+            {{/each}}
+        </div>
         {{else}}
-        <div class="ui placeholder segment">
-            <div class="ui icon header">
-                <i class="graduation cap icon"></i>
-                You do not have any qualifications yet!
+        <div class="ui fitted segment" id="certs">
+            <div class="ui fluid placeholder segment">
+                <div class="ui icon header">
+                    <i class="graduation cap icon"></i>
+                    You do not have any qualifications yet!
+                </div>
             </div>
         </div>
         {{/if}}
+    </div>
+</div>
 
-        <h1 class="ui dividing header">
-            Personal Details
-            <button class="ui right floated tertiary compact icon button" onclick="certs_fold(this)">
-                <i class="large angle down icon"></i>
-            </button>
-        </h1>
-        <div class="ui placeholder segment">
-            <div class="ui icon header">
-                <i class="graduation cap icon"></i>
-                You do not have any qualifications yet!
+<div class="four wide column">
+    <div class="ui top attached fitted segment">
+        <a class="ui large top attached negative button" href="/logout">Logout</a>
+
+        <img class="ui fluid image" src="{{member.img}}" alt="User Image">
+    </div>
+
+    <div class="ui bottom attached segment" style="border: 0px;">
+        <div class="ui items">
+            <div class="item">
+                <div class="content">
+                    <div class="header" style="width: 100%;">
+                        {{member.firstName}} {{member.lastName}}
+                        <a class="ui right floated" href="/profile/me/settings" style="color: black;">
+                            <i class="cog icon"></i>
+                        </a>
+                    </div>
+                    <div class="meta">Member since {{member.dateJoined}}</div>
+                </div>
             </div>
         </div>
     </div>

@@ -1,31 +1,25 @@
 'use strict'
 
 // Imports
-const AWS = require('aws-sdk')
-const s3 = new AWS.S3()
 const logger = require('../log.js')
-const members = require('../data_managers/witkc_members.js')
+const viewData = require('../view_data.js')
 
 const events = {
     async get(req, res) {
-        var viewData = {
-            title: 'Events',
-            language_dropdown: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/language_dropdown.js' }),
-            witkc_logo: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'img/witkc_logo.png' }),
-            logged_in: false
-        }
-
-        if (req.session.userID != undefined) {
-            if (await members.exists(req.session.userID)) {
-                logger.debug(`Session '${req.sessionID}' is Logged In`)
-                var member = await members.get(req.session.userID)
-                viewData.logged_in = true
-                viewData.member = member
-                viewData.member.img = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: member.img })
-            }
-        }
+        var data = await viewData.get(req, 'Events')
+        data.scripts.events = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/events_scripts.js' })
         logger.info(`Session '${req.sessionID}': Getting Events`)
-        res.render('events', viewData)
+        res.render('events', data)
+    },
+
+    async day(req, res) {
+        // Implement after event and trips database
+        res.status(200).json({ events: [] })
+    },
+
+    async month(req, res) {
+        // Implement after event and trips database
+        res.status(200).json({ events: [] })
     }
 }
 

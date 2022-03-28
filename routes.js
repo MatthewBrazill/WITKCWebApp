@@ -29,13 +29,20 @@ router.post('/signup', signup.post)
 router.get('/contact', contact.get)
 router.post('/contact', contact.post)
 
-router.get('/profile', profile.get)
-router.post('/profile', profile.post)
+router.get('/profile/me', profile.me)
+router.get('/profile/me/settings', profile.settings)
+router.get('/profile/:username', profile.user)
+router.post('/profile/me/settings/personal', profile.personal)
+router.post('/profile/me/settings/customize', profile.customize)
+router.post('/profile/me/settings/password', profile.password)
+
+router.get('/events', events.get)
+router.post('/events/day', events.day)
+router.post('/events/month', events.month)
 
 router.get('/about', about.get)
 router.get('/committee', committee.get)
 router.get('/constitution', constitution.get)
-router.get('/events', events.get)
 
 // Export:
 module.exports = router

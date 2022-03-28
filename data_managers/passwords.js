@@ -7,6 +7,7 @@ const dynamo = new AWS.DynamoDB()
 
 const passwords = {
     async create(memberId, hash) {
+        if (memberId === null || memberId === undefined || hash === null || hash === undefined) return false
         return dynamo.putItem({
             Item: {
                 'member-id': { S: memberId },
@@ -23,35 +24,40 @@ const passwords = {
     },
 
     async get(memberId) {
+        // Returns null as a string so that bcrypt doesn't fail
+        if (memberId === null || memberId === undefined) return 'null'
         return dynamo.getItem({
             Key: { 'member-id': { S: memberId } },
             TableName: 'witkc-passwords'
         }).promise().then((data) => {
             if (data.Item != undefined) return data.Item['hash'].S
-            else return null
-        }).catch(() => {
+            else return 'null'
+        }).catch((err) => {
             logger.warn(`Failed to retrieve password for user ${memberId}! ${err}`)
-            return null
+            return 'null'
         })
     },
 
     async update(memberId, hash) {
-        return dynamo.updateItem({
-            Key: { 'member-id': { S: memberId } },
-            ExpressionAttributeValues: { ':hash': hash },
-            UpdateExpression: 'SET hash = :hash',
+        if (memberId === null || memberId === undefined || hash === null || hash === undefined) return false
+        return dynamo.putItem({
+            Item: {
+                'member-id': { S: memberId },
+                'hash': { S: hash }
+            },
             TableName: 'witkc-passwords'
-        }).promise().then((data) => {
+        }).promise().then(() => {
             logger.info(`Password for user ${memberId}: Updated`)
             return true
-        }).catch((err, data) => {
+        }).catch((err) => {
             logger.warn(`Failed to update password for user ${memberId}! ${err}`)
             return false
         })
     },
 
-    delete(memberId) {
-        dynamo.deleteItem({
+    async delete(memberId) {
+        if (memberId === null || memberId === undefined) return false
+        return dynamo.deleteItem({
             Key: { 'member-id': { S: memberId } },
             TableName: 'witkc-passwords'
         }).promise().then(() => {
