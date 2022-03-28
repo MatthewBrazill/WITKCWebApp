@@ -1,84 +1,152 @@
+<script src="{{scripts.sign_up}}" hidden></script>
 <div class="twelve wide column">
     <div class="ui centered grid">
+
         <div class="eight wide column">
+
             <div class="ui segment">
+
                 <h1 class="ui center aligned header">Sign Up</h1>
-                <script src="county_dropdown.js"></script>
-                <script src="signup_validator.js"></script>
-                <form class="{{#if sign_up_failed}}ui error form{{else}}ui form{{/if}}" action="#" method="post"
-                    onsubmit="return checkSignUp(this)">
+
+                <form class="ui form" id="sign_up_form">
+
+                    <!-- ===Personal Information=== -->
                     <h4 class="ui dividing header">Personal Information</h4>
+                    <!-- Name -->
                     <div class="two fields">
                         <div class="field">
-                            <input type="text" name="first_name" placeholder="First Name" oninput="validateName(this)">
+                            <input type="text" id="first_name" placeholder="First Name">
                         </div>
                         <div class="field">
-                            <input type="text" name="last_name" placeholder="Last Name" oninput="validateName(this)">
+                            <input type="text" id="last_name" placeholder="Last Name">
                         </div>
                     </div>
+
+                    <!-- Username -->
                     <div class="field">
-                        <input type="text" name="username" placeholder="Username" oninput="validateUsername(this)">
+                        <input type="text" id="username" placeholder="Username">
                     </div>
+
+                    <!-- Email -->
                     <div class="field">
-                        <input type="text" name="email" placeholder="Email Address" oninput="validateEmail(this)">
+                        <input type="text" id="email" placeholder="Email Address">
                     </div>
+
+                    <!-- Phone -->
                     <div class="field">
-                        <input type="text" name="phone" placeholder="Phone Number" oninput="validatePhone(this, true)">
+                        <input type="text" id="phone" placeholder="Phone Number">
                     </div>
+
+                    <!-- ===Address=== -->
                     <h4 class="ui dividing header">Address</h4>
+                    <!-- Line one -->
                     <div class="field">
-                        <input type="text" name="line_one" placeholder="First Line" oninput="validateAddress(this)">
+                        <input type="text" id="line_one" placeholder="First Line">
                     </div>
+
+                    <!-- Line two -->
                     <div class="field">
-                        <input type="text" name="line_two" placeholder="Second Line"
-                            oninput="validateAddress(this, true)">
+                        <input type="text" id="line_two" placeholder="Second Line">
                     </div>
+
+                    <!-- City -->
                     <div class="field">
-                        <input type="text" name="city" placeholder="City" oninput="validateAddress(this)">
+                        <input type="text" id="city" placeholder="City">
                     </div>
                     <div class="fields">
-                        <div class="eleven wide field">
+
+                        <!-- County -->
+                        <div class="ten wide field">
                             <div class="ui search selection dropdown" id="county_dropdown">
-                                <input type="hidden" name="county" onchange="validateCounty(this)">
-                                <div class="text"></div>
+                                <input type="hidden" id="county">
+                                <div class="default text">Select County...</div>
+                                <div class="menu">
+                                    <div class="item" data-value="antrim">Antrim</div>
+                                    <div class="item" data-value="armagh">Armagh</div>
+                                    <div class="item" data-value="carlow">Carlow</div>
+                                    <div class="item" data-value="cavan">Cavan</div>
+                                    <div class="item" data-value="clare">Clare</div>
+                                    <div class="item" data-value="cork">Cork</div>
+                                    <div class="item" data-value="derry">Derry</div>
+                                    <div class="item" data-value="donegal">Donegal</div>
+                                    <div class="item" data-value="down">Down</div>
+                                    <div class="item" data-value="dublin">Dublin</div>
+                                    <div class="item" data-value="fermanagh">Fermanagh</div>
+                                    <div class="item" data-value="galway">Galway</div>
+                                    <div class="item" data-value="kerry">Kerry</div>
+                                    <div class="item" data-value="kildare">Kildare</div>
+                                    <div class="item" data-value="kilkenny">Kilkenny</div>
+                                    <div class="item" data-value="laois">Laois</div>
+                                    <div class="item" data-value="leitrim">Leitrim</div>
+                                    <div class="item" data-value="limerick">Limerick</div>
+                                    <div class="item" data-value="longford">Longford</div>
+                                    <div class="item" data-value="louth">Louth</div>
+                                    <div class="item" data-value="mayo">Mayo</div>
+                                    <div class="item" data-value="meath">Meath</div>
+                                    <div class="item" data-value="monaghan">Monaghan</div>
+                                    <div class="item" data-value="offaly">Offaly</div>
+                                    <div class="item" data-value="roscommon">Roscommon</div>
+                                    <div class="item" data-value="sligo">Sligo</div>
+                                    <div class="item" data-value="tipperary">Tipperary</div>
+                                    <div class="item" data-value="tyrone">Tyrone</div>
+                                    <div class="item" data-value="waterford">Waterford</div>
+                                    <div class="item" data-value="westmeath">Westmeath</div>
+                                    <div class="item" data-value="wexford">Wexford</div>
+                                    <div class="item" data-value="wicklow">Wicklow</div>
+                                </div>
                                 <i class="dropdown icon"></i>
                             </div>
                         </div>
-                        <div class="five wide field">
-                            <input type="text" name="eir" placeholder="Eir Code" oninput="validateEir(this)">
+
+                        <!-- Post code -->
+                        <div class="six wide field">
+                            <input type="text" id="code" placeholder="Post Code">
                         </div>
                     </div>
+
+                    <!-- ===Password=== -->
                     <h4 class="ui dividing header">Password</h4>
+                    <!-- Password -->
                     <div class="field">
                         <div class="ui action input">
-                            <input type="password" name="password" id="password" placeholder="Password"
-                                oninput="validatePassword(this)">
-                            <button class="ui icon button" type="button" onclick="hidePassword(this)">
+                            <input type="password" id="password" placeholder="Password">
+                            <button class="ui icon button" type="button" id="hide_password">
                                 <i class="eye slash icon"></i>
                             </button>
                         </div>
                     </div>
+
+                    <!-- Strength meter info message -->
                     <div class="ui info message">
-                        <div class="header">Your password is good but could be stronger, maybe consider improving it?
+                        <div class="header">
+                            Your password is good but could be stronger, maybe consider improving it?
                         </div>
-                        <p>It is considered best practice to use fully randomized passwords that are stored in a
-                            password manager!</p>
+                        <p>
+                            It is considered best practice to use fully randomized passwords that are stored in a
+                            password manager!
+                        </p>
                     </div>
+
+                    <!-- Strength meter warning message -->
                     <div class="ui warning message">
                         <div class="header" id="password_warning_header"></div>
                         <p id="password_warning"></p>
                     </div>
+
+                    <!-- Confirm password -->
                     <div class="field">
-                        <input type="password" name="confirm_password" id="confirm_password"
-                            placeholder="Confirm Password" oninput="confirmPassword(this)">
+                        <input type="password" id="confirm_password" placeholder="Confirm Password">
                     </div>
                     <br>
+
+                    <!-- Error -->
                     <div class="ui error message">
-                        <div class="header">Couldn't submit form!</div>
+                        <div class="header">Couldn't sign up!</div>
                         <p>Red fields are required! Please check your input!</p>
                     </div>
-                    <button class="fluid ui gray button" type="submit">Sign Up</button>
+                    <button class="positive fluid ui button" type="submit">Sign Up</button>
                 </form>
+                <a class="primary fluid ui button" href="/login">Login</a>
             </div>
         </div>
     </div>

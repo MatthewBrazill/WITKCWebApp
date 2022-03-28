@@ -1,23 +1,40 @@
+<script src="{{scripts.login}}" hidden></script>
 <div class="twelve wide column">
+
     <div class="ui centered grid">
+
         <div class="eight wide column">
+
             <div class="ui segment">
+
                 <h1 class="ui center aligned header">Please Log-In</h1>
-                <script src="login_validator.js"></script>
-                <form class="{{#if login_failed}}ui error form{{else}}ui form{{/if}}" action="/login" method="post"
-                    onsubmit="checkLogin(this)">
+
+                <form class="ui form" id="login_form">
+
+                    <!-- Username -->
                     <div class="field">
-                        <input type="text" name="username" placeholder="Username">
+                        <input type="text" id="username" placeholder="Username">
                     </div>
+
+                    <!-- Password -->
                     <div class="field">
-                        <input type="password" name="password" placeholder="Password">
+                        <div class="ui action input">
+                            <input type="password" id="password" placeholder="Password">
+                            <button class="ui icon button" type="button" id="hide_password">
+                                <i class="eye slash icon"></i>
+                            </button>
+                        </div>
                     </div>
+                    <br>
+
+                    <!-- Error -->
                     <div class="ui error message">
                         <div class="header">Login Failed!</div>
                         <p>The given username or password are incorrect!</p>
                     </div>
-                    <button class="fluid ui gray button" type="submit">Login</button>
+                    <button class="positive fluid ui button" type="submit">Login</button>
                 </form>
+                <a class="primary fluid ui button" href="/signup">Sign Up</a>
             </div>
         </div>
     </div>
