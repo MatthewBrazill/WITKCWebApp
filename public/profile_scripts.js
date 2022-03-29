@@ -182,6 +182,38 @@ $(document).ready(() => {
         }
     })
 
+    $('#promotion').on('change', () => {
+        const box = $('#promotion')
+
+        if (!box.prop('checked')) {
+            box.siblings().text('You will not receive promotional material about club events!')
+            box.val(false)
+        } else {
+            box.siblings().text('Occasionally you will receive promotional material about upcoming events!')
+            box.val(true)
+        }
+        box.prop('valid', true)
+    })
+    $('#promotion').trigger('change')
+
+    $('#prompt_delete').click(() => $('#modal').modal('show'))
+    $('#delete').click(() => {
+        $('#modal').modal('hide')
+        $('#personal_form').attr('class', 'ui loading form')
+        $.ajax({
+            url: '/profile/me/settings/delete',
+            method: 'POST',
+            data: { delete: true },
+            error: () => {
+                $('#modal').modal('show')
+                $('#personal_form').attr('class', 'ui form')
+                $('#modal_error').attr('hidden', 'false')
+            }
+        })
+    })
+
+    $('#cancel').modal('hide')
+
 
 
 
@@ -267,8 +299,14 @@ $(document).ready(() => {
                 url: '/profile/me/settings/password',
                 method: 'POST',
                 data: data,
-                success: () => form.attr('class', 'ui success form'),
-                error: () => form.attr('class', 'ui error form')
+                success: () => {
+                    form.attr('class', 'ui success form')
+                    inputs.each((index, element) => $(element).val(''))
+                },
+                error: () => {
+                    form.attr('class', 'ui error form')
+                    inputs.each((index, element) => $(element).val(''))
+                }
             })
         }
     })

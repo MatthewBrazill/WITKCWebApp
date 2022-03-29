@@ -20,14 +20,16 @@ $(document).ready(() => {
             var data = {}
             inputs.each((index, element) => {
                 var input = $(element)
-                console.log(input.val())
                 data[input.attr('id')] = input.val()
             })
             $.ajax({
                 url: '/contact',
                 method: 'POST',
                 data: data,
-                success: () => form.attr('class', 'ui success form'),
+                success: () => {
+                    form.attr('class', 'ui success form')
+                    inputs.each((index, element) => $(element).val(''))
+                },
                 error: () => form.attr('class', 'ui error form')
             })
         }

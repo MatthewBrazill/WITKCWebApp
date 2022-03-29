@@ -11,7 +11,7 @@ const viewData = {
         var data = {
             title: title,
             scripts: {
-                global: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/global_scripts.js' }),
+                global: 'global_scripts.js'//s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/global_scripts.js' }),
             },
             witkc_logo: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'img/witkc_logo.png' }),
             logged_in: false
@@ -23,7 +23,9 @@ const viewData = {
             var member = members.get(req.session.userID)
             data.member = await member
             data.logged_in = true
-            if (req.method != 'POST') data.member.img = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: data.member.img })
+            if (req.method != 'POST') {
+                data.member.img = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: data.member.img })
+            }
         }
 
         return data

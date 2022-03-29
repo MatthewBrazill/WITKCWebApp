@@ -30,7 +30,8 @@
                 <div style="padding: 9px 0px; margin-bottom: 14px;">E-Mail:</div>
                 <div style="padding: 9px 0px; margin-bottom: 14px;">Phone Number:</div>
                 <div style="margin-bottom: 14px;">Verification:</div>
-                <div style="padding: 9px 0px;">Address:</div>
+                <div style="padding: 9px 0px; margin-bottom: 162px;">Address:</div>
+                <div style="padding: 9px 0px;">Promotions:</div>
             </div>
 
             <div class="ui seven wide column">
@@ -132,6 +133,38 @@
                             <input type="text" id="code" placeholder="Post Code" value="{{member.address.code}}">
                         </div>
 
+                    </div>
+
+                    <!-- Promotion -->
+                    <div class="inline field">
+                        <div class="ui toggle checkbox">
+                            <input type="checkbox" id="promotion" {{#if member.promotion}}checked{{/if}}>
+                            <label id="promotion_text"></label>
+                        </div>
+                    </div>
+
+                    <!-- Delete Account -->
+                    <button class="negative fluid ui button" type="button" id="prompt_delete">Delete Account</button>
+                    <div class="ui modal" id="modal">
+                        <div class="header">Warning!</div>
+                        <div class="content">
+                            <p>
+                                This action will <strong>permanently delete</strong> your account. This action cannot be
+                                undone. All you personal data will be deleted.
+                            </p>
+                            <div class="ui negative message" id="modal_error" hidden="true">
+                                <div class="header">Couldn't delete account!</div>
+                                <p>
+                                    An error occurred and the server couldn't delete your account. We apologize for
+                                    this, and if you wish you may contact us as indicated in the privacy policy, or wait
+                                    to try again!
+                                </p>
+                            </div>
+                        </div>
+                        <div class="actions">
+                            <div class="negative ui button" id="delete">Delete</div>
+                            <div class="ui button" id="cancel">Cancel</div>
+                        </div>
                     </div>
                     <br>
 

@@ -42,7 +42,6 @@ const profile = {
             'sligo', 'tipperary', 'tyrone', 'waterford', 'westmeath', 'wexford', 'wicklow'
         ]
 
-        console.log(req.body)
         if (data.logged_in) {
             // Server-Side Validation
             if (!req.body.first_name.match(/^\p{L}{1,16}$/u)) valid = false
@@ -65,7 +64,7 @@ const profile = {
                 data.member.address.city = req.body.city
                 data.member.address.county = req.body.county
                 data.member.address.code = req.body.code
-                console.log(data.member)
+                data.member.promotion = (req.body.promotion === 'true')
                 if (await members.update(data.member)) res.sendStatus(200)
                 else res.sendStatus(500)
             } else res.sendStatus(400)
@@ -118,6 +117,15 @@ const profile = {
                 } else res.sendStatus(400)
             } else res.sendStatus(403)
         } else res.sendStatus(403)
+    },
+
+    async delete(req, res) {
+        var data = await viewData.get(req, 'Delete')
+
+        if (data.logged_in && req.body.delete) {
+            if (members.delete(data.member.memberId)) res.redirect('/logout')
+            else res.sendCode(500)
+        } else res.sendCode(403)
     },
 
     async user(req, res) {

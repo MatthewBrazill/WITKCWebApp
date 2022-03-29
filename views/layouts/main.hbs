@@ -12,7 +12,7 @@
     <script src="{{scripts.global}}"></script>
 </head>
 
-<body style="background-color: gray;">
+<body style="background-color: gray; background-image: radial-gradient(farthest-corner, rgb(145, 201, 255), rgb(105, 181, 255)); background-attachment: fixed;">
     <div style="padding: 15px">
 
         <div class="ui centered grid container">
@@ -30,6 +30,21 @@
             </div>
 
         </div>
+    </div>
+
+    <div class="ui fixed nag" id="cookie_nag">
+
+        <div class="title">Cookie Banner!</div>
+
+        <p>
+            This website uses cookies to function. To find out more about this websites use of cookies view our
+            <a style="color: purple;" href="/privacy#how_cookies">Privacy Policy</a>. To consent to the use of cookies,
+            click accept. If you don't
+            consent to the use of cookies, essential features of the website will not work.
+        </p>
+
+        <button class="negative ui button" id="nag_decline">Decline</button>
+        <button class="positive ui button" id="nag_accept">Accept</button>
     </div>
 </body>
 

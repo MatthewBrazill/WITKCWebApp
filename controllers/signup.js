@@ -53,6 +53,8 @@ const signup = {
                 lastName: req.body.last_name,
                 email: req.body.email,
                 phone: req.body.phone,
+                verified: false,
+                promotion: true,
                 address: {
                     lineOne: req.body.line_one,
                     lineTwo: req.body.line_two,
@@ -60,17 +62,17 @@ const signup = {
                     county: req.body.county,
                     code: req.body.code,
                 },
-                verified: false,
-                dateJoined: new Date().toISOString().substring(0, 10),
-                img: 'img/placeholder_avatar.png'
+                img: 'img/placeholder_avatar.png',
+                dateJoined: new Date().toISOString().substring(0, 10)
             }
 
             members.create(member)
             passwords.create(member.memberId, await bcrypt.hash(req.body.password, 10))
 
             req.session.userID = member.memberId
+            req.session.allow_cookies = true
             logger.info(`Session '${req.sessionID}': Sign Up Succeeded`)
-            res.redirect("/")
+            res.status(200).json({ url: '/profile/me' })
         } else {
             logger.info(`Session '${req.sessionID}': Sign Up Failed`)
             res.sendStatus(400)

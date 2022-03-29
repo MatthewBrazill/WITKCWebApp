@@ -26,6 +26,7 @@ $(document).ready(() => {
                 url: '/signup',
                 method: 'POST',
                 data: data,
+                success: (res) => window.location = res.url,
                 error: () => form.attr('class', 'ui error form')
             })
         }
@@ -164,7 +165,7 @@ $(document).ready(() => {
             code.prop('valid', true)
         }
     })
-    
+
     $('#password').on('input', () => {
         const password = $('#password')
         const field = password.parent().parent()
@@ -212,6 +213,30 @@ $(document).ready(() => {
         } else {
             confirm_password.parent().attr('class', 'success field')
             confirm_password.prop('valid', true)
+        }
+    })
+
+    $('#terms').on('change', () => {
+        const box = $('#terms')
+
+        if (!box.prop('checked')) {
+            box.parent().parent().attr('class', 'inline error field')
+            box.prop('valid', false)
+        } else {
+            box.parent().parent().attr('class', 'inline success field')
+            box.prop('valid', true)
+        }
+    })
+
+    $('#privacy').on('change', () => {
+        const box = $('#privacy')
+
+        if (!box.prop('checked')) {
+            box.parent().parent().attr('class', 'inline error field')
+            box.prop('valid', false)
+        } else {
+            box.parent().parent().attr('class', 'inline success field')
+            box.prop('valid', true)
         }
     })
 
