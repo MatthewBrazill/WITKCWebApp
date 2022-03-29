@@ -25,7 +25,10 @@ $(document).ready(() => {
                 url: '/login',
                 method: 'POST',
                 data: data,
-                error: () => form.attr('class', 'ui error form')
+                error: () => {
+                    form.attr('class', 'ui error form')
+                    inputs.each((index, element) => $(element).val(''))
+                }
             })
         }
     })

@@ -267,8 +267,14 @@ $(document).ready(() => {
                 url: '/profile/me/settings/password',
                 method: 'POST',
                 data: data,
-                success: () => form.attr('class', 'ui success form'),
-                error: () => form.attr('class', 'ui error form')
+                success: () => {
+                    form.attr('class', 'ui success form')
+                    inputs.each((index, element) => $(element).val(''))
+                },
+                error: () => {
+                    form.attr('class', 'ui error form')
+                    inputs.each((index, element) => $(element).val(''))
+                }
             })
         }
     })
