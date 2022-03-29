@@ -17,6 +17,7 @@ const members = {
                 'email': { S: member.email },
                 'phone': { S: member.phone },
                 'verified': { BOOL: member.verified },
+                'promotion': { BOOL: member.promotion },
                 'address': {
                     L: [
                         { S: member.address.lineOne },
@@ -26,7 +27,7 @@ const members = {
                         { S: member.address.code }
                     ]
                 },
-                'img': {S: member.img},
+                'img': { S: member.img },
                 'date-joined': { S: member.dateJoined }
             },
             TableName: 'witkc-members'
@@ -70,6 +71,7 @@ const members = {
                 email: data.Item['email'].S,
                 phone: data.Item['phone'].S,
                 verified: data.Item['verified'].BOOL,
+                promotion: data.Item['promotion'].BOOL,
                 address: {
                     lineOne: data.Item['address'].L[0].S,
                     lineTwo: data.Item['address'].L[1].S,
@@ -116,6 +118,7 @@ const members = {
                 'email': { S: member.email },
                 'phone': { S: member.phone },
                 'verified': { BOOL: member.verified },
+                'promotion': { BOOL: member.promotion },
                 'address': {
                     L: [
                         { S: member.address.lineOne },

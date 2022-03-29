@@ -25,6 +25,7 @@ $(document).ready(() => {
                 url: '/login',
                 method: 'POST',
                 data: data,
+                success: (res) => window.location = res.url,
                 error: () => {
                     form.attr('class', 'ui error form')
                     inputs.each((index, element) => $(element).val(''))

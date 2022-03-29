@@ -6,26 +6,49 @@ $(document).ready(() => {
             icon: 'uk',
             iconClass: 'flag',
             selected: true
-        },{
+        }, {
             name: 'Irish',
             value: 'ga-IE',
             icon: 'ie',
-            iconClass: 'flag'
+            iconClass: 'flag',
+            disabled: true
         }, {
             name: 'German',
             value: 'de-DE',
             icon: 'de',
-            iconClass: 'flag'
+            iconClass: 'flag',
+            disabled: true
         }, {
             name: 'Spanish',
             value: 'es-ES',
             icon: 'es',
-            iconClass: 'flag'
+            iconClass: 'flag',
+            disabled: true
         }, {
             name: 'French',
             value: 'fr-FR',
             icon: 'fr',
-            iconClass: 'flag'
+            iconClass: 'flag',
+            disabled: true
         }]
+    })
+
+
+    $.ajax({
+        url: '/cookie_choice',
+        method: 'GET',
+        success: (res) => {
+            if (!res.allow_cookies) $('#cookie_nag').nag({ persists: true })
+        }
+    })
+
+    $('#nag_decline').click(() => $('#cookie_nag').hide())
+    $('#nag_accept').click(() => {
+        $('#cookie_nag').hide()
+        $.ajax({
+            url: '/cookie_choice',
+            method: 'POST',
+            data: { allow_cookies: true }
+        })
     })
 })

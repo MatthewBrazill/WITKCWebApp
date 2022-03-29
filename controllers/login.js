@@ -38,7 +38,8 @@ const login = {
         if (await success) {
             logger.info(`Session '${req.sessionID}': Login Succeeded`)
             req.session.userID = memberId
-            res.redirect('/profile/me')
+            req.session.allow_cookies = true
+            res.status(200).json({ url: '/profile/me' })
         } else {
             logger.info(`Session '${req.sessionID}': Login Failed`)
             res.sendStatus(403)
