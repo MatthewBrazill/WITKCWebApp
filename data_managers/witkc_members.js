@@ -4,6 +4,7 @@
 const logger = require('../log.js')
 const AWS = require('aws-sdk')
 const dynamo = new AWS.DynamoDB()
+const s3 = new AWS.S3()
 
 const members = {
     async create(member) {
@@ -37,6 +38,36 @@ const members = {
         }).catch((err) => {
             logger.warn(`Failed to create member ${member.memberId}! ${err}`)
             return false
+        })
+    },
+
+    async setCommitteeMemberForRole(role, memberId) {
+        if (role === null || role === undefined || memberId === null || memberId === undefined) return null
+        return dynamo.updateItem({
+            Key: { 'member-id': { S: await this.getCommitteeMemberForRole(role) } },
+            UpdateExpression: 'REMOVE committee_role',
+            TableName: 'witkc-members'
+        }).promise().then((data) => {
+            if (data) {
+                return dynamo.updateItem({
+                    Key: { 'member-id': { S: memberId } },
+                    ExpressionAttributeValues: { ':role': { S: role } },
+                    UpdateExpression: 'SET committee_role = :role',
+                    TableName: 'witkc-members'
+                }).promise().then((data) => {
+                    if (data.Items[0] != undefined) {
+                        return {
+                            first_name: data.Items[0]['first_name'].S,
+                            last_name: data.Items[0]['last_name'].S,
+                            committee_role: role,
+                            img: data.Items[0]['img'].S
+                        }
+                    } else throw `Failed to add committee role to new member!`
+                })
+            } else throw `Failed to remove committee role from old member!`
+        }).catch((err) => {
+            logger.warn(`Could not change committee member for role '${role}'! ${err}`)
+            return null
         })
     },
 
@@ -90,7 +121,100 @@ const members = {
     },
 
     async getCommittee() {
+        return dynamo.scan({
+            ExpressionAttributeNames: {
+                '#FN': 'first_name',
+                '#LN': 'last_name',
+                '#CR': 'committee_role',
+                '#IMG': 'img'
+            },
+            FilterExpression: 'attribute_exists(committee_role)',
+            ProjectionExpression: '#FN, #LN, #CR, #IMG',
+            TableName: 'witkc-members'
+        }).promise().then((data) => {
+            if (data.Items.length == 7) {
+                var res = {}
+                for (var item in data.Items) {
+                    switch (item['committee_role'].S) {
+                        case 'captain':
+                            res.captain.first_name = item['first_name'].S
+                            res.captain.last_name = item['last_name'].S
+                            res.captain.img = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: item['img'].S })
+                            break;
 
+                        case 'vice':
+                            res.vice.first_name = item['first_name'].S
+                            res.vice.last_name = item['last_name'].S
+                            res.vice.img = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: item['img'].S })
+                            break;
+
+                        case 'safety':
+                            res.safety.first_name = item['first_name'].S
+                            res.safety.last_name = item['last_name'].S
+                            res.safety.img = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: item['img'].S })
+                            break;
+
+                        case 'treasurer':
+                            res.treasurer.first_name = item['first_name'].S
+                            res.treasurer.last_name = item['last_name'].S
+                            res.treasurer.img = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: item['img'].S })
+                            break;
+
+                        case 'equipments':
+                            res.equipments.first_name = item['first_name'].S
+                            res.equipments.last_name = item['last_name'].S
+                            res.equipments.img = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: item['img'].S })
+                            break;
+
+                        case 'pro':
+                            res.pro.first_name = item['first_name'].S
+                            res.pro.last_name = item['last_name'].S
+                            res.pro.img = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: item['img'].S })
+                            break;
+
+                        case 'freshers':
+                            res.freshers.first_name = item['first_name'].S
+                            res.freshers.last_name = item['last_name'].S
+                            res.freshers.img = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: item['img'].S })
+                            break;
+
+                        default:
+                            throw `Unexpected name for a committee position! Got: ${item['committee_role'].S}`
+                    }
+                }
+                return res
+            } else throw `Retrieved an unexpected amount of committee members! Got ${data.Items.length}`
+        }).catch((err) => {
+            logger.warn(`Could not get all members of the committee! ${err}`)
+            return null
+        })
+    },
+
+    async getCommitteeMemberForRole(role) {
+        if (role === null || role === undefined) return null
+        return dynamo.scan({
+            ExpressionAttributeNames: {
+                '#FN': 'first_name',
+                '#LN': 'last_name',
+                '#IMG': 'img'
+            },
+            ExpressionAttributeValues: { ':role': { S: role } },
+            FilterExpression: 'committee_role = :role',
+            ProjectionExpression: '#FN, #LN, #IMG',
+            TableName: 'witkc-members'
+        }).promise().then((data) => {
+            if (data.Items[0] != undefined) {
+                return {
+                    first_name: data.Items[0]['first_name'].S,
+                    last_name: data.Items[0]['last_name'].S,
+                    committee_role: role,
+                    img: data.Items[0]['img'].S
+                }
+            } else return null
+        }).catch((err) => {
+            logger.warn(`Could not get committee member for role '${role}'! ${err}`)
+            return null
+        })
     },
 
     async exists(memberId) {
