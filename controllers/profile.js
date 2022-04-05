@@ -16,6 +16,8 @@ const profile = {
         var data = await viewData.get(req, 'My Profile')
         data.scripts.profile = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/profile_scripts.js' })
 
+        data.admin = true
+
         if (data.logged_in) {
             logger.info(`Session '${req.sessionID}': Getting Profile`)
             res.render('profile', data)

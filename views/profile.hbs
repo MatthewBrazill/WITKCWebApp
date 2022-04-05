@@ -1,7 +1,13 @@
 <div class="twelve wide column">
+
+    <!-- Option buttons -->
     <div class="ui four column grid">
+
+        <!-- Request trip button -->
         <div class="column">
+
             {{#if member.verified}}
+
             <a href="/trip/plan">
                 <div class="ui segment">
                     <div class="ui first center aligned icon header">
@@ -10,18 +16,24 @@
                     </div>
                 </div>
             </a>
+
             {{else}}
+
             <div class="ui disabled segment">
                 <div class="ui first center aligned icon header">
                     <i class="big map icon"></i>
                     Request Trip
                 </div>
             </div>
+
             {{/if}}
         </div>
 
+        <!-- Book gear button -->
         <div class="column">
+
             {{#if member.verified}}
+
             <a href="/gear/book">
                 <div class="ui segment">
                     <div class="ui first center aligned icon header">
@@ -30,18 +42,24 @@
                     </div>
                 </div>
             </a>
+
             {{else}}
+
             <div class="ui disabled segment">
                 <div class="ui first center aligned icon header">
                     <i class="big shopping cart icon"></i>
                     Book Gear
                 </div>
             </div>
+
             {{/if}}
         </div>
 
+        <!-- Expenses button -->
         <div class="column">
+
             {{#if member.verified}}
+
             <a href="/expenses">
                 <div class="ui segment">
                     <div class="ui first center aligned icon header">
@@ -50,18 +68,24 @@
                     </div>
                 </div>
             </a>
+
             {{else}}
+
             <div class="ui disabled segment">
                 <div class="ui first center aligned icon header">
                     <i class="big receipt icon"></i>
                     Submit Expense
                 </div>
             </div>
+
             {{/if}}
         </div>
 
+        <!-- Expenses button -->
         <div class="column">
+
             {{#if member.verified}}
+
             <a href="/volunteer">
                 <div class="ui segment">
                     <div class="ui first center aligned icon header">
@@ -70,26 +94,38 @@
                     </div>
                 </div>
             </a>
+
             {{else}}
+
             <div class="ui disabled segment">
                 <div class="ui first center aligned icon header">
                     <i class="big heart icon"></i>
                     Volunteering
                 </div>
             </div>
+
             {{/if}}
         </div>
     </div>
 
+
+
+    <!-- Dashboard -->
     <div class="ui segment">
+
+        <!-- Trips -->
         <a href="/profile/me/trips">
             <h3 class="ui dividing header" style="width: 100%;">
                 My Trips <i class="small angle double right icon"></i>
             </h3>
         </a>
+
         {{#if member.trips.count}}
+
         <div class="ui items">
+
             {{#each member.trips}}
+
             <div class="item">
                 <div class="header">{{this.name}}</div>
                 <div class="ui two column grid">
@@ -98,9 +134,13 @@
                     <div class="ui vertical divider"></div>
                 </div>
             </div>
+
             {{/each}}
+
         </div>
+
         {{else}}
+
         <div class="ui fitted segment" id="trips">
             <div class="ui fluid placeholder segment">
                 <div class="ui icon header">
@@ -109,21 +149,28 @@
                 </div>
             </div>
         </div>
+
         {{/if}}
 
-        <a href="/profile/me/trips">
-            <h3 class="ui dividing header">
-                My Qualifications <i class="small angle double right icon"></i>
-            </h3>
-        </a>
-        {{#if member.certs.count}}<div class="ui items">
+
+
+        <!-- Qualifications -->
+        <h3 class="ui dividing header">My Qualifications</h3>
+
+        {{#if member.certs.count}}
+
+        <div class="ui items">
+
             {{#each member.certs}}
             <div class="item">
                 <div class="header">{{this.name}}</div>
             </div>
             {{/each}}
+
         </div>
+
         {{else}}
+
         <div class="ui fitted segment" id="certs">
             <div class="ui fluid placeholder segment">
                 <div class="ui icon header">
@@ -132,31 +179,52 @@
                 </div>
             </div>
         </div>
+
         {{/if}}
     </div>
 
-    <div class="ui segment">
-        {{#if captain}}{{> captain}}{{/if}}
-        {{#if vice}}{{> vice}}{{/if}}
-        {{#if safety}}{{> safety}}{{/if}}
-        {{#if treasurer}}{{> treasurer}}{{/if}}
-        {{#if equipments}}{{> equipment}}{{/if}}
-        {{#if pro}}{{> pro}}{{/if}}
-        {{#if freshers}}{{> freshers}}{{/if}}
-    </div>
+    {{#if admin}}
+    {{> captain}}
+    {{> vice}}
+    {{> safety}}
+    {{> treasurer}}
+    {{> equipments}}
+    {{> pro}}
+    {{> freshers}}
+    {{/if}}
+
+    {{#if captain}}{{> captain}}{{/if}}
+
+    {{#if vice}}{{> vice}}{{/if}}
+
+    {{#if safety}}{{> safety}}{{/if}}
+
+    {{#if treasurer}}{{> treasurer}}{{/if}}
+
+    {{#if equipments}}{{> equipments}}{{/if}}
+
+    {{#if pro}}{{> pro}}{{/if}}
+
+    {{#if freshers}}{{> freshers}}{{/if}}
+
 </div>
 
+<!-- Dashboard sidebar -->
 <div class="four wide column">
+
     <div class="ui top attached fitted segment">
+
         <a class="ui large top attached negative button" href="/logout">Logout</a>
 
         <img class="ui fluid image" src="{{member.img}}" alt="User Image">
     </div>
 
     <div class="ui bottom attached segment" style="border: 0px;">
+
         <div class="ui items">
             <div class="item">
                 <div class="content">
+
                     <div class="header" style="width: 100%;">
                         {{member.firstName}} {{member.lastName}}
                         <a class="ui right floated" href="/profile/me/settings" style="color: black;">
@@ -164,6 +232,7 @@
                         </a>
                     </div>
                     <div class="meta">Member since {{member.dateJoined}}</div>
+
                 </div>
             </div>
         </div>

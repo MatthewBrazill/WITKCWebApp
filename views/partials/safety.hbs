@@ -1,0 +1,61 @@
+<div class="ui segment">
+
+    <h3 class="ui dividing header">Safety Dashboard</h3>
+
+    <div class="ui divided grid">
+
+        <div class="ui twelve wide column">
+
+            {{#if safety.trips.count}}
+
+            <div class="ui items">
+
+                {{#each safety.trips}}
+
+                <div class="item">
+                    <div class="header">{{this.name}}</div>
+                    <div class="ui two column grid">
+                        <div class="twelve wide column"></div>
+                        <div class="four wide column"></div>
+                        <div class="ui vertical divider"></div>
+                    </div>
+                </div>
+
+                {{/each}}
+
+            </div>
+
+            {{else}}
+
+            <div class="ui fluid placeholder segment">
+                <div class="ui icon header">
+                    <i class="check double icon"></i>
+                    No trips need safety clearance right now.
+                </div>
+            </div>
+
+            {{/if}}
+
+        </div>
+
+        <div class="ui four wide column">
+
+            <a class="ui disabled fluid teal button" href="/committee/announce">
+                <h4 class="ui center aligned icon header">
+                    <i class="large announcement icon"></i>
+                    Announcement
+                </h4>
+            </a>
+
+            <br>
+
+            <a class="ui disabled fluid teal button" href="/safety/skill">
+                <h4 class="ui center aligned icon header">
+                    <i class="large certificate icon"></i>
+                    Award Skill
+                </h4>
+            </a>
+
+        </div>
+    </div>
+</div>
