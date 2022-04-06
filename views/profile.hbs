@@ -6,105 +6,45 @@
         <!-- Request trip button -->
         <div class="column">
 
-            {{#if member.verified}}
-
-            <a href="/trip/plan">
-                <div class="ui segment">
-                    <div class="ui first center aligned icon header">
-                        <i class="big map icon"></i>
-                        Request Trip
-                    </div>
-                </div>
-            </a>
-
-            {{else}}
-
-            <div class="ui disabled segment">
+            <a class="ui {{#if member.verified}}{{else}}disabled{{/if}} fluid teal button" href="/trip/plan">
                 <div class="ui first center aligned icon header">
                     <i class="big map icon"></i>
                     Request Trip
                 </div>
-            </div>
-
-            {{/if}}
+            </a>
         </div>
 
         <!-- Book gear button -->
         <div class="column">
 
-            {{#if member.verified}}
-
-            <a href="/gear/book">
-                <div class="ui segment">
-                    <div class="ui first center aligned icon header">
-                        <i class="big shopping cart icon"></i>
-                        Book Gear
-                    </div>
-                </div>
-            </a>
-
-            {{else}}
-
-            <div class="ui disabled segment">
+            <a class="ui {{#if member.verified}}{{else}}disabled{{/if}} fluid teal button" href="/gear/book">
                 <div class="ui first center aligned icon header">
                     <i class="big shopping cart icon"></i>
                     Book Gear
                 </div>
-            </div>
-
-            {{/if}}
+            </a>
         </div>
 
         <!-- Expenses button -->
         <div class="column">
 
-            {{#if member.verified}}
-
-            <a href="/expenses">
-                <div class="ui segment">
-                    <div class="ui first center aligned icon header">
-                        <i class="big receipt icon"></i>
-                        Submit Expense
-                    </div>
-                </div>
-            </a>
-
-            {{else}}
-
-            <div class="ui disabled segment">
+            <a class="ui {{#if member.verified}}{{else}}disabled{{/if}} fluid teal button" href="/expenses">
                 <div class="ui first center aligned icon header">
                     <i class="big receipt icon"></i>
                     Submit Expense
                 </div>
-            </div>
-
-            {{/if}}
+            </a>
         </div>
 
         <!-- Expenses button -->
         <div class="column">
 
-            {{#if member.verified}}
-
-            <a href="/volunteer">
-                <div class="ui segment">
-                    <div class="ui first center aligned icon header">
-                        <i class="big heart icon"></i>
-                        Volunteering
-                    </div>
-                </div>
-            </a>
-
-            {{else}}
-
-            <div class="ui disabled segment">
+            <a class="ui {{#if member.verified}}{{else}}disabled{{/if}} fluid teal button" href="/volunteer">
                 <div class="ui first center aligned icon header">
                     <i class="big heart icon"></i>
                     Volunteering
                 </div>
-            </div>
-
-            {{/if}}
+            </a>
         </div>
     </div>
 

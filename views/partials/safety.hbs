@@ -1,6 +1,6 @@
 <div class="ui segment">
 
-    <h3 class="ui dividing header">Safety Dashboard</h3>
+    <h3 class="ui dividing header">Safety and Development Dashboard</h3>
 
     <div class="ui divided grid">
 
@@ -35,27 +35,80 @@
             </div>
 
             {{/if}}
-
         </div>
 
         <div class="ui four wide column">
 
-            <a class="ui disabled fluid teal button" href="/committee/announce">
+            <script src="{{scripts.committee}}" hidden></script>
+            <button class="ui fluid teal button" id="announcement_safety">
                 <h4 class="ui center aligned icon header">
                     <i class="large announcement icon"></i>
                     Announcement
                 </h4>
-            </a>
+            </button>
 
             <br>
 
-            <a class="ui disabled fluid teal button" href="/safety/skill">
+            <script src="{{scripts.safety}}" hidden></script>
+            <button class="ui fluid teal button" id="award_skill">
                 <h4 class="ui center aligned icon header">
                     <i class="large certificate icon"></i>
                     Award Skill
                 </h4>
-            </a>
+            </button>
 
+            <div class="ui modal" id="award_skill_modal">
+
+                <div class="header">Award Skill to Member</div>
+
+                <div class="content">
+                    <form class="ui form" id="award_skill_modal_form">
+
+                        <div class="inline fields">
+
+                            <div class="ten wide field">
+                                <div class="ui fluid search selection dropdown" id="award_skill_modal_cert_dropdown">
+                                    <input type="hidden" id="award_skill_modal_cert_dropdown_input">
+                                    <div class="text"></div>
+                                    <i class="dropdown icon"></i>
+                                </div>
+                            </div>
+
+                            <label>to</label>
+
+                            <div class="ten wide field">
+                                <div class="ui fluid multiple search selection dropdown" id="award_skill_modal_member_dropdown">
+                                    <input type="hidden" id="award_skill_modal_member_dropdown_input">
+                                    <div class="text"></div>
+                                    <i class="dropdown icon"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ui error message">
+                            <div class="header">There was an error connecting to the server. Please reload the page and try again!</div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="right aligned actions">
+                    <button class="ui negative button" id="award_skill_modal_cancel">Cancel</button>
+                    <button class="ui positive button" id="award_skill_modal_confirm">Confirm</button>
+                </div>
+            </div>
+
+            <br>
+
+            <button class="ui fluid teal button" id="remove_skill">
+                <h4 class="ui center aligned icon header">
+                    <i class="large undo icon"></i>
+                    Remove Skill
+                </h4>
+            </button>
+
+            <div class="ui modal" id="remove_skill_modal">
+
+            </div>
         </div>
     </div>
 </div>

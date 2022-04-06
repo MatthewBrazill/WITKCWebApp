@@ -3,6 +3,8 @@
 // Imports
 const logger = require('./log.js')
 const members = require('./data_managers/witkc_members.js')
+const viewData = require('./view_data.js')
+const certificates = require('./data_managers/certificates.js')
 
 
 const api = {
@@ -24,6 +26,36 @@ const api = {
         } else {
             res.sendStatus(400)
         }
+    },
+
+    async getMembers(req, res) {
+        var data = await viewData.get(req, 'API')
+
+        if (data.logged_in) {
+            if (await members.isCommittee(data.member.memberId)) {
+                members.list().then((mems) => {
+                    if (mems !== null) res.status(200).json(mems)
+                    else throw ''
+                }).catch(() => {
+                    res.sendStatus(500)
+                })
+            } else res.sendStatus(403)
+        } else res.sendStatus(403)
+    },
+
+    async getCerts(req, res) {
+        var data = await viewData.get(req, 'API')
+
+        if (data.logged_in) {
+            if (await members.isCommittee(data.member.memberId)) {
+                certificates.list().then((certs) => {
+                    if (certs !== null) res.status(200).json(certs)
+                    else throw ''
+                }).catch(() => {
+                    res.sendStatus(500)
+                })
+            } else res.sendStatus(403)
+        } else res.sendStatus(403)
     }
 }
 

@@ -17,41 +17,82 @@ const profile = require('./controllers/profile.js')
 const privacy = require('./controllers/privacy.js')
 const terms = require('./controllers/terms.js')
 const api = require('./api.js')
+const safety = require('./controllers/safety.js')
 
-// Attach the controllers to the matching routes:
+// Home
 router.get('/', home.get)
 
-router.get('/login', login.get)
-router.post('/login', login.post)
 
-router.get('/logout', logout.get)
 
-router.get('/cookie_choice', api.getCookie)
-router.post('/cookie_choice', api.postCookie)
-
+// Signup
 router.get('/signup', signup.get)
 router.post('/signup', signup.post)
 
-router.get('/contact', contact.get)
-router.post('/contact', contact.post)
 
+
+// Login
+router.get('/login', login.get)
+router.post('/login', login.post)
+
+
+
+// Logout
+router.get('/logout', logout.get)
+
+
+
+// Contact
+router.get('/contact', contact.get)
+// Contact APIs
+router.post('/api/contact', contact.post) // Send a contact form message
+
+
+
+// Profiles
 router.get('/profile/me', profile.me)
 router.get('/profile/me/settings', profile.settings)
 router.get('/profile/:username', profile.user)
-router.post('/profile/me/settings/personal', profile.personal)
-router.post('/profile/me/settings/customize', profile.customize)
-router.post('/profile/me/settings/password', profile.password)
-router.post('/profile/me/settings/delete', profile.delete)
+// Profile APIs
+router.post('/api/settings/personal', profile.personal) // Update personal settings *requires login*
+router.post('/api/settings/customize', profile.customize) // Update customization settings *requires login*
+router.post('/api/settings/password', profile.password) // Update password *requires login*
+router.post('/api/settings/delete', profile.delete) // Delete account *requires login*
 
+
+
+// Committee Dashboard APIs
+router.post('/api/safety/award', safety.award) // Award certificate to member *requires safety*
+router.post('/api/safety/rescind', safety.rescind) // Remove certificate from member *requires safety*
+
+
+
+// Events
 router.get('/events', events.get)
-router.post('/events/day', events.day)
-router.post('/events/month', events.month)
+// Event APIs
+router.post('/api/events/day', events.day) // Get events for the passed date as array
+router.post('/api/events/month', events.month) // Get events for the passed month as array
 
+
+
+// About
 router.get('/about', about.get)
 router.get('/committee', committee.get)
 router.get('/constitution', constitution.get)
+
+
+
+// Privacy and TOS
 router.get('/privacy', privacy.get)
 router.get('/terms', terms.get)
+
+
+
+// General API
+router.get('/api/cookie_choice', api.getCookie) // Get cookie choice as boolean (true = allow)
+router.get('/api/certs', api.getCerts) // Get all certs as array *requires committee*
+router.get('/api/members', api.getMembers) // Get all members as array (Name and ID only) *requires committee*
+router.post('/api/cookie_choice', api.postCookie) // Set cookie choice to preference
+
 
 // Export:
 module.exports = router

@@ -51,7 +51,7 @@ $(document).ready(() => {
                 data[input.attr('id')] = input.val()
             })
             $.ajax({
-                url: '/profile/me/settings/personal',
+                url: '/api/settings/personal',
                 method: 'POST',
                 data: data,
                 success: () => form.attr('class', 'ui success form'),
@@ -201,7 +201,7 @@ $(document).ready(() => {
         $('#modal').modal('hide')
         $('#personal_form').attr('class', 'ui loading form')
         $.ajax({
-            url: '/profile/me/settings/delete',
+            url: '/api/settings/delete',
             method: 'POST',
             data: { delete: true },
             error: () => {
@@ -239,7 +239,7 @@ $(document).ready(() => {
             var data = new FormData()
             data.append('file', file)
             $.ajax({
-                url: '/profile/me/settings/customize',
+                url: '/api/settings/customize',
                 method: 'POST',
                 contentType: false,
                 processData: false,
@@ -296,7 +296,7 @@ $(document).ready(() => {
                 data[input.attr('id')] = input.val()
             })
             $.ajax({
-                url: '/profile/me/settings/password',
+                url: '/api/settings/password',
                 method: 'POST',
                 data: data,
                 success: () => {

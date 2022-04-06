@@ -18,6 +18,15 @@ const profile = {
 
         data.admin = true
 
+        if (data.admin) data.scripts.committee = '/committee_scripts.js' //s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/committee_scripts.js' })
+        if (data.admin || data.captain) data.scripts.captain = '/captain_scripts.js' //s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/captain_scripts.js' })
+        if (data.admin || data.vice) data.scripts.vice = '/vice_scripts.js' //s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/vice_scripts.js' })
+        if (data.admin || data.safety) data.scripts.safety = '/safety_scripts.js' //s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/safety_scripts.js' })
+        if (data.admin || data.treasurer) data.scripts.treasurer = '/treasurer_scripts.js' //s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/treasurer_scripts.js' })
+        if (data.admin || data.equipments) data.scripts.equipments = '/equipments_scripts.js' //s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/equipments_scripts.js' })
+        if (data.admin || data.pro) data.scripts.pro = '/pro_scripts.js' //s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/pro_scripts.js' })
+        if (data.admin || data.freshers) data.scripts.freshers = '/freshers_scripts.js' //s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/freshers_scripts.js' })
+
         if (data.logged_in) {
             logger.info(`Session '${req.sessionID}': Getting Profile`)
             res.render('profile', data)
@@ -67,7 +76,10 @@ const profile = {
                 data.member.address.county = req.body.county
                 data.member.address.code = req.body.code
                 data.member.promotion = (req.body.promotion === 'true')
-                if (await members.update(data.member)) res.sendStatus(200)
+                if (await members.update(data.member)) {
+                    logger.info(`Member ${data.member.memberId}: Successfully changed personal data!`)
+                    res.sendStatus(200)
+                }
                 else res.sendStatus(500)
             } else res.sendStatus(400)
         } else res.sendStatus(403)
@@ -92,14 +104,11 @@ const profile = {
                 }).promise()
             }).then(() => {
                 members.update(data.member)
-                logger.info(`User ${data.member.memberId}: Successfully updated image!`)
+                logger.info(`Member ${data.member.memberId}: Successfully updated image!`)
                 res.status(200).json({
                     url: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: data.member.img })
                 })
-            }).catch((err) => {
-                logger.warn(`User ${data.member.memberId}: Error while updating image! ${err}`)
-                res.status(500).json({ err: err })
-            })
+            }).catch((err) => res.status(500).json({ err: err }))
         } else res.sendStatus(403)
     },
 
@@ -114,7 +123,10 @@ const profile = {
                 if (req.body.confirm_password != req.body.new_password) valid = false
 
                 if (valid) {
-                    if (await passwords.update(data.member.memberId, await bcrypt.hash(req.body.new_password, 10))) res.sendStatus(200)
+                    if (await passwords.update(data.member.memberId, await bcrypt.hash(req.body.new_password, 10))) {
+                        logger.info(`Member ${data.member.memberId}: Successfully changed password!`)
+                        res.sendStatus(200)
+                    }
                     else res.sendStatus(500)
                 } else res.sendStatus(400)
             } else res.sendStatus(403)
@@ -125,7 +137,10 @@ const profile = {
         var data = await viewData.get(req, 'Delete')
 
         if (data.logged_in && req.body.delete) {
-            if (members.delete(data.member.memberId)) res.redirect('/logout')
+            if (members.delete(data.member.memberId)) {
+                res.redirect('/logout')
+                logger.info(`Member ${data.member.memberId}: Successfully deleted account!`)
+            }
             else res.sendCode(500)
         } else res.sendCode(403)
     },
