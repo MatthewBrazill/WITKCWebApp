@@ -91,6 +91,7 @@ router.get('/terms', terms.get)
 router.get('/api/cookie_choice', api.getCookie) // Get cookie choice as boolean (true = allow)
 router.get('/api/certs', api.getCerts) // Get all certs as array *requires committee*
 router.get('/api/members', api.getMembers) // Get all members as array (Name and ID only) *requires committee*
+router.post('/api/member', api.getMember) // Get members with memberId *requires committee*
 router.post('/api/cookie_choice', api.postCookie) // Set cookie choice to preference
 
 

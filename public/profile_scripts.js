@@ -229,7 +229,6 @@ $(document).ready(() => {
         inputs.trigger('change')
         inputs.each((index, element) => {
             var input = $(element)
-            console.log(index, input.attr('id'), input.prop('valid'))
             if (!input.prop('valid')) valid = false
         })
 
@@ -247,7 +246,7 @@ $(document).ready(() => {
                 data: data,
                 success: (res) => {
                     form.attr('class', 'ui success form')
-                    $('#image').attr('src', 'https://picsum.photos/200')
+                    $('#image').attr('src', res.url)
                 },
                 error: () => form.attr('class', 'ui error form')
             })

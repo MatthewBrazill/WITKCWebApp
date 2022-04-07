@@ -97,14 +97,25 @@
         <!-- Qualifications -->
         <h3 class="ui dividing header">My Qualifications</h3>
 
-        {{#if member.certs.count}}
+        {{#if member.certs.length}}
 
         <div class="ui items">
 
             {{#each member.certs}}
-            <div class="item">
-                <div class="header">{{this.name}}</div>
-            </div>
+            <a class="ui fluid link card" href="{{this.link}}" style="color: black;">
+                <div class="content">
+                    <div class="header">
+                        <div class="ui left floated">{{this.name}}</div>
+                        <div class="ui right floated">{{this.category}} Certificate</div>
+                    </div>
+                    <h5>This certificate shows the owner is able to:</h5>
+                    <ol class="ui list">
+                        {{#each this.aims}}
+                        <li value="-">{{this}}</li>
+                        {{/each}}
+                    </ol>
+                </div>
+            </a>
             {{/each}}
 
         </div>

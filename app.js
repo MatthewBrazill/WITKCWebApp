@@ -10,7 +10,6 @@ const sessionStore = require('connect-dynamodb')({ session: session })
 const handlebars = require('express-handlebars')
 const logger = require('./log.js')
 const api = require('./api.js')
-const req = require('express/lib/request')
 
 async function start() {
     // Create the app
@@ -38,7 +37,7 @@ async function start() {
         saveUninitialized: false,
         store: new sessionStore({
             table: 'witkc-sessions',
-            hashKey: 'session-id',
+            hashKey: 'sessionId',
             AWSConfigJSON: {
                 region: 'eu-west-1'
             },

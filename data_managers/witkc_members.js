@@ -3,6 +3,7 @@
 // Imports
 const logger = require('../log.js')
 const AWS = require('aws-sdk')
+const certificates = require('./certificates.js')
 const dynamo = new AWS.DynamoDB()
 const s3 = new AWS.S3()
 
@@ -11,10 +12,10 @@ const members = {
         if (member === null || member === undefined) return false
         return dynamo.putItem({
             Item: {
-                'member-id': { S: member.memberId },
+                'memberId': { S: member.memberId },
                 'username': { S: member.username },
-                'first-name': { S: member.firstName },
-                'last-name': { S: member.lastName },
+                'firstName': { S: member.firstName },
+                'lastName': { S: member.lastName },
                 'email': { S: member.email },
                 'phone': { S: member.phone },
                 'verified': { BOOL: member.verified },
@@ -28,8 +29,9 @@ const members = {
                         { S: member.address.code }
                     ]
                 },
+                'certs': { L: [] },
                 'img': { S: member.img },
-                'date-joined': { S: member.dateJoined }
+                'dateJoined': { S: member.dateJoined }
             },
             TableName: 'witkc-members'
         }).promise().then(() => {
@@ -44,15 +46,15 @@ const members = {
     async setCommitteeMemberForRole(role, memberId) {
         if (!['captain', 'vice', 'safety', 'treasurer', 'equipments', 'pro', 'freshers'].includes(role) || memberId === null || memberId === undefined) return false
         return dynamo.updateItem({
-            Key: { 'member-id': { S: await this.getCommitteeMemberForRole(role) } },
-            UpdateExpression: 'REMOVE committee-role',
+            Key: { 'memberId': { S: await this.getCommitteeMemberForRole(role) } },
+            UpdateExpression: 'REMOVE committeeRole',
             TableName: 'witkc-members'
         }).promise().then((data) => {
             if (data) {
                 return dynamo.updateItem({
-                    Key: { 'member-id': { S: memberId } },
+                    Key: { 'memberId': { S: memberId } },
                     ExpressionAttributeValues: { ':role': { S: role } },
-                    UpdateExpression: 'SET committee-role = :role',
+                    UpdateExpression: 'SET committeeRole = :role',
                     TableName: 'witkc-members'
                 }).promise().then((data) => {
                     if (data.Items[0] != undefined) {
@@ -69,13 +71,13 @@ const members = {
     async resolveUsername(username) {
         if (username === null || username === undefined) return null
         return dynamo.scan({
-            ExpressionAttributeNames: { '#ID': 'member-id' },
+            ExpressionAttributeNames: { '#ID': 'memberId' },
             ExpressionAttributeValues: { ':username': { S: username } },
             FilterExpression: 'username = :username',
             ProjectionExpression: '#ID',
             TableName: 'witkc-members'
         }).promise().then((data) => {
-            if (data.Items[0] != undefined) return data.Items[0]['member-id'].S
+            if (data.Items[0] != undefined) return data.Items[0]['memberId'].S
             else return null
         }).catch((err) => {
             logger.warn(`Could not resolve username ${username}! ${err}`)
@@ -86,27 +88,39 @@ const members = {
     async get(memberId) {
         if (memberId === null || memberId === undefined) return null
         return dynamo.getItem({
-            Key: { 'member-id': { S: memberId } },
+            Key: { 'memberId': { S: memberId } },
             TableName: 'witkc-members'
         }).promise().then((data) => {
-            if (data.Item != undefined) return {
-                memberId: data.Item['member-id'].S,
-                username: data.Item['username'].S,
-                firstName: data.Item['first-name'].S,
-                lastName: data.Item['last-name'].S,
-                email: data.Item['email'].S,
-                phone: data.Item['phone'].S,
-                verified: data.Item['verified'].BOOL,
-                promotion: data.Item['promotion'].BOOL,
-                address: {
-                    lineOne: data.Item['address'].L[0].S,
-                    lineTwo: data.Item['address'].L[1].S,
-                    city: data.Item['address'].L[2].S,
-                    county: data.Item['address'].L[3].S,
-                    code: data.Item['address'].L[4].S
-                },
-                img: data.Item['img'].S,
-                dateJoined: data.Item['date-joined'].S
+            if (data.Item != undefined) {
+                var member = {}
+                for (var attr in data.Item) {
+                    if ('S' in data.Item[attr]) member[attr] = data.Item[attr].S
+                    else if ('BOOL' in data.Item[attr]) member[attr] = data.Item[attr].BOOL
+                    else if (attr == 'address') {
+                        member.address = {
+                            lineOne: data.Item['address'].L[0].S,
+                            lineTwo: data.Item['address'].L[1].S,
+                            city: data.Item['address'].L[2].S,
+                            county: data.Item['address'].L[3].S,
+                            code: data.Item['address'].L[4].S
+                        }
+                    }
+                    else if (attr == 'certs') {
+                        member.certs = []
+                        for (var item of data.Item['certs'].L) {
+                            certificates.get(item.S).then((cert) => { member.certs.push(cert) })
+                        }
+                    }
+                    else if (attr == 'trips') {
+                        member.trips = []
+                        for (var item of data.Item['trips'].L) member.trips.push(item.S)
+                    }
+                    else if ('L' in data.Item[attr]) {
+                        member[attr] = []
+                        for (var item of data.Item[attr].L) member[attr].push(item.S)
+                    }
+                }
+                return member
             }
             else return null
         }).catch((err) => {
@@ -118,11 +132,13 @@ const members = {
     async list() {
         return dynamo.scan({
             ExpressionAttributeNames: {
-                '#ID': 'member-id',
-                '#FN': 'first-name',
-                '#LN': 'last-name',
+                '#ID': 'memberId',
+                '#FN': 'firstName',
+                '#LN': 'lastName',
                 '#IMG': 'img'
             },
+            ExpressionAttributeValues: { ':username': { S: 'admin' } },
+            FilterExpression: 'NOT username = :username',
             ProjectionExpression: '#ID, #FN, #LN, #IMG',
             TableName: 'witkc-members'
         }).promise().then((data) => {
@@ -130,9 +146,9 @@ const members = {
                 var members = []
                 for (var item of data.Items) {
                     members.push({
-                        memberId: item['member-id'].S,
-                        firstName: item['first-name'].S,
-                        lastName: item['last-name'].S,
+                        memberId: item['memberId'].S,
+                        firstName: item['firstName'].S,
+                        lastName: item['lastName'].S,
                         img: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: item['img'].S })
                     })
                 }
@@ -147,71 +163,24 @@ const members = {
     async getCommittee() {
         return dynamo.scan({
             ExpressionAttributeNames: {
-                '#ID': 'member-id',
-                '#FN': 'first-name',
-                '#LN': 'last-name',
-                '#CR': 'committee-role',
+                '#ID': 'memberId',
+                '#FN': 'firstName',
+                '#LN': 'lastName',
+                '#CR': 'committeeRole',
                 '#IMG': 'img'
             },
-            FilterExpression: 'attribute_exists(committee-role)',
+            FilterExpression: 'attribute_exists(committeeRole)',
             ProjectionExpression: '#ID, #FN, #LN, #CR, #IMG',
             TableName: 'witkc-members'
         }).promise().then((data) => {
-            if (data.Items.length == 7) {
+            if (data.Items != undefined) {
                 var res = {}
                 for (var item of data.Items) {
-                    switch (item['committee-role'].S) {
-                        case 'captain':
-                            res.captain.memberId = item['member-id'].S
-                            res.captain.firstName = item['first-name'].S
-                            res.captain.lastName = item['last-name'].S
-                            res.captain.img = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: item['img'].S })
-                            break;
-
-                        case 'vice':
-                            res.vice.memberId = item['member-id'].S
-                            res.vice.firstName = item['first-name'].S
-                            res.vice.lastName = item['last-name'].S
-                            res.vice.img = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: item['img'].S })
-                            break;
-
-                        case 'safety':
-                            res.safety.memberId = item['member-id'].S
-                            res.safety.firstName = item['first-name'].S
-                            res.safety.lastName = item['last-name'].S
-                            res.safety.img = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: item['img'].S })
-                            break;
-
-                        case 'treasurer':
-                            res.treasurer.memberId = item['member-id'].S
-                            res.treasurer.firstName = item['first-name'].S
-                            res.treasurer.lastName = item['last-name'].S
-                            res.treasurer.img = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: item['img'].S })
-                            break;
-
-                        case 'equipments':
-                            res.equipments.memberId = item['member-id'].S
-                            res.equipments.firstName = item['first-name'].S
-                            res.equipments.lastName = item['last-name'].S
-                            res.equipments.img = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: item['img'].S })
-                            break;
-
-                        case 'pro':
-                            res.pro.memberId = item['member-id'].S
-                            res.pro.firstName = item['first-name'].S
-                            res.pro.lastName = item['last-name'].S
-                            res.pro.img = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: item['img'].S })
-                            break;
-
-                        case 'freshers':
-                            res.freshers.memberId = item['member-id'].S
-                            res.freshers.firstName = item['first-name'].S
-                            res.freshers.lastName = item['last-name'].S
-                            res.freshers.img = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: item['img'].S })
-                            break;
-
-                        default:
-                            throw `Unexpected name for a committee position! Got: ${item['committee-role'].S}`
+                    if (!['captain', 'vice', 'safety', 'treasurer', 'equipments', 'pro', 'freshers'].includes(item['committeeRole'].S)) {
+                        res[item['committeeRole'].S].memberId = item['memberId'].S
+                        res[item['committeeRole'].S].firstName = item['firstName'].S
+                        res[item['committeeRole'].S].lastName = item['lastName'].S
+                        res[item['committeeRole'].S].img = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: item['img'].S })
                     }
                 }
                 return res
@@ -226,10 +195,10 @@ const members = {
         if (!['captain', 'vice', 'safety', 'treasurer', 'equipments', 'pro', 'freshers', 'admin'].includes(role)) return null
         return dynamo.scan({
             ExpressionAttributeNames: {
-                '#ID': 'member-id',
-                '#FN': 'first-name',
-                '#LN': 'last-name',
-                '#CR': 'committee-role',
+                '#ID': 'memberId',
+                '#FN': 'firstName',
+                '#LN': 'lastName',
+                '#CR': 'committeeRole',
                 '#IMG': 'img'
             },
             ExpressionAttributeValues: { ':role': { S: role } },
@@ -239,9 +208,9 @@ const members = {
         }).promise().then((data) => {
             if (data.Items[0] != undefined) {
                 return {
-                    memberId: data.Items[0]['member-id'].S,
-                    firstName: data.Items[0]['first-name'].S,
-                    lastName: data.Items[0]['last-name'].S,
+                    memberId: data.Items[0]['memberId'].S,
+                    firstName: data.Items[0]['firstName'].S,
+                    lastName: data.Items[0]['lastName'].S,
                     committeeRole: role,
                     img: data.Items[0]['img'].S
                 }
@@ -255,7 +224,7 @@ const members = {
     async exists(memberId) {
         if (memberId === null || memberId === undefined) return false
         return dynamo.getItem({
-            Key: { 'member-id': { S: memberId } },
+            Key: { 'memberId': { S: memberId } },
             TableName: 'witkc-members'
         }).promise().then((data) => {
             if (data.Item != undefined) return true
@@ -269,13 +238,13 @@ const members = {
     async isCommittee(memberId) {
         if (memberId === null || memberId === undefined) return false
         return dynamo.getItem({
-            Key: { 'member-id': { S: memberId } },
-            ExpressionAttributeNames: { '#CR': 'committee-role' },
+            Key: { 'memberId': { S: memberId } },
+            ExpressionAttributeNames: { '#CR': 'committeeRole' },
             ProjectionExpression: '#CR',
             TableName: 'witkc-members'
         }).promise().then((data) => {
-            if (data.Item != undefined) {
-                if (['captain', 'vice', 'safety', 'treasurer', 'equipments', 'pro', 'freshers', 'admin'].includes(data.Item['committee-role'].S)) return true
+            if (data.Item['committeeRole'] != undefined) {
+                if (['captain', 'vice', 'safety', 'treasurer', 'equipments', 'pro', 'freshers', 'admin'].includes(data.Item['committeeRole'].S)) return true
                 else return false
             } else throw `Received unexpected response from AWS! Got: ${data}`
         }).catch((err) => {
@@ -288,10 +257,10 @@ const members = {
         if (member === null || member === undefined) return false
         return dynamo.putItem({
             Item: {
-                'member-id': { S: member.memberId },
+                'memberId': { S: member.memberId },
                 'username': { S: member.username },
-                'first-name': { S: member.firstName },
-                'last-name': { S: member.lastName },
+                'firstName': { S: member.firstName },
+                'lastName': { S: member.lastName },
                 'email': { S: member.email },
                 'phone': { S: member.phone },
                 'verified': { BOOL: member.verified },
@@ -306,7 +275,7 @@ const members = {
                     ]
                 },
                 'img': { S: member.img },
-                'date-joined': { S: member.dateJoined }
+                'dateJoined': { S: member.dateJoined }
             },
             TableName: 'witkc-members'
         }).promise().then(() => {
@@ -321,12 +290,11 @@ const members = {
     async awardCert(memberId, certId) {
         if (memberId === null || memberId === undefined || certId === null || certId === undefined) return false
         return dynamo.updateItem({
-            Key: { 'member-id': { S: memberId } },
+            Key: { 'memberId': { S: memberId } },
             ExpressionAttributeValues: { ':cert': { L: [{ S: certId }] } },
             UpdateExpression: 'SET certs = list_append(certs, :cert)',
             TableName: 'witkc-members'
         }).promise().then((data) => {
-            console.log(data)
             if (data) return true
             else throw `Failed to add cert to member!`
         }).catch((err) => {
@@ -338,12 +306,11 @@ const members = {
     async rescindCert(memberId, certId) {
         if (memberId === null || memberId === undefined || certId === null || certId === undefined) return false
         return dynamo.updateItem({
-            Key: { 'member-id': { S: memberId } },
+            Key: { 'memberId': { S: memberId } },
             ExpressionAttributeValues: { ':cert': { L: [{ S: certId }] } },
             UpdateExpression: 'SET certs = list_append(certs, :cert)',
             TableName: 'witkc-members'
         }).promise().then((data) => {
-            console.log(data)
             if (data) return true
             else throw `Failed to remove cert from member!`
         }).catch((err) => {
@@ -355,7 +322,7 @@ const members = {
     async delete(memberId) {
         if (memberId === null || memberId === undefined) return false
         return dynamo.deleteItem({
-            Key: { 'member-id': { S: memberId } },
+            Key: { 'memberId': { S: memberId } },
             TableName: 'witkc-members'
         }).promise().then(() => {
             logger.info(`Member ${memberId}: Deleted`)

@@ -20,6 +20,7 @@ const api = {
     },
 
     async postCookie(req, res) {
+        console.log(req.body)
         if (req.body.allow_cookies == 'true' || req.body.allow_cookies == 'false') {
             if (req.body.allow_cookies == 'true') req.session.allow_cookies = true
             res.sendStatus(200)
@@ -36,9 +37,20 @@ const api = {
                 members.list().then((mems) => {
                     if (mems !== null) res.status(200).json(mems)
                     else throw ''
-                }).catch(() => {
-                    res.sendStatus(500)
-                })
+                }).catch(() => res.sendStatus(500))
+            } else res.sendStatus(403)
+        } else res.sendStatus(403)
+    },
+
+    async getMember(req, res) {
+        var data = await viewData.get(req, 'API')
+
+        if (data.logged_in) {
+            if (await members.isCommittee(data.member.memberId)) {
+                members.get(req.body.memberId).then((member) => {
+                    if (member !== null) res.status(200).json(member)
+                    else throw ''
+                }).catch(() => res.sendStatus(500))
             } else res.sendStatus(403)
         } else res.sendStatus(403)
     },

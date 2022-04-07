@@ -9,6 +9,7 @@ const logger = require('../log.js')
 const members = require('../data_managers/witkc_members')
 const passwords = require("../data_managers/passwords.js")
 const bcrypt = require('bcrypt')
+const sharp = require('sharp')
 const viewData = require('../view_data.js')
 
 const profile = {
@@ -92,15 +93,19 @@ const profile = {
         if (data.logged_in) {
             new Promise((resolve) => {
                 file.parse(req, (err, fields, file) => {
-                    if (err) res.status(400).json({ err: err })
+                    if (err) res.status(400).send(err)
                     else resolve(file.file)
                 })
             }).then((file) => {
-                data.member.img = `img/users/${data.member.memberId}.${file.originalFilename.split('.').pop()}`
+                return sharp(file.filepath).resize({ width: 400 }).webp().toFile(`${file.filepath}-new`).then(() => {
+                    return `${file.filepath}-new`
+                }).catch((err) => console.log(err))
+            }).then((filepath) => {
+                data.member.img = `img/users/${data.member.memberId}.webp`
                 s3.putObject({
                     Bucket: 'witkc',
                     Key: data.member.img,
-                    Body: fs.readFileSync(file.filepath)
+                    Body: fs.readFileSync(filepath)
                 }).promise()
             }).then(() => {
                 members.update(data.member)
@@ -108,7 +113,10 @@ const profile = {
                 res.status(200).json({
                     url: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: data.member.img })
                 })
-            }).catch((err) => res.status(500).json({ err: err }))
+            }).catch((err) => {
+                console.log(err)
+                res.status(500).send(err)
+            })
         } else res.sendStatus(403)
     },
 
