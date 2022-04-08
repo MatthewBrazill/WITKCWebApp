@@ -13,7 +13,7 @@ const viewData = {
             scripts: {
                 global: '/global_scripts.js' //s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/global_scripts.js' }),
             },
-            witkc_logo: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'img/witkc_logo.png' }),
+            witkc_logo: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'img/witkc_logo.webp' }),
             witkc_icon: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'img/witkc_icon.ico' }),
             logged_in: false
         }

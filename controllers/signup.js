@@ -62,7 +62,7 @@ const signup = {
                     county: req.body.county,
                     code: req.body.code,
                 },
-                img: 'img/placeholder_avatar.png',
+                img: 'img/placeholder_avatar.webp',
                 dateJoined: new Date().toISOString().substring(0, 10)
             }
 

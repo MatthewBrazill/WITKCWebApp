@@ -62,7 +62,7 @@ router.post('/api/settings/delete', profile.delete) // Delete account *requires 
 
 // Committee Dashboard APIs
 router.post('/api/safety/award', safety.award) // Award certificate to member *requires safety*
-router.post('/api/safety/rescind', safety.rescind) // Remove certificate from member *requires safety*
+router.post('/api/safety/revoke', safety.revoke) // Remove certificate from member *requires safety*
 
 
 
