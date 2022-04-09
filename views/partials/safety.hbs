@@ -1,0 +1,141 @@
+<div class="ui segment">
+
+    <h3 class="ui dividing header">Safety and Development Dashboard</h3>
+
+    <div class="ui divided grid">
+
+        <div class="ui twelve wide column">
+
+            {{#if safety.trips.count}}
+
+            <div class="ui items">
+
+                {{#each safety.trips}}
+
+                <div class="item">
+                    <div class="header">{{this.name}}</div>
+                    <div class="ui two column grid">
+                        <div class="twelve wide column"></div>
+                        <div class="four wide column"></div>
+                        <div class="ui vertical divider"></div>
+                    </div>
+                </div>
+
+                {{/each}}
+
+            </div>
+
+            {{else}}
+
+            <div class="ui fluid placeholder segment">
+                <div class="ui icon header">
+                    <i class="check double icon"></i>
+                    No trips need safety clearance right now.
+                </div>
+            </div>
+
+            {{/if}}
+        </div>
+
+        <div class="ui four wide column">
+
+            <script src="{{scripts.committee}}" hidden></script>
+            <button class="ui fluid teal button" id="announcement_safety">
+                <h4 class="ui center aligned icon header">
+                    <i class="large announcement icon"></i>
+                    Announcement
+                </h4>
+            </button>
+
+            <br>
+
+            <script src="{{scripts.safety}}" hidden></script>
+            <button class="ui fluid teal button" id="award_cert">
+                <h4 class="ui center aligned icon header">
+                    <i class="large certificate icon"></i>
+                    Award Certificate
+                </h4>
+            </button>
+
+            <div class="ui modal" id="award_cert_modal">
+
+                <div class="header">Award Certificate to Member</div>
+
+                <div class="content">
+
+                    <form class="ui form" id="award_cert_modal_form">
+
+                        <div class="inline fields">
+
+                            <div class="ten wide field">
+                                <div class="ui fluid search selection dropdown" id="award_cert_modal_cert_dropdown">
+                                    <input type="hidden" id="award_cert_modal_cert_dropdown_input">
+                                    <div class="text"></div>
+                                    <i class="dropdown icon"></i>
+                                </div>
+                            </div>
+
+                            <label>to</label>
+
+                            <div class="ten wide field">
+                                <div class="ui fluid multiple search selection dropdown"
+                                    id="award_cert_modal_member_dropdown">
+                                    <input type="hidden" id="award_cert_modal_member_dropdown_input">
+                                    <div class="text"></div>
+                                    <i class="dropdown icon"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ui error message">
+                            <div class="header">
+                                There was an error connecting to the server. Please reload the page and try again!
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="right aligned actions">
+                    <button class="ui negative button" id="award_cert_modal_cancel">Cancel</button>
+                    <button class="ui positive button" id="award_cert_modal_confirm">Confirm</button>
+                </div>
+            </div>
+
+            <br>
+
+            <button class="ui fluid teal button" id="revoke_cert">
+                <h4 class="ui center aligned icon header">
+                    <i class="large undo icon"></i>
+                    Revoke Certificate
+                </h4>
+            </button>
+
+            <div class="ui modal" id="revoke_cert_modal">
+                <div class="header">Revoke Certificate from Member</div>
+
+                <div class="content">
+
+                    <div class="ui search selection dropdown" id="revoke_cert_modal_member_dropdown">
+                        <input type="hidden" id="revoke_cert_modal_member_dropdown_input">
+                        <div class="text"></div>
+                        <i class="dropdown icon"></i>
+                    </div>
+
+                    <div class="ui items" id="revoke_cert_modal_cards">
+
+                    </div>
+
+                    <div class="ui error message" id="revoke_cert_modal_error" hidden>
+                        <div class="header">
+                            There was an error connecting to the server. Please reload the page and try again!
+                        </div>
+                    </div>
+                </div>
+
+                <div class="right aligned actions">
+                    <button class="ui positive button" id="revoke_cert_modal_close">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

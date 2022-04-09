@@ -51,7 +51,7 @@ $(document).ready(() => {
                 data[input.attr('id')] = input.val()
             })
             $.ajax({
-                url: '/profile/me/settings/personal',
+                url: '/api/settings/personal',
                 method: 'POST',
                 data: data,
                 success: () => form.attr('class', 'ui success form'),
@@ -201,7 +201,7 @@ $(document).ready(() => {
         $('#modal').modal('hide')
         $('#personal_form').attr('class', 'ui loading form')
         $.ajax({
-            url: '/profile/me/settings/delete',
+            url: '/api/settings/delete',
             method: 'POST',
             data: { delete: true },
             error: () => {
@@ -229,7 +229,6 @@ $(document).ready(() => {
         inputs.trigger('change')
         inputs.each((index, element) => {
             var input = $(element)
-            console.log(index, input.attr('id'), input.prop('valid'))
             if (!input.prop('valid')) valid = false
         })
 
@@ -239,7 +238,7 @@ $(document).ready(() => {
             var data = new FormData()
             data.append('file', file)
             $.ajax({
-                url: '/profile/me/settings/customize',
+                url: '/api/settings/customize',
                 method: 'POST',
                 contentType: false,
                 processData: false,
@@ -247,7 +246,7 @@ $(document).ready(() => {
                 data: data,
                 success: (res) => {
                     form.attr('class', 'ui success form')
-                    $('#image').attr('src', 'https://picsum.photos/200')
+                    $('#image').attr('src', res.url)
                 },
                 error: () => form.attr('class', 'ui error form')
             })
@@ -296,7 +295,7 @@ $(document).ready(() => {
                 data[input.attr('id')] = input.val()
             })
             $.ajax({
-                url: '/profile/me/settings/password',
+                url: '/api/settings/password',
                 method: 'POST',
                 data: data,
                 success: () => {

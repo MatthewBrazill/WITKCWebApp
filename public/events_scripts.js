@@ -17,7 +17,7 @@ $(document).ready(() => {
 
         list.attr('class', 'ui loading placeholder segment')
         $.ajax({
-            url: '/events/day',
+            url: '/api/events/day',
             method: 'POST',
             data: { date: calendar.calendar('get date') },
             success: (res) => {

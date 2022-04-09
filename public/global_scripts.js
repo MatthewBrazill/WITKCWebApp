@@ -35,7 +35,7 @@ $(document).ready(() => {
 
 
     $.ajax({
-        url: '/cookie_choice',
+        url: '/api/cookie_choice',
         method: 'GET',
         success: (res) => {
             if (!res.allow_cookies) $('#cookie_nag').nag({ persists: true })
@@ -46,7 +46,7 @@ $(document).ready(() => {
     $('#nag_accept').click(() => {
         $('#cookie_nag').hide()
         $.ajax({
-            url: '/cookie_choice',
+            url: '/api/cookie_choice',
             method: 'POST',
             data: { allow_cookies: true }
         })

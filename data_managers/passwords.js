@@ -10,7 +10,7 @@ const passwords = {
         if (memberId === null || memberId === undefined || hash === null || hash === undefined) return false
         return dynamo.putItem({
             Item: {
-                'member-id': { S: memberId },
+                'memberId': { S: memberId },
                 'hash': { S: hash }
             },
             TableName: 'witkc-passwords'
@@ -27,7 +27,7 @@ const passwords = {
         // Returns null as a string so that bcrypt doesn't fail
         if (memberId === null || memberId === undefined) return 'null'
         return dynamo.getItem({
-            Key: { 'member-id': { S: memberId } },
+            Key: { 'memberId': { S: memberId } },
             TableName: 'witkc-passwords'
         }).promise().then((data) => {
             if (data.Item != undefined) return data.Item['hash'].S
@@ -42,7 +42,7 @@ const passwords = {
         if (memberId === null || memberId === undefined || hash === null || hash === undefined) return false
         return dynamo.putItem({
             Item: {
-                'member-id': { S: memberId },
+                'memberId': { S: memberId },
                 'hash': { S: hash }
             },
             TableName: 'witkc-passwords'
@@ -58,7 +58,7 @@ const passwords = {
     async delete(memberId) {
         if (memberId === null || memberId === undefined) return false
         return dynamo.deleteItem({
-            Key: { 'member-id': { S: memberId } },
+            Key: { 'memberId': { S: memberId } },
             TableName: 'witkc-passwords'
         }).promise().then(() => {
             logger.info(`Password for user ${memberId}: Deleted`)
