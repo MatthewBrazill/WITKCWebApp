@@ -72,6 +72,7 @@ $(document).ready(() => {
 
     // Revoke Cert
     $('#revoke_cert').click(() => {
+        $('#revoke_cert_modal_cards').html('')
         $('#revoke_cert_modal').modal('show')
         const form = $('#revoke_cert_modal_form')
         form.prop('loaded', false)
@@ -111,47 +112,36 @@ $(document).ready(() => {
             method: 'POST',
             data: { memberId: $('#revoke_cert_modal_member_dropdown_input').val() },
             success: (member) => {
-                var cardsText = ''
                 for (var cert of member.certs) {
-                    cardsText += `
-                    <div class="ui fluid card">
-                        <div class="content">
-                            <div class="header">
-                                <div class="ui left floated">${cert.name}</div>
-                                <button class="ui right floated negative button revoke" id="ID_${cert.id}">Revoke</button>
-                            </div>
-                            <h5>${cert.category} Certificate</h5>
-                        </div>
-                    </div>
-                    `
+                    cards.append(
+                        $('<div class="ui fluid card"></div>').append(
+                            $('<div class="content"></div>').append(
+                                $('<div class="header"></div>').append(
+                                    $('<div class="ui left floated"></div>').text(cert.name),
+                                    $('<button class="ui right floated negative button revoke" data-cert="'+cert.id+'">Revoke</button>').click(() => {
+                                        var id = cert.id
+                                        $.ajax({
+                                            url: '/api/safety/revoke',
+                                            method: 'POST',
+                                            data: {
+                                                certId: id,
+                                                memberId: member.memberId
+                                            },
+                                            success: () => {
+                                                $('#revoke_cert_modal_error').hide()
+                                            },
+                                            error: () => {
+                                                $('#revoke_cert_modal_error').show()
+                                            }
+                                        })
+                                    })
+                                ),
+                                $('<h5></h5>').text(cert.category + ' Certificate')
+                            )
+                        )
+                    )
                 }
                 $('#revoke_cert_modal_error').hide()
-                cards.html('')
-                cards.html(cardsText)
-                $('button.revoke').click(() => {
-                    const button = $(this)
-                    const card = button.parent().parent().parent()
-
-                    console.log(this, button.attr('id'))
-
-                    card.addClass('loading')
-                    $.ajax({
-                        url: '/api/safety/revoke',
-                        method: 'POST',
-                        data: {
-                            certId: button.attr('id').split('_')[1],
-                            memberId: $('#revoke_cert_modal_member_dropdown_input').val()
-                        },
-                        success: () => {
-                            card.remove()
-                            $('#revoke_cert_modal_error').hide()
-                        },
-                        error: () => {
-                            card.removeClass('loading')
-                            $('#revoke_cert_modal_error').show()
-                        }
-                    })
-                })
             },
             error: () => { $('#revoke_cert_modal_error').show() }
         })

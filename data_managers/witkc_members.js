@@ -290,7 +290,7 @@ const members = {
         return dynamo.updateItem({
             Key: { 'memberId': { S: memberId } },
             ExpressionAttributeValues: { ':cert': { L: [{ S: certId }] } },
-            UpdateExpression: 'DELETE certs = :cert',
+            UpdateExpression: 'DELETE certs :cert',
             TableName: 'witkc-members'
         }).promise().then((data) => {
             if (data) return true
