@@ -10,6 +10,7 @@ const sessionStore = require('connect-dynamodb')({ session: session })
 const handlebars = require('express-handlebars')
 const logger = require('./log.js')
 const api = require('./api.js')
+const viewData = require('./view_data.js')
 
 async function start() {
     // Create the app
@@ -63,10 +64,24 @@ async function start() {
 
     // Remaining WebApp settings
     app.set(express.json())
-    app.use(express.urlencoded({ extended: true }));
+    app.use(express.urlencoded({ extended: true }))
     app.use(express.static("./public"))
     app.use(cookie())
     app.use('/', require('./routes.js'))
+
+    app.use((req, res, next) => {
+        res.status(404)
+
+        // Respond with HTML page
+        if (req.accepts('html')) viewData.get(req, '404 - Page not found').then((data) => res.render('404', data))
+
+        // Respond with json
+        else if (req.accepts('json')) res.json({ err: 'Not found' })
+
+        // Default: Plain-Text
+        else res.type('txt').send('404 - Page Not Found')
+        next
+    });
 
     app.listen(8000, () => {
         logger.info(`Listening on port 8000`)
