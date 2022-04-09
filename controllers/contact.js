@@ -24,7 +24,7 @@ const contact = {
 
             if (!req.body.first_name.match(/^\p{L}{1,16}$/u)) valid = false
             if (!req.body.last_name.match(/^\p{L}{1,16}$/u)) valid = false
-            if (!req.body.email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)+$/)) valid = false
+            if (!req.body.email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.[a-z]{2,})$/i)) valid = false
             if (!req.body.message.match(/^.{1,500}$/u)) valid = false
 
             if (valid) {

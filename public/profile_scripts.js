@@ -87,7 +87,7 @@ $(document).ready(() => {
     $('#email').on('input', () => {
         const email = $('#email')
         const field = email.parent()
-        if (!email.val().match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)+$/)) {
+        if (!email.val().match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.[a-z]{2,})$/i)) {
             field.attr('class', 'field error')
             email.prop('valid', false)
         } else {

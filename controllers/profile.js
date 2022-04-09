@@ -60,7 +60,7 @@ const profile = {
                 // Server-Side Validation
                 if (!req.body.first_name.match(/^\p{L}{1,16}$/u)) valid = false
                 if (!req.body.last_name.match(/^\p{L}{1,16}$/u)) valid = false
-                if (!req.body.email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)+$/)) valid = false
+                if (!req.body.email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.[a-z]{2,})$/i)) valid = false
                 if (!req.body.phone.match(/^[+0]+\d{8,12}$/) && req.body.phone != '') valid = false
                 if (!req.body.line_one.match(/^[\w- ]{1,32}$/)) valid = false
                 if (!req.body.line_two.match(/^[\w- ]{1,32}$/) && req.body.line_two != '') valid = false
