@@ -4,6 +4,7 @@
 const logger = require('../log.js')
 const AWS = require('aws-sdk')
 const certificates = require('./certificates.js')
+const trips = require('./trips.js')
 const dynamo = new AWS.DynamoDB()
 const s3 = new AWS.S3()
 
@@ -30,6 +31,7 @@ const members = {
                     ]
                 },
                 'certs': { L: [] },
+                'trips': { L: [] },
                 'img': { S: member.img },
                 'dateJoined': { S: member.dateJoined }
             },
@@ -39,31 +41,6 @@ const members = {
             return true
         }).catch((err) => {
             logger.warn(`Failed to create member ${member.memberId}! ${err}`)
-            return false
-        })
-    },
-
-    async setCommitteeMemberForRole(role, memberId) {
-        if (!['captain', 'vice', 'safety', 'treasurer', 'equipments', 'pro', 'freshers'].includes(role) || memberId === null || memberId === undefined) return false
-        return dynamo.updateItem({
-            Key: { 'memberId': { S: await this.getCommitteeMemberForRole(role) } },
-            UpdateExpression: 'REMOVE committeeRole',
-            TableName: 'witkc-members'
-        }).promise().then((data) => {
-            if (data) {
-                return dynamo.updateItem({
-                    Key: { 'memberId': { S: memberId } },
-                    ExpressionAttributeValues: { ':role': { S: role } },
-                    UpdateExpression: 'SET committeeRole = :role',
-                    TableName: 'witkc-members'
-                }).promise().then((data) => {
-                    if (data.Items[0] != undefined) {
-                        return true
-                    } else throw `Failed to add committee role to new member!`
-                })
-            } else throw `Failed to remove committee role from old member!`
-        }).catch((err) => {
-            logger.warn(`Could not change committee member for role '${role}'! ${err}`)
             return false
         })
     },
@@ -113,7 +90,9 @@ const members = {
                     }
                     else if (attr == 'trips') {
                         member.trips = []
-                        for (var item of data.Item['trips'].L) member.trips.push(item.S)
+                        for (var item of data.Item['trips'].L) {
+                            trips.get(item.S).then((trip) => { member.trips.push(trip) })
+                        }
                     }
                     else if ('L' in data.Item[attr]) {
                         member[attr] = []
@@ -121,6 +100,7 @@ const members = {
                     }
                 }
                 return member
+
             }
             else return null
         }).catch((err) => {
@@ -160,67 +140,6 @@ const members = {
         })
     },
 
-    async getCommittee() {
-        return dynamo.scan({
-            ExpressionAttributeNames: {
-                '#ID': 'memberId',
-                '#FN': 'firstName',
-                '#LN': 'lastName',
-                '#CR': 'committeeRole',
-                '#IMG': 'img'
-            },
-            FilterExpression: 'attribute_exists(committeeRole)',
-            ProjectionExpression: '#ID, #FN, #LN, #CR, #IMG',
-            TableName: 'witkc-members'
-        }).promise().then((data) => {
-            if (data.Items != undefined) {
-                var res = {}
-                for (var item of data.Items) {
-                    if (!['captain', 'vice', 'safety', 'treasurer', 'equipments', 'pro', 'freshers'].includes(item['committeeRole'].S)) {
-                        res[item['committeeRole'].S].memberId = item['memberId'].S
-                        res[item['committeeRole'].S].firstName = item['firstName'].S
-                        res[item['committeeRole'].S].lastName = item['lastName'].S
-                        res[item['committeeRole'].S].img = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: item['img'].S })
-                    }
-                }
-                return res
-            } else throw `Retrieved an unexpected amount of committee members! Got ${data.Items.length}`
-        }).catch((err) => {
-            logger.warn(`Could not get all members of the committee! ${err}`)
-            return null
-        })
-    },
-
-    async getCommitteeMemberForRole(role) {
-        if (!['captain', 'vice', 'safety', 'treasurer', 'equipments', 'pro', 'freshers', 'admin'].includes(role)) return null
-        return dynamo.scan({
-            ExpressionAttributeNames: {
-                '#ID': 'memberId',
-                '#FN': 'firstName',
-                '#LN': 'lastName',
-                '#CR': 'committeeRole',
-                '#IMG': 'img'
-            },
-            ExpressionAttributeValues: { ':role': { S: role } },
-            FilterExpression: '#CR = :role',
-            ProjectionExpression: '#ID, #FN, #LN, #IMG',
-            TableName: 'witkc-members'
-        }).promise().then((data) => {
-            if (data.Items[0] != undefined) {
-                return {
-                    memberId: data.Items[0]['memberId'].S,
-                    firstName: data.Items[0]['firstName'].S,
-                    lastName: data.Items[0]['lastName'].S,
-                    committeeRole: role,
-                    img: data.Items[0]['img'].S
-                }
-            } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
-        }).catch((err) => {
-            logger.warn(`Could not get committee member for role '${role}'! ${err}`)
-            return null
-        })
-    },
-
     async exists(memberId) {
         if (memberId === null || memberId === undefined) return false
         return dynamo.getItem({
@@ -237,17 +156,15 @@ const members = {
 
     async update(member) {
         if (member === null || member === undefined) return false
-        return dynamo.putItem({
-            Item: {
-                'memberId': { S: member.memberId },
-                'username': { S: member.username },
-                'firstName': { S: member.firstName },
-                'lastName': { S: member.lastName },
-                'email': { S: member.email },
-                'phone': { S: member.phone },
-                'verified': { BOOL: member.verified },
-                'promotion': { BOOL: member.promotion },
-                'address': {
+        var attributes = {}
+        var expression = 'SET '
+        for (var attr in member) {
+            if (attr == 'memberId') {}
+            else if (typeof member[attr] == 'boolean') {
+                attributes[`:${attr}`] = { BOOL: member[attr] }
+                expression += `${attr} = :${attr}, `
+            } else if (attr == 'address') {
+                attributes[':address'] = {
                     L: [
                         { S: member.address.lineOne },
                         { S: member.address.lineTwo },
@@ -255,15 +172,24 @@ const members = {
                         { S: member.address.county },
                         { S: member.address.code }
                     ]
-                },
-                'img': { S: member.img },
-                'dateJoined': { S: member.dateJoined }
-            },
+                }
+                expression += `${attr} = :${attr}, `
+            } else {
+                attributes[`:${attr}`] = { S: member[attr] }
+                expression += `${attr} = :${attr}, `
+            }
+        }
+        if (expression.slice(-2) == ', ') expression = expression.slice(0, -2)
+        return dynamo.updateItem({
+            Key: { 'memberId': { S: member.memberId } },
+            ExpressionAttributeValues: attributes,
+            UpdateExpression: expression,
             TableName: 'witkc-members'
-        }).promise().then(() => {
-            logger.info(`Member ${member.memberId}: Updated`)
-            return true
+        }).promise().then((data) => {
+            if (data) return true
+            else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
+            if (member.memberId === undefined) err = `'member.memberId' was not supplied!`
             logger.warn(`Failed to update member ${member.memberId}! ${err}`)
             return false
         })
@@ -297,6 +223,38 @@ const members = {
             else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
             logger.warn(`Could not remove certificate '${certId}' from member '${memberId}'! ${err}`)
+            return false
+        })
+    },
+
+    async joinTrip(memberId, tripId) {
+        if (memberId === null || memberId === undefined || tripId === null || tripId === undefined) return false
+        return dynamo.updateItem({
+            Key: { 'memberId': { S: memberId } },
+            ExpressionAttributeValues: { ':trip': { L: [{ S: tripId }] } },
+            UpdateExpression: 'SET trips = list_append(trips, :trip)',
+            TableName: 'witkc-members'
+        }).promise().then((data) => {
+            if (data) return true
+            else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
+        }).catch((err) => {
+            logger.warn(`Could not add member '${memberId}' to trip '${tripId}'! ${err}`)
+            return false
+        })
+    },
+
+    async leaveTrip(memberId, tripId) {
+        if (memberId === null || memberId === undefined || tripId === null || tripId === undefined) return false
+        return dynamo.updateItem({
+            Key: { 'memberId': { S: memberId } },
+            ExpressionAttributeValues: { ':trip': { L: [{ S: tripId }] } },
+            UpdateExpression: 'DELETE trips :trip',
+            TableName: 'witkc-members'
+        }).promise().then((data) => {
+            if (data) return true
+            else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
+        }).catch((err) => {
+            logger.warn(`Could not remove member '${memberId}' from trip '${tripId}'! ${err}`)
             return false
         })
     },

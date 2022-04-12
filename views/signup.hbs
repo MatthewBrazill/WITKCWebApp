@@ -15,50 +15,50 @@
                     <!-- Name -->
                     <div class="two fields">
                         <div class="field">
-                            <input type="text" id="first_name" placeholder="First Name">
+                            <input type="text" id="first_name" placeholder="First Name" autocomplete="given-name">
                         </div>
                         <div class="field">
-                            <input type="text" id="last_name" placeholder="Last Name">
+                            <input type="text" id="last_name" placeholder="Last Name" autocomplete="family-name">
                         </div>
                     </div>
 
                     <!-- Username -->
                     <div class="field">
-                        <input type="text" id="username" placeholder="Username">
+                        <input type="text" id="username" placeholder="Username" autocomplete="username">
                     </div>
 
                     <!-- Email -->
                     <div class="field">
-                        <input type="text" id="email" placeholder="Email Address">
+                        <input type="text" id="email" placeholder="Email Address" autocomplete="email">
                     </div>
 
                     <!-- Phone -->
                     <div class="field">
-                        <input type="text" id="phone" placeholder="Phone Number">
+                        <input type="text" id="phone" placeholder="Phone Number" autocomplete="tel">
                     </div>
 
                     <!-- ===Address=== -->
                     <h4 class="ui dividing header">Address</h4>
                     <!-- Line one -->
                     <div class="field">
-                        <input type="text" id="line_one" placeholder="First Line">
+                        <input type="text" id="line_one" placeholder="First Line" autocomplete="address-line1">
                     </div>
 
                     <!-- Line two -->
                     <div class="field">
-                        <input type="text" id="line_two" placeholder="Second Line">
+                        <input type="text" id="line_two" placeholder="Second Line" autocomplete="address-line2">
                     </div>
 
                     <!-- City -->
                     <div class="field">
-                        <input type="text" id="city" placeholder="City">
+                        <input type="text" id="city" placeholder="City" autocomplete="address-level2">
                     </div>
                     <div class="fields">
 
                         <!-- County -->
                         <div class="ten wide field">
                             <div class="ui search selection dropdown" id="county_dropdown">
-                                <input type="hidden" id="county">
+                                <input type="hidden" id="county" autocomplete="address-level1">
                                 <div class="default text">Select County...</div>
                                 <div class="menu">
                                     <div class="item" data-value="antrim">Antrim</div>
@@ -100,7 +100,7 @@
 
                         <!-- Post code -->
                         <div class="six wide field">
-                            <input type="text" id="code" placeholder="Post Code">
+                            <input type="text" id="code" placeholder="Post Code" autocomplete="postal-code">
                         </div>
                     </div>
 
@@ -109,7 +109,7 @@
                     <!-- Password -->
                     <div class="field">
                         <div class="ui action input">
-                            <input type="password" id="password" placeholder="Password">
+                            <input type="password" id="password" placeholder="Password" autocomplete="new-password">
                             <button class="ui icon button" type="button" id="hide_password">
                                 <i class="eye slash icon"></i>
                             </button>
@@ -135,14 +135,14 @@
 
                     <!-- Confirm password -->
                     <div class="field">
-                        <input type="password" id="confirm_password" placeholder="Confirm Password">
+                        <input type="password" id="confirm_password" placeholder="Confirm Password" autocomplete="new-password">
                     </div>
 
                     <!-- Terms and conditions -->
                     <div class="inline field">
                         <div class="ui checkbox">
                             <input type="checkbox" id="terms">
-                            <label>I have read and accept the <a href="/terms">Terms and Conditions</a></label>
+                            <label>I have read and accept the <a href="/terms" target="_blank" rel="noopener noreferrer">Terms and Conditions</a></label>
                         </div>
                     </div>
 
@@ -150,7 +150,7 @@
                     <div class="inline field">
                         <div class="ui checkbox">
                             <input type="checkbox" id="privacy">
-                            <label>I have read the <a href="/privacy">Privacy Policy</a></label>
+                            <label>I have read the <a href="/privacy" target="_blank" rel="noopener noreferrer">Privacy Policy</a></label>
                         </div>
                     </div>
                     <br>

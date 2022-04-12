@@ -145,7 +145,7 @@ $(document).ready(() => {
             'sligo', 'tipperary', 'tyrone', 'waterford', 'westmeath', 'wexford', 'wicklow'
         ]
 
-        if (!county.val() in counties) {
+        if (!counties.includes(county.val())) {
             field.attr('class', 'ten wide field error')
             county.prop('valid', false)
         } else {
@@ -157,7 +157,7 @@ $(document).ready(() => {
     $('#code').on('input', () => {
         const code = $('#code')
         const field = code.parent()
-        if (!code.val().match(/^[a-zA-Z0-9]{3}[ ]?[a-zA-Z0-9]{4}$/)) {
+        if (!code.val().match(/^[a-z0-9]{3}[ ]?[a-z0-9]{4}$/i) && !code.val().match(/^[a-z0-9]{2,4}[ ]?[a-z0-9]{3}$/i)) {
             field.attr('class', 'six wide field error')
             code.prop('valid', false)
         } else {

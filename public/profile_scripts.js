@@ -161,7 +161,7 @@ $(document).ready(() => {
             'sligo', 'tipperary', 'tyrone', 'waterford', 'westmeath', 'wexford', 'wicklow'
         ]
 
-        if (!county.val() in counties) {
+        if (!counties.includes(county.val())) {
             field.attr('class', 'ten wide field error')
             county.prop('valid', false)
         } else {
@@ -173,7 +173,7 @@ $(document).ready(() => {
     $('#code').on('input', () => {
         const code = $('#code')
         const field = code.parent()
-        if (!code.val().match(/^[a-zA-Z0-9]{3}[ ]?[a-zA-Z0-9]{4}$/)) {
+        if (!code.val().match(/^[a-z0-9]{3}[ ]?[a-z0-9]{4}$/i) && !code.val().match(/^[a-z0-9]{2,4}[ ]?[a-z0-9]{3}$/i)) {
             field.attr('class', 'six wide field error')
             code.prop('valid', false)
         } else {
@@ -222,11 +222,12 @@ $(document).ready(() => {
     $('#customize_form').submit((event) => {
         event.preventDefault()
         const form = $('#customize_form')
-        const file = $('#file')[0].files[0]
-        const inputs = $("form#customize_form input[type=file]")
+        const file = $('#file')
+        const inputs = $("form#customize_form input[type=file], form#customize_form textarea")
 
         var valid = true
         inputs.trigger('change')
+        inputs.trigger('input')
         inputs.each((index, element) => {
             var input = $(element)
             if (!input.prop('valid')) valid = false
@@ -236,7 +237,10 @@ $(document).ready(() => {
         else {
             form.attr('class', 'ui loading form')
             var data = new FormData()
-            data.append('file', file)
+
+
+            if (file.prop('files')[0] != undefined) data.append('file', file[0].files[0])
+            data.append('bio', $('#bio').val())
             $.ajax({
                 url: '/api/settings/customize',
                 method: 'POST',
@@ -253,13 +257,31 @@ $(document).ready(() => {
         }
     })
 
+    $('#bio').on('input', () => {
+        const bio = $('#bio')
+        const field = bio.parent()
+
+        if (bio.val() == '') {
+            field.attr('class', 'field')
+            bio.prop('valid', true)
+        } else if (!bio.val().match(/^.{1,500}$/u)) {
+            field.attr('class', 'error field')
+            bio.prop('valid', false)
+        } else {
+            field.attr('class', 'success field')
+            bio.prop('valid', true)
+        }
+    })
+
     $('#file').on('change', () => {
         const file = $('#file')
         const field = file.parent()
 
+        console.log(file.prop('files')[0])
+
         if (file.prop('files')[0] == undefined) {
-            field.attr('class', 'error field')
-            file.prop('valid', false)
+            field.attr('class', 'field')
+            file.prop('valid', true)
         } else if (file.prop('files')[0].type.split('/')[0] != 'image') {
             field.attr('class', 'error field')
             file.prop('valid', false)

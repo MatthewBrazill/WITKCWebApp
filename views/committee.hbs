@@ -14,100 +14,18 @@
 
         <div class="ui centered three cards">
 
-            <!-- Captain -->
+            {{#each committee}}
             <div class="card">
-                <div class="image"><img src="{{committee.captain.img}}" alt="Picture"></div>
+                <div class="image"><img src="{{this.member.img}}" alt="Picture"></div>
                 <div class="content">
-                    <div class="header">{{committee.captain.first_name}} {{committee.captain.last_name}}</div>
-                    <div class="meta">Captain</div>
+                    <div class="header">{{this.member.firstName}} {{this.member.lastName}}</div>
+                    <div class="meta">{{this.role}}</div>
                     <div class="description">
-                        The Captain is the leader of the club and acts as the chair of the committee. They oversee all
-                        other activities of the committee and the club.
+                        {{this.description}}
                     </div>
                 </div>
             </div>
-
-            <!-- Vice-Captain -->
-            <div class="card">
-                <div class="image"><img src="{{committee.vice.img}}" alt="Picture"></div>
-                <div class="content">
-                    <div class="header">{{committee.vice.first_name}} {{committee.vice.last_name}}</div>
-                    <div class="meta">Vice-Captain</div>
-                    <div class="description">
-                        The Vice-Captain is responsible for assisting the captain with their duties as well as acting in
-                        their stead when they are absent. They are also responsible for organizing fundraising events
-                        and social gatherings.
-                    </div>
-                </div>
-            </div>
-
-            <!-- Safety and Development Officer -->
-            <div class="card">
-                <div class="image"><img src="{{committee.safety.img}}" alt="Picture"></div>
-                <div class="content">
-                    <div class="header">{{committee.safety.first_name}} {{committee.safety.last_name}}</div>
-                    <div class="meta">Safety and Development Officer</div>
-                    <div class="description">
-                        The Safety and Development Officer is responsible for the safety and wellbeing of all members of
-                        the club. They are responsible for ensuring there is adequate safety on club trips and has the
-                        final say on weather an event will take place.
-                    </div>
-                </div>
-            </div>
-
-            <!-- Treasurer and Secretary -->
-            <div class="card">
-                <div class="image"><img src="{{committee.treasurer.img}}" alt="Picture"></div>
-                <div class="content">
-                    <div class="header">{{committee.treasurer.first_name}} {{committee.treasurer.last_name}}</div>
-                    <div class="meta">Treasurer and Secretary</div>
-                    <div class="description">
-                        The Treasurer and Secretary is responsible for the club financial affairs such as applying for
-                        grants or processing payments. They are also responsible for club communication and organization
-                        such as committee meetings.
-                    </div>
-                </div>
-            </div>
-
-            <!-- Equipment Officer -->
-            <div class="card">
-                <div class="image"><img src="{{committee.equipments.img}}" alt="Picture"></div>
-                <div class="content">
-                    <div class="header">{{committee.equipments.first_name}} {{committee.equipments.last_name}}</div>
-                    <div class="meta">Equipment Officer</div>
-                    <div class="description">
-                        The Equipment Officer is responsible for the clubs equipment. They take care of organizing the
-                        storage as well as acquisition of new club equipment such as boats or paddles.
-                    </div>
-                </div>
-            </div>
-
-            <!-- Public Relations Officer -->
-            <div class="card">
-                <div class="image"><img src="{{committee.pro.img}}" alt="Picture"></div>
-                <div class="content">
-                    <div class="header">{{committee.pro.first_name}} {{committee.pro.last_name}}</div>
-                    <div class="meta">Public Relations Officer</div>
-                    <div class="description">
-                        The Public Relations Officer is responsible for the outward appearance of the club and public
-                        communications through social media or other public mediums.
-                    </div>
-                </div>
-            </div>
-
-            <!-- New Members Officer -->
-            <div class="card">
-                <div class="image"><img src="{{committee.freshers.img}}" alt="Picture"></div>
-                <div class="content">
-                    <div class="header">{{committee.freshers.first_name}} {{committee.freshers.last_name}}</div>
-                    <div class="meta">New Members Officer</div>
-                    <div class="description">
-                        The New Members Officer, or 'Fresher Rep', is responsible for the smooth integration of new
-                        members to the club. They act as a point of contact for complaint, worries or issues of any kind
-                        that new members to the club may have when first joining.
-                    </div>
-                </div>
-            </div>
+            {{/each}}
         </div>
     </div>
 </div>

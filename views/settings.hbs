@@ -2,11 +2,17 @@
 <div class="four wide column">
 
     <!-- Top menu choices -->
+    {{#if admin}}
+    <div class="ui vertical menu" style="width: 100%;">
+        <div class="active link item" id="password">Change Password</div>
+    </div>
+    {{else}}
     <div class="ui vertical menu" style="width: 100%;">
         <div class="active link item" id="personal">Personal Details</div>
         <div class="link item" id="customize">Customize Profile</div>
         <div class="link item" id="password">Change Password</div>
     </div>
+    {{/if}}
 
     <!-- Back button -->
     <div class="ui blue inverted vertical menu" style="width: 100%;">
@@ -17,6 +23,8 @@
 
 <div class="twelve wide column">
 
+    {{#if admin}}
+    {{else}}
     <div class="ui tab active segment" data-tab="personal" style="margin: 0px;">
 
         <h3>Personal Details</h3>
@@ -36,7 +44,7 @@
 
             <div class="ui seven wide column">
 
-                <form class="ui form" id="personal_form">
+                <form class="ui form" id="personal_form" autocomplete="off">
 
                     <!-- Username (Doesn't Update) -->
                     <div class="field">
@@ -193,12 +201,18 @@
         <div class="ui grid" style="padding-left: 12%;">
 
             <div class="ui three wide column" style="font-weight: 700;">
-                <div style="padding: 9px 0px; margin-bottom: 14px;">Profile Picture:</div>
+                <div style="padding: 9px 0px; margin-bottom: 90px;">Biography:</div>
+                <div style="padding: 9px 0px">Profile Picture:</div>
             </div>
 
             <div class="ui seven wide column">
 
-                <form class="ui form" id="customize_form">
+                <form class="ui form" id="customize_form" autocomplete="off">
+
+                    <div class="field">
+                        <textarea style="resize: none" rows="5" id="bio" placeholder="Biography..."
+                            value="{{member.bio}}" maxlength="500"></textarea>
+                    </div>
 
                     <!-- User image -->
                     <img class="ui rounded fluid image field" src="{{member.img}}" alt="User Image" id="image">
@@ -210,23 +224,24 @@
 
                     <!-- Error -->
                     <div class="ui error message">
-                        <div class="header">Couldn't update image!</div>
+                        <div class="header">Couldn't update profile!</div>
                         <p id="customize_error_description"></p>
                     </div>
                     <!-- Success -->
                     <div class="ui success message">
-                        <div class="header">Profile image updated!</div>
+                        <div class="header">Profile updated!</div>
                     </div>
                     <button class="positive fluid ui button" type="submit">Save</button>
                 </form>
             </div>
         </div>
     </div>
+    {{/if}}
 
 
 
     <!--  Tab to change password -->
-    <div class="ui tab segment" data-tab="password" style="margin: 0px;">
+    <div class="ui tab {{#if admin}}active {{/if}}segment" data-tab="password" style="margin: 0px;">
 
         <h3>Change Password</h3>
 
@@ -239,7 +254,7 @@
 
             <div class="ui seven wide column">
 
-                <form class="ui form" id="password_form">
+                <form class="ui form" id="password_form" autocomplete="off">
 
                     <!-- Old password -->
                     <div class="field">

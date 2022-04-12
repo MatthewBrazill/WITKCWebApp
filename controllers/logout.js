@@ -5,8 +5,9 @@ const logger = require('../log.js')
 
 const logout = {
     async get(req, res) {
-        logger.info(`Session '${req.sessionID}': Logging Out`)
         req.session.destroy()
+
+        logger.info(`Session '${req.sessionID}': Logging Out`)
         res.redirect('/')
     }
 }

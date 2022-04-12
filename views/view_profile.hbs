@@ -1,0 +1,64 @@
+<div class="twelve wide column">
+    <div class="ui segment">
+
+        <div class="ui two column grid">
+
+            <div class="four wide column">
+                <img class="ui fluid rounded image" src="{{user.img}}" alt="User Image">
+            </div>
+
+            <div class="twelve wide column">
+
+                <div class="ui items">
+                    <div class="item">
+
+                        <div class="content">
+                            <div class="header"><h2>{{user.firstName}} {{user.lastName}}</h2></div>
+                            <div class="meta">Member since {{user.dateJoined}}</div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <h5>Biography:</h5>
+                <p>{{user.bio}}</p>
+
+            </div>
+        </div>
+
+        <!-- Qualifications -->
+        <h3 class="ui dividing header">{{user.firstName}}'s Qualifications</h3>
+
+        {{#if user.certs.length}}
+
+        <div class="ui items">
+
+            {{#each user.certs}}
+            <a class="ui fluid link card" href="{{this.link}}" style="color: black;">
+                <div class="content">
+                    <div class="header">
+                        <div class="ui left floated">{{this.name}}</div>
+                        <div class="ui right floated">{{this.category}} Certificate</div>
+                    </div>
+                </div>
+            </a>
+            {{/each}}
+
+        </div>
+
+        {{else}}
+
+        <div class="ui fitted segment" id="certs">
+            <div class="ui fluid placeholder segment">
+                <div class="ui icon header">
+                    <i class="graduation cap icon"></i>
+                    {{user.firstName}} does not have any qualifications yet!
+                </div>
+            </div>
+        </div>
+
+        {{/if}}
+    </div>
+</div>
+
+{{> sidebar}}

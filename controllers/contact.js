@@ -12,6 +12,7 @@ const contact = {
     async get(req, res) {
         var data = await viewData.get(req, 'Contact Us')
         data.scripts.contact = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/contact_scripts.js' })
+        
         logger.info(`Session '${req.sessionID}': Getting Contact`)
         res.render('contact', data)
     },
@@ -43,13 +44,13 @@ const contact = {
                     res.sendStatus(200)
                 }).catch((err) => {
                     logger.info(`Session '${req.sessionID}': Failed to send message! ${err}`)
-                    res.sendStatus(500)
+                    res.status(500).json(err)
                 })
             } else {
                 logger.info(`Session '${req.sessionID}': Tried to send invalid message!`)
                 res.sendStatus(400)
             }
-        } catch (err) { res.status(500).send(err) }
+        } catch (err) { res.status(500).json(err) }
     }
 }
 

@@ -10,6 +10,7 @@ const events = {
     async get(req, res) {
         var data = await viewData.get(req, 'Events')
         data.scripts.events = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/events_scripts.js' })
+        
         logger.info(`Session '${req.sessionID}': Getting Events`)
         res.render('events', data)
     },

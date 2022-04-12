@@ -12,11 +12,11 @@ const viewData = require('../view_data.js')
 
 const signup = {
     async get(req, res) {
-        logger.info(`Session '${req.sessionID}': Getting Sign Up`)
         var data = await viewData.get(req, 'Sign Up')
         data.scripts.sign_up = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/sign_up_scripts.js' })
 
-        req.session.destroy()
+        if (data.logged_in) req.session.destroy()
+        logger.info(`Session '${req.sessionID}': Getting Sign Up`)
         res.render('signup', data)
     },
 
@@ -39,8 +39,8 @@ const signup = {
         if (!req.body.line_one.match(/^[\w- ]{1,32}$/)) valid = false
         if (!req.body.line_two.match(/^[\w- ]{1,32}$/) && req.body.line_two != '') valid = false
         if (!req.body.city.match(/^[\w- ]{1,32}$/)) valid = false
-        if (!req.body.county in counties) valid = false
-        if (!req.body.code.match(/^[a-zA-Z0-9]{3}[ ]?[a-zA-Z0-9]{4}$/)) valid = false
+        if (!counties.includes(req.body.county)) valid = false
+        if (!req.body.code.match(/^[a-z0-9]{3}[ ]?[a-z0-9]{4}$/i) && !req.body.code.match(/^[a-z0-9]{2,4}[ ]?[a-z0-9]{3}$/i)) valid = false
         if (req.body.password.length < 8) valid = false
         if (req.body.confirm_password != req.body.password) valid = false
 
@@ -49,21 +49,21 @@ const signup = {
             var member = {
                 memberId: uuid.v4(),
                 username: req.body.username,
-                firstName: req.body.first_name,
-                lastName: req.body.last_name,
-                email: req.body.email,
-                phone: req.body.phone,
+                firstName: viewData.capitalize(req.body.first_name),
+                lastName: viewData.capitalize(req.body.last_name),
+                email: req.body.email.toLowerCase(),
+                phone: viewData.internationalize(req.body.phone),
                 verified: false,
                 promotion: true,
                 address: {
-                    lineOne: req.body.line_one,
-                    lineTwo: req.body.line_two,
-                    city: req.body.city,
+                    lineOne: viewData.capitalize(req.body.line_one),
+                    lineTwo: viewData.capitalize(req.body.line_two),
+                    city: viewData.capitalize(req.body.city),
                     county: req.body.county,
-                    code: req.body.code,
+                    code: req.body.code.toUpperCase().replace(/\s/g, ''),
                 },
                 img: 'img/placeholder_avatar.webp',
-                dateJoined: new Date().toISOString().substring(0, 10)
+                dateJoined: new Date().toUTCString().substring(5, 16)
             }
 
             members.create(member)

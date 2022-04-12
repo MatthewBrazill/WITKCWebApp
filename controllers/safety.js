@@ -25,7 +25,7 @@ const safety = {
                 } else res.sendStatus(403)
             } else res.sendStatus(403)
         } catch (err) {
-            res.status(500).send(err)
+            res.status(500).json(err)
         }
     },
 
@@ -50,7 +50,7 @@ const safety = {
                 } else res.sendStatus(403)
             } else res.sendStatus(403)
         } catch (err) {
-            res.status(500).send(err)
+            res.status(500).json(err)
         }
     }
 }

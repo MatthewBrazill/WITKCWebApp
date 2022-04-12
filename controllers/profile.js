@@ -11,25 +11,26 @@ const passwords = require("../data_managers/passwords.js")
 const bcrypt = require('bcrypt')
 const sharp = require('sharp')
 const viewData = require('../view_data.js')
+const committee = require('../data_managers/committee.js')
 
 const profile = {
     async me(req, res) {
         var data = await viewData.get(req, 'My Profile')
-        data.scripts.profile = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/profile_scripts.js' })
-
-        if (['captain', 'vice', 'safety', 'treasurer', 'equipments', 'pro', 'freshers'].includes(data.member.committeeRole)) {
-            data.scripts.committee = '/committee_scripts.js' //s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/committee_scripts.js' })
-            data[data.member.committeeRole] = true
-            data.scripts[data.member.committeeRole] = `/${data.member.committeeRole}_scripts.js` //s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: `js/${data.member.committeeRole}_scripts.js` })
-        } else if (data.member.committeeRole == 'admin') {
-            data.scripts.committee = '/committee_scripts.js' //s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/committee_scripts.js' })
-            for (var role of ['captain', 'vice', 'safety', 'treasurer', 'equipments', 'pro', 'freshers']) {
-                data[role] = true
-                data.scripts[role] = `/${role}_scripts.js` //s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: `js/${role}_scripts.js` })
-            }
-        }
+        data.scripts.profile = '/profile_scripts.js' //s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/profile_scripts.js' })
 
         if (data.logged_in) {
+            if (data.committee) {
+                data.scripts.committee = '/committee_scripts.js' //s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/committee_scripts.js' })
+                data[data.committee] = await committee.getRole(data.committee)
+                data.scripts[data.committee] = `/${data.committee}_scripts.js` //s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: `js/${data.committee}_scripts.js` })
+            } else if (data.admin) {
+                data.scripts.committee = '/committee_scripts.js' //s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/committee_scripts.js' })
+                for (var role of ['captain', 'vice', 'safety', 'treasurer', 'equipments', 'pro', 'freshers']) {
+                    data[role] = await committee.getRole(role)
+                    data.scripts[role] = `/${role}_scripts.js` //s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: `js/${role}_scripts.js` })
+                }
+            }
+
             logger.info(`Session '${req.sessionID}': Getting Profile`)
             res.render('profile', data)
         } else res.redirect('/')
@@ -37,9 +38,10 @@ const profile = {
 
     async settings(req, res) {
         var data = await viewData.get(req, 'Settings')
-        data.scripts.profile = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/profile_scripts.js' })
+        data.scripts.profile = '/profile_scripts.js' //s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/profile_scripts.js' })
 
         if (data.logged_in) {
+            if (data.member.committeeRole == 'admin') data.admin = true
             logger.info(`Session '${req.sessionID}': Getting Settings`)
             res.render('settings', data)
         } else res.redirect('/')
@@ -48,15 +50,16 @@ const profile = {
     async personal(req, res) {
         try {
             var data = await viewData.get(req, 'Personal')
-            var valid = true
-            var counties = [
-                'antrim', 'armagh', 'carlow', 'cavan', 'clare', 'cork', 'derry', 'donegal', 'down',
-                'dublin', 'fermanagh', 'galway', 'kerry', 'kildare', 'kilkenny', 'laois', 'leitrim',
-                'limerick', 'longford', 'louth', 'mayo', 'meath', 'monaghan', 'offaly', 'roscommon',
-                'sligo', 'tipperary', 'tyrone', 'waterford', 'westmeath', 'wexford', 'wicklow'
-            ]
 
             if (data.logged_in) {
+                var valid = true
+                var counties = [
+                    'antrim', 'armagh', 'carlow', 'cavan', 'clare', 'cork', 'derry', 'donegal', 'down',
+                    'dublin', 'fermanagh', 'galway', 'kerry', 'kildare', 'kilkenny', 'laois', 'leitrim',
+                    'limerick', 'longford', 'louth', 'mayo', 'meath', 'monaghan', 'offaly', 'roscommon',
+                    'sligo', 'tipperary', 'tyrone', 'waterford', 'westmeath', 'wexford', 'wicklow'
+                ]
+
                 // Server-Side Validation
                 if (!req.body.first_name.match(/^\p{L}{1,16}$/u)) valid = false
                 if (!req.body.last_name.match(/^\p{L}{1,16}$/u)) valid = false
@@ -65,69 +68,77 @@ const profile = {
                 if (!req.body.line_one.match(/^[\w- ]{1,32}$/)) valid = false
                 if (!req.body.line_two.match(/^[\w- ]{1,32}$/) && req.body.line_two != '') valid = false
                 if (!req.body.city.match(/^[\w- ]{1,32}$/)) valid = false
-                if (!req.body.county in counties) valid = false
-                if (!req.body.code.match(/^[a-zA-Z0-9]{3}[ ]?[a-zA-Z0-9]{4}$/)) valid = false
+                if (!counties.includes(req.body.county)) valid = false
+                if (!req.body.code.match(/^[a-z0-9]{3}[ ]?[a-z0-9]{4}$/i) && !req.body.code.match(/^[a-z0-9]{2,4}[ ]?[a-z0-9]{3}$/i)) valid = false
 
                 if (valid) {
-                    data.member.firstName = req.body.first_name
-                    data.member.lastName = req.body.last_name
-                    data.member.email = req.body.email
-                    data.member.phone = req.body.phone
-                    data.member.address.lineOne = req.body.line_one
-                    data.member.address.lineTwo = req.body.line_two
-                    data.member.address.city = req.body.city
-                    data.member.address.county = req.body.county
-                    data.member.address.code = req.body.code
-                    data.member.promotion = (req.body.promotion === 'true')
-                    members.update(data.member).then(() => {
+                    members.update({
+                        memberId: data.member.memberId,
+                        firstName: viewData.capitalize(req.body.first_name),
+                        lastName: viewData.capitalize(req.body.last_name),
+                        email: req.body.email.toLowerCase(),
+                        phone: viewData.internationalize(req.body.phone),
+                        address: {
+                            lineOne: viewData.capitalize(req.body.line_one),
+                            lineTwo: viewData.capitalize(req.body.line_two),
+                            city: viewData.capitalize(req.body.city),
+                            county: req.body.county,
+                            code: req.body.code.toUpperCase().replace(/\s/g, '')
+                        },
+                        promotion: (req.body.promotion === 'true')
+                    }).then(() => {
                         logger.info(`Member ${data.member.memberId}: Successfully changed personal data!`)
                         res.sendStatus(200)
-                    }).catch(() => res.status(500).send(err))
+                    }).catch(() => res.status(500).json(err))
                 } else res.sendStatus(400)
             } else res.sendStatus(403)
-        } catch (err) { res.status(500).send(err) }
+        } catch (err) { res.status(500).json(err) }
     },
 
     async customize(req, res) {
         try {
             var data = await viewData.get(req, 'Customize')
-            var file = new formidable.IncomingForm()
 
             if (data.logged_in) {
-                new Promise((resolve) => {
-                    file.parse(req, (err, fields, file) => {
-                        if (err) res.status(400).send(err)
-                        else resolve(file.file)
+                var form = new formidable.IncomingForm()
+                new Promise((resolve, reject) => {
+                    form.parse(req, (err, fields, file) => {
+                        if (err) reject(err)
+                        else resolve(fields, file)
                     })
-                }).then((file) => {
-                    return sharp(file.filepath).resize({ width: 400 }).webp().toFile(`${file.filepath}-new`).then(() => {
-                        return `${file.filepath}-new`
-                    }).catch((err) => res.status(500).send(err))
-                }).then((filepath) => {
-                    data.member.img = `img/users/${data.member.memberId}.webp`
-                    s3.putObject({
-                        Bucket: 'witkc',
-                        Key: data.member.img,
-                        Body: fs.readFileSync(filepath)
-                    }).promise()
-                }).then(() => {
-                    members.update(data.member)
+                }).then(async (fields, file) => {
+                    if (file !== undefined) {
+                        await sharp(file.file.filepath).resize({ width: 400 }).webp().toFile(`${file.file.filepath}-new`).catch((err) => { throw err })
+                        await s3.putObject({
+                            Bucket: 'witkc',
+                            Key: data.member.img,
+                            Body: fs.readFileSync(`${file.file.filepath}-new`)
+                        }).promise().catch((err) => { throw err })
+                    }
+
+                    members.update({
+                        memberId: data.member.memberId,
+                        bio: fields.bio
+                    })
                     logger.info(`Member ${data.member.memberId}: Successfully updated image!`)
                     res.status(200).json({
                         url: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: data.member.img })
                     })
-                }).catch((err) => res.status(500).send(err))
+                }).catch((err) => {
+                    console.log(err.stack)
+                    res.status(500).json(err)
+                })
             } else res.sendStatus(403)
-        } catch (err) { res.status(500).send(err) }
+        } catch (err) { res.status(500).json(err) }
     },
 
     async password(req, res) {
         try {
             var data = await viewData.get(req, 'Password')
-            var valid = true
 
             if (data.logged_in) {
                 if (await bcrypt.compare(req.body.old_password, await passwords.get(data.member.memberId))) {
+                    var valid = true
                     // Server-Side Validation
                     if (req.body.new_password.length < 8) valid = false
                     if (req.body.confirm_password != req.body.new_password) valid = false
@@ -136,11 +147,11 @@ const profile = {
                         passwords.update(data.member.memberId, await bcrypt.hash(req.body.new_password, 10)).then(() => {
                             logger.info(`Member ${data.member.memberId}: Successfully changed password!`)
                             res.sendStatus(200)
-                        }).catch(() => res.status(500).send(err))
+                        }).catch(() => res.status(500).json(err))
                     } else res.sendStatus(400)
                 } else res.sendStatus(403)
             } else res.sendStatus(403)
-        } catch (err) { res.status(500).send(err) }
+        } catch (err) { res.status(500).json(err) }
     },
 
     async delete(req, res) {
@@ -151,15 +162,27 @@ const profile = {
                 members.delete(data.member.memberId).then(() => {
                     res.redirect('/logout')
                     logger.info(`Member ${data.member.memberId}: Successfully deleted account!`)
-                }).catch(() => res.status(500).send(err))
+                }).catch(() => res.status(500).json(err))
             } else res.sendStatus(403)
-        } catch (err) { res.status(500).send(err) }
+        } catch (err) { res.status(500).json(err) }
     },
 
     async user(req, res) {
-        try {
-            res.redirect('/')
-        } catch (err) { res.status(500).send(err) }
+        var data = await viewData.get(req, 'View Profile')
+        data.scripts.profile = '/profile_scripts.js' //s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/profile_scripts.js' })
+
+        if (data.logged_in) {
+            if (req.params.userId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
+
+                data.user = await members.get(req.params.userId)
+                data.user.dateJoined = new Date(data.user.dateJoined).toUTCString().substring(5, 16)
+                console.log(new Date(data.user.dateJoined).toUTCString())
+                data.user.img = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: data.user.img })
+
+                logger.info(`Session '${req.sessionID}': Getting View Profile`)
+                res.render('view_profile', data)
+            } else res.redirect('/404')
+        } else res.redirect('/')
     },
 }
 
