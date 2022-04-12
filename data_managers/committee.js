@@ -49,7 +49,6 @@ const committee = {
             TableName: 'witkc-committee'
         }).promise().then((data) => {
             if (data.Items != undefined) {
-                console.log(data.Items)
                 var committee = []
                 for (var item of data.Items) {
                     var role = {

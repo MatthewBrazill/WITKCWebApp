@@ -15,8 +15,6 @@ const committee = {
         for (var role of data.committee) {
             role.member.img = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: role.member.img })
         }
-
-        console.log(data.committee)
         
         logger.info(`Session '${req.sessionID}': Getting Committee`)
         res.render('committee', data)
