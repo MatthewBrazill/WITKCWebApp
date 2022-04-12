@@ -43,7 +43,7 @@ async function start() {
                 region: 'eu-west-1'
             },
         }),
-        cookie: { maxAge: 1000 * 60 * 60 * 12 },
+        cookie: { maxAge: 1000 * 60 * 60 * 24 * 28 },
         resave: false
     })
 
