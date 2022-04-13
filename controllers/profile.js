@@ -102,17 +102,25 @@ const profile = {
             if (data.logged_in) {
                 var form = new formidable.IncomingForm()
                 new Promise((resolve, reject) => {
-                    form.parse(req, (err, fields, file) => {
+                    form.parse(req, (err, fields, files) => {
+                        var valid = true
+                        console.log(files.file)
                         if (err) reject(err)
-                        else resolve(fields, file)
+                        else {
+                            if (!fields.bio.match(/^.{1,500}$/u)) valid = false
+                            if (files.file.type.split('/')[0] != 'image') valid = false
+
+                            if (!valid) reject('Malformed Input')
+                            else resolve(fields, files)
+                        }
                     })
-                }).then(async (fields, file) => {
-                    if (file !== undefined) {
-                        await sharp(file.file.filepath).resize({ width: 400 }).webp().toFile(`${file.file.filepath}-new`).catch((err) => { throw err })
+                }).then(async (fields, files) => {
+                    if (files !== undefined) {
+                        await sharp(files.file.filepath).resize({ width: 400 }).webp().toFile(`${files.file.filepath}-new`).catch((err) => { throw err })
                         await s3.putObject({
                             Bucket: 'witkc',
                             Key: data.member.img,
-                            Body: fs.readFileSync(`${file.file.filepath}-new`)
+                            Body: fs.readFileSync(`${files.file.filepath}-new`)
                         }).promise().catch((err) => { throw err })
                     }
 

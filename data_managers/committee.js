@@ -87,6 +87,68 @@ const committee = {
             logger.warn(`Could not determine committee membership of member '${memberId}'! ${err}`)
             return null
         })
+    },
+
+    async submitExpense(expense) {
+        if (expense === null || expense === undefined) return false
+        var value = {
+            L: [{
+                M: {
+                    'expenseId': { S: expense.expenseId },
+                    'memberId': { S: expense.memberId },
+                    'expenses': [],
+                    'receipts': []
+                }
+            }]
+        }
+        for (var exp of expense.expenses) value.L[0].M['expenses'].push({
+            M: {
+                'description': exp.description,
+                'price': exp.price
+            }
+        })
+        for (var receipt of expense.receipts) value.L[0].M['receipts'].push({ S: receipt })
+        return dynamo.updateItem({
+            Key: { 'roleId': { S: 'treasurer' } },
+            ExpressionAttributeValues: { ':expense': value },
+            UpdateExpression: 'SET expenses = list_append(expenses, :expense)',
+            TableName: 'witkc-committee'
+        }).promise().then((data) => {
+            if (data) return true
+            else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
+        }).catch((err) => {
+            logger.warn(`Could not submit expense '${expense.expenseId}'! ${err}`)
+            return false
+        })
+    },
+
+    async deleteExpense(expenseId) {
+        if (expenseId === null || expenseId === undefined) return false
+        return dynamo.getItem({
+            ExpressionAttributeNames: { '#EXP': 'expenses' },
+            Key: { 'roleId': { S: 'treasurer' } },
+            ProjectionExpression: '#EXP',
+            TableName: 'witkc-committee'
+        }).promise().then((data) => {
+            if (data.Item != undefined) {
+                for (var i in data.Item['expenses'].L) if (data.Item['certs'].L[i].M['expenseId'].S == expenseId) return i
+                return -1
+            }
+            else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
+        }).then((index) => {
+            if (index != -1) return dynamo.updateItem({
+                Key: { 'roleId': { S: 'treasurer' } },
+                UpdateExpression: `REMOVE expenses[${index}]`,
+                TableName: 'witkc-committee'
+            }).promise().then((data) => {
+                if (data) return true
+                else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
+            }).catch((err) => { throw err })
+            else return false
+        }).catch((err) => {
+            logger.warn(`Could not delete expense '${expenseId}'! ${err}`)
+            return false
+        })
     }
 }
 

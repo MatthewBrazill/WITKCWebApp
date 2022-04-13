@@ -12,7 +12,7 @@ const safety = {
             var valid = true
 
             if (data.logged_in) {
-                if (data.member.committeeRole == 'safety' || data.member.committeeRole == 'admin') {
+                if (data.committee == 'safety' || data.admin) {
                     // Server-Side Validation
                     if (!req.body.memberIds.match(/^([a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}){1}(,[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12})*$/i)) valid = false
                     if (!req.body.certId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) valid = false
@@ -35,9 +35,7 @@ const safety = {
             var valid = true
 
             if (data.logged_in) {
-                if (data.member.committeeRole == 'safety' || data.member.committeeRole == 'admin') {
-
-                    console.log(req.body)
+                if (data.committee == 'safety' || data.admin) {
 
                     // Server-Side Validation
                     if (!req.body.memberId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) valid = false

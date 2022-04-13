@@ -238,9 +238,9 @@ $(document).ready(() => {
             form.attr('class', 'ui loading form')
             var data = new FormData()
 
-
             if (file.prop('files')[0] != undefined) data.append('file', file[0].files[0])
             data.append('bio', $('#bio').val())
+
             $.ajax({
                 url: '/api/settings/customize',
                 method: 'POST',
@@ -276,8 +276,6 @@ $(document).ready(() => {
     $('#file').on('change', () => {
         const file = $('#file')
         const field = file.parent()
-
-        console.log(file.prop('files')[0])
 
         if (file.prop('files')[0] == undefined) {
             field.attr('class', 'field')

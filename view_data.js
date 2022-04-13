@@ -26,7 +26,7 @@ const viewData = {
             data.logged_in = true
 
             if (data.member.memberId == '96e01799-74bb-4772-bd5c-fd92528cc510') data.admin = true
-            else data.committee = committee.isCommittee(data.member.memberId).then((role) => role)
+            else data.committee = committee.isCommittee(data.member.memberId).then((roleId) => roleId)
 
             if (req.method != 'POST') {
                 data.member.img = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: data.member.img })

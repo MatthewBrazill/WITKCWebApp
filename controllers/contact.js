@@ -32,7 +32,13 @@ const contact = {
                 ses.sendEmail({
                     Content: {
                         Simple: {
-                            Body: { Text: { Data: `From: ${req.body.first_name} ${req.body.last_name}\nE-Mail: ${req.body.email}\nTime: ${new Date()}\nTicket: ${ticket}\n\n\n${req.body.message}` } },
+                            Body: { Text: { Data: 
+                                `From: ${req.body.first_name} ${req.body.last_name}\n
+                                E-Mail: ${req.body.email}\n
+                                Time: ${new Date()}\n
+                                Ticket: ${ticket}\n
+                                \n
+                                \n${req.body.message}` } },
                             Subject: { Data: `Contact Form Message: ${ticket}` }
                         }
                     },

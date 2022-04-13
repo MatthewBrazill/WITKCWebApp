@@ -19,6 +19,7 @@ const terms = require('./controllers/terms.js')
 const api = require('./api.js')
 const safety = require('./controllers/safety.js')
 const trip = require('./controllers/trip.js')
+const expense = require('./controllers/expense.js')
 
 // Home
 router.get('/', home.get)
@@ -82,6 +83,13 @@ router.post('/api/equipment/add')
 router.post('/api/equipment/get')
 router.post('/api/equipment/update')
 router.post('/api/equipment/delete')
+
+
+
+// Expenses
+router.get('/expenses', expense.get)
+// Expenses API
+router.post('/api/expense/submit', expense.submit)
 
 
 

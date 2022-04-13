@@ -159,7 +159,7 @@ const members = {
         var attributes = {}
         var expression = 'SET '
         for (var attr in member) {
-            if (attr == 'memberId') {}
+            if (attr == 'memberId') { }
             else if (typeof member[attr] == 'boolean') {
                 attributes[`:${attr}`] = { BOOL: member[attr] }
                 expression += `${attr} = :${attr}, `
@@ -213,14 +213,27 @@ const members = {
 
     async revokeCert(memberId, certId) {
         if (memberId === null || memberId === undefined || certId === null || certId === undefined) return false
-        return dynamo.updateItem({
+        return dynamo.getItem({
+            ExpressionAttributeNames: { '#CERT': 'certs' },
             Key: { 'memberId': { S: memberId } },
-            ExpressionAttributeValues: { ':cert': { L: [{ S: certId }] } },
-            UpdateExpression: 'DELETE certs :cert',
+            ProjectionExpression: '#CERT',
             TableName: 'witkc-members'
         }).promise().then((data) => {
-            if (data) return true
+            if (data.Item != undefined) {
+                for (var i in data.Item['certs'].L) if (data.Item['certs'].L[i].S == certId) return i
+                return -1
+            }
             else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
+        }).then((index) => {
+            if (index != -1) return dynamo.updateItem({
+                Key: { 'memberId': { S: memberId } },
+                UpdateExpression: `REMOVE certs[${index}]`,
+                TableName: 'witkc-members'
+            }).promise().then((data) => {
+                if (data) return true
+                else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
+            }).catch((err) => { throw err })
+            else return false
         }).catch((err) => {
             logger.warn(`Could not remove certificate '${certId}' from member '${memberId}'! ${err}`)
             return false
@@ -230,10 +243,10 @@ const members = {
     async joinTrip(memberId, tripId) {
         if (memberId === null || memberId === undefined || tripId === null || tripId === undefined) return false
         return dynamo.updateItem({
-            Key: { 'memberId': { S: memberId } },
-            ExpressionAttributeValues: { ':trip': { L: [{ S: tripId }] } },
-            UpdateExpression: 'SET trips = list_append(trips, :trip)',
-            TableName: 'witkc-members'
+            Key: { 'tripId': { S: tripId } },
+            ExpressionAttributeValues: { ':member': { L: [{ S: memberId }] } },
+            UpdateExpression: 'SET members = list_append(members, :member)',
+            TableName: 'witkc-trips'
         }).promise().then((data) => {
             if (data) return true
             else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
@@ -245,14 +258,27 @@ const members = {
 
     async leaveTrip(memberId, tripId) {
         if (memberId === null || memberId === undefined || tripId === null || tripId === undefined) return false
-        return dynamo.updateItem({
-            Key: { 'memberId': { S: memberId } },
-            ExpressionAttributeValues: { ':trip': { L: [{ S: tripId }] } },
-            UpdateExpression: 'DELETE trips :trip',
-            TableName: 'witkc-members'
+        return dynamo.getItem({
+            ExpressionAttributeNames: { '#MBRS': 'members' },
+            Key: { 'tripId': { S: tripId } },
+            ProjectionExpression: '#MBRS',
+            TableName: 'witkc-trips'
         }).promise().then((data) => {
-            if (data) return true
+            if (data.Item != undefined) {
+                for (var i in data.Item['members'].L) if (data.Item['members'].L[i].S == memberId) return i
+                return -1
+            }
             else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
+        }).then((index) => {
+            if (index != -1) return dynamo.updateItem({
+                Key: { 'tripId': { S: tripId } },
+                UpdateExpression: `REMOVE members[${index}]`,
+                TableName: 'witkc-trips'
+            }).promise().then((data) => {
+                if (data) return true
+                else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
+            }).catch((err) => { throw err })
+            else return false
         }).catch((err) => {
             logger.warn(`Could not remove member '${memberId}' from trip '${tripId}'! ${err}`)
             return false

@@ -1,0 +1,50 @@
+<div class="ui segment">
+
+    <h3 class="ui dividing header">Treasurer Dashboard</h3>
+
+    <div class="ui divided grid">
+
+        <div class="ui twelve wide column">
+
+            {{#if treasurer.expenses.count}}
+
+            <div class="ui items">
+
+                {{#each treasurer.expenses}}
+
+                <div class="item">
+                    <div class="header">{{this.name}}</div>
+                    <div class="ui two column grid">
+                        <div class="twelve wide column"></div>
+                        <div class="four wide column"></div>
+                        <div class="ui vertical divider"></div>
+                    </div>
+                </div>
+
+                {{/each}}
+
+            </div>
+
+            {{else}}
+
+            <div class="ui fluid placeholder segment">
+                <div class="ui icon header">
+                    <i class="check double icon"></i>
+                    No pending expenses!
+                </div>
+            </div>
+
+            {{/if}}
+        </div>
+
+        <div class="ui four wide column">
+
+            <button class="ui fluid teal button" onclick="$('announcement_modal').show()">
+                <h4 class="ui center aligned icon header">
+                    <i class="large announcement icon"></i>
+                    Announcement
+                </h4>
+            </button>
+        </div>
+    </div>
+</div>
