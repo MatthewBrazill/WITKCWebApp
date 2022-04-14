@@ -1,6 +1,8 @@
 'use strict'
 
 // Imports
+const AWS = require('aws-sdk')
+const s3 = new AWS.S3()
 const formidable = require('formidable')
 const logger = require('../log.js')
 const viewData = require('../view_data.js')
@@ -9,8 +11,8 @@ const sharp = require('sharp')
 const fs = require('fs')
 const committee = require('../data_managers/committee.js')
 
-const expense = {
-    async get(req, res) {
+const expenses = {
+    async create(req, res) {
         var data = await viewData.get(req, 'Submit Expense')
         data.scripts.expense = '/expense_scripts.js' //s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/expense_scripts.js' })
 
@@ -41,7 +43,7 @@ const expense = {
                                 if (field.split('%')[0] == 'expense') {
                                     if (values[0].match(/^.{1,32}$/u) && values[1].match(/^\d+([,.]\d+)?$/)) expenses.push({
                                         description: viewData.capitalize(values[0]),
-                                        price: parseFloat(values[1]).toFixed(2)
+                                        price: values[1]
                                     })
                                     else valid = false
                                 }
@@ -55,9 +57,9 @@ const expense = {
                         }
                     })
                 }).then(async (values) => {
+                    var expenseId = uuid.v4()
                     for (var i in values[1]) {
-                        console.log(values[1][i])
-                        var newPath = `/receipts/${uuid.v4()}.webp`
+                        var newPath = `expenseRequests/${expenseId}/receipts/${uuid.v4()}.webp`
                         await sharp(values[1][i]).webp().toFile(`${values[1][i]}.webp`).catch((err) => { throw err })
                         await s3.putObject({
                             Bucket: 'witkc',
@@ -67,9 +69,13 @@ const expense = {
                         values[1][i] = newPath
                     }
 
+                    var total = parseFloat(0)
+                    for (var expense of values[0]) total = parseFloat(total) + parseFloat(expense.price)
+
                     committee.submitExpense({
-                        expenseId: uuid.v4(),
+                        expenseId: expenseId,
                         memberId: data.member.memberId,
+                        total: total.toFixed(2),
                         expenses: values[0],
                         receipts: values[1]
                     })
@@ -82,25 +88,77 @@ const expense = {
         } catch (err) { res.status(500).json(err) }
     },
 
-    async resolve(req, res) {
+    async get(req, res) {
         try {
             var data = await viewData.get(req, 'API')
 
-            if (data.logged_in) if (data.member.verified) if (data.committee) {
-                var valid = true
+            if (data.logged_in) if (data.member.verified) if (data.committee == 'treasurer' || data.admin) {
+                if (req.body.expenseId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
+                    var treasurer = await committee.getRole('treasurer')
 
-                if (res.body.expenseId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) valid = false
-                if (res.body.accepted != 'true' && req.body.accepted != 'false') valid = false
-                if (res.body.reason.match(/^.{1,200}$/u)) valid = false
-
-                if (valid) {
-
+                    for (var expenseRequest of treasurer.expenseRequests) {
+                        if (expenseRequest.expenseId == req.body.expenseId) {
+                            for (var i in expenseRequest.receipts) expenseRequest.receipts[i] = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: expenseRequest.receipts[i] })
+                            res.status(200).json(expenseRequest)
+                            return
+                        }
+                    }
+                    res.sendStatus(404)
                 } else res.sendStatus(400)
             } else res.sendStatus(403)
             else res.sendStatus(403)
             else res.sendStatus(403)
-        } catch (err) { res.status(500).json(err) }
+        } catch (err) { console.log(err); res.status(500).json(err) }
+    },
+
+    async resolve(req, res) {
+        try {
+            var data = await viewData.get(req, 'API')
+
+            if (data.logged_in) if (data.member.verified) if (data.committee == 'treasurer' || data.admin) {
+                var valid = true
+
+                if (!req.body.expenseId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) valid = false
+                if (req.body.accepted != 'true' && req.body.accepted != 'false') valid = false
+                if (!(req.body.accepted == 'true')) if (!req.body.reason.match(/^.{1,200}$/u)) valid = false
+
+                if (valid) {
+                    var treasurer = await committee.getRole('treasurer')
+                    var request = false
+                    for (var expenseRequest of treasurer.expenseRequests) {
+                        if (expenseRequest.expenseId == req.body.expenseId) request = expenseRequest
+                    }
+
+                    if (request) {
+                        if (req.body.accepted == 'true') {
+                            await s3.putObject({
+                                Bucket: 'witkc',
+                                Key: `expenseRequests/${expenseRequest.expenseId}/request.json`,
+                                Body: JSON.stringify(request)
+                            }).promise().catch((err) => { throw err })
+
+                            // Tell Creator Accepted
+
+                            committee.deleteExpense(req.body.expenseId)
+                            res.sendStatus(200)
+                        } else {
+                            for (var receipt of request.receipts) await s3.deleteObject({
+                                Bucket: 'witkc',
+                                Key: receipt,
+                            }).promise().catch((err) => { throw err })
+
+                            // Tell Creator Denied
+
+                            committee.deleteExpense(req.body.expenseId)
+                            res.sendStatus(200)
+                        }
+                    } else res.sendStatus(404)
+                } else res.sendStatus(400)
+            } else res.sendStatus(403)
+            else res.sendStatus(403)
+            else res.sendStatus(403)
+        } catch (err) { console.log(err); res.status(500).json(err) }
     }
 }
 
-module.exports = expense
+module.exports = expenses

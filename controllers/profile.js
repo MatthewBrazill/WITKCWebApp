@@ -184,7 +184,6 @@ const profile = {
 
                 data.user = await members.get(req.params.userId)
                 data.user.dateJoined = new Date(data.user.dateJoined).toUTCString().substring(5, 16)
-                console.log(new Date(data.user.dateJoined).toUTCString())
                 data.user.img = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: data.user.img })
 
                 logger.info(`Session '${req.sessionID}': Getting View Profile`)

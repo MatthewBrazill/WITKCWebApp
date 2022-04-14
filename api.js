@@ -69,10 +69,12 @@ const api = {
 
             if (data.logged_in) {
                 if (data.committee || data.admin) {
-                    members.get(req.body.memberId).then((member) => {
-                        if (member !== null) res.status(200).json(member)
-                        else throw 'Failed to retrieve member!'
-                    }).catch((err) => res.status(500).json(err))
+                    if (req.body.memberId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
+                        members.get(req.body.memberId).then((member) => {
+                            if (member !== null) res.status(200).json(member)
+                            else throw 'Failed to retrieve member!'
+                        }).catch((err) => res.status(500).json(err))
+                    } else res.sendStatus(400)
                 } else res.sendStatus(403)
             } else res.sendStatus(403)
         } catch (err) { res.status(500).json(err) }
@@ -92,12 +94,6 @@ const api = {
             } else res.sendStatus(403)
         } catch (err) { res.status(500).json(err) }
     },
-
-    async verify(req, res) {
-        try {
-            res.sendStatus(501)
-        } catch (err) { res.status(500).json(err) }
-    }
 }
 
 module.exports = api

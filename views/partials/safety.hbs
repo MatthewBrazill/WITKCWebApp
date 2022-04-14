@@ -1,3 +1,4 @@
+<script src="{{scripts.safety}}" hidden></script>
 <div class="ui segment">
 
     <h3 class="ui dividing header">Safety and Development Dashboard</h3>
@@ -6,7 +7,7 @@
 
         <div class="ui twelve wide column">
 
-            {{#if safety.trips.count}}
+            {{#if safety.trips.length}}
 
             <div class="ui items">
 
@@ -48,7 +49,6 @@
 
             <br>
 
-            <script src="{{scripts.safety}}" hidden></script>
             <button class="ui fluid teal button" id="award_cert">
                 <h4 class="ui center aligned icon header">
                     <i class="large certificate icon"></i>

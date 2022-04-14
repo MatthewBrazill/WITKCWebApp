@@ -40,7 +40,6 @@ const trips = {
     },
 
     async get(tripId) {
-        // Returns null as a string so that bcrypt doesn't fail
         if (tripId === null || tripId === undefined) return null
         return dynamo.getItem({
             Key: { 'tripId': { S: tripId } },
@@ -65,12 +64,34 @@ const trips = {
                     }
                 }
                 return trip
-            }
-            else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
+            } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
             logger.warn(`Failed to retrieve trip '${tripId}'! ${err}`)
             return null
         })
+    },
+
+    async since(date) {
+        if (date === null || date === undefined) return null
+        return dynamo.scan({
+            ExpressionAttributeNames: { '#SD': 'startDate' },
+            ProjectionExpression: '#SD',
+            TableName: 'witkc-trips'
+        }).promise().then((data) => {
+            if (data.Items != undefined) {
+                var trips = []
+                for (var item of data.Items) {
+                    if (new Date(date) <= new Date(item['startDate'].S) && new Date(item['startDate'].S) <= new Date()) {
+                        trips.push(item['startDate'].S)
+                    }
+                }
+                return trips
+            } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
+        }).catch((err) => {
+            logger.warn(`Failed to list trips since ${date}! ${err}`)
+            return null
+        })
+
     },
 
     async update(trip) {

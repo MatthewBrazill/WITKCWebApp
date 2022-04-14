@@ -67,7 +67,7 @@ const members = {
         return dynamo.getItem({
             Key: { 'memberId': { S: memberId } },
             TableName: 'witkc-members'
-        }).promise().then((data) => {
+        }).promise().then(async (data) => {
             if (data.Item != undefined) {
                 var member = {}
                 for (var attr in data.Item) {
@@ -85,13 +85,13 @@ const members = {
                     else if (attr == 'certs') {
                         member.certs = []
                         for (var item of data.Item['certs'].L) {
-                            certificates.get(item.S).then((cert) => { member.certs.push(cert) })
+                            member.certs.push(await certificates.get(item.S))
                         }
                     }
                     else if (attr == 'trips') {
                         member.trips = []
                         for (var item of data.Item['trips'].L) {
-                            trips.get(item.S).then((trip) => { member.trips.push(trip) })
+                            member.trips.push(await trips.get(item.S))
                         }
                     }
                     else if ('L' in data.Item[attr]) {

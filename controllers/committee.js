@@ -13,6 +13,7 @@ const committee = {
         data.committee = await committeeData.getAll()
 
         for (var role of data.committee) {
+            console.log(role.member)
             role.member.img = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: role.member.img })
         }
         

@@ -33,11 +33,13 @@ const trip = {
 
                     for (var i in data.trip.safety) {
                         var member = await members.get(data.trip.safety[i])
-                        var best = member.certs[0]
-                        for (var cert of member.certs) {
-                            if (cert.level > best.level && cert.category == 'Rescue') best = cert
-                        }
-                        if (best.category != 'Rescue') best = { name: '' }
+                        if (member.certs.length > 0) {
+                            var best = member.certs[0]
+                            for (var cert of member.certs) {
+                                if (cert.level > best.level && cert.category == 'Rescue') best = cert
+                            }
+                            if (best.category != 'Rescue') best = { name: '' }
+                        } else best = { name: '' }
                         data.trip.safety[i] = {
                             memberId: member.memberId,
                             firstName: member.firstName,
@@ -50,7 +52,7 @@ const trip = {
                     logger.info(`Session '${req.sessionID}': Getting View Trip`)
                     res.render('view_trip', data)
                 } else res.redirect('/404')
-            }).catch((err) => res.status(500).json(err))
+            }).catch((err) => { console.log(err); res.status(500).json(err) })
         } else res.redirect('/404')
     },
 
@@ -136,11 +138,10 @@ const trip = {
                         },
                         level: req.body.level,
                         safety: req.body.safety.split(','),
-                        enoughSafety: req.body.enough_safety,
+                        enoughSafety: (req.body.enough_safety == 'true'),
+                        approved: (data.committee == 'safety'),
                         hazards: hazards
                     }
-
-                    console.log(trip)
 
                     trips.create(trip).then((success) => {
                         if (success) res.status(200).json({ url: `/trip/${trip.tripId}` })

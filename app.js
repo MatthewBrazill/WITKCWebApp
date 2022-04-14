@@ -89,6 +89,6 @@ async function start() {
 
 // Create Server
 start().catch((err) => {
-    logger.error(`Fatal error when starting server! ${err}`)
-    console.log(`Fatal error when starting server! ${err}`)
+    logger.error(`Fatal error when starting server! ${err.stack}`)
+    console.log(`Fatal error when starting server! ${err.stack}`)
 })

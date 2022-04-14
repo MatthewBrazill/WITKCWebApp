@@ -19,7 +19,8 @@ const terms = require('./controllers/terms.js')
 const api = require('./api.js')
 const safety = require('./controllers/safety.js')
 const trip = require('./controllers/trip.js')
-const expense = require('./controllers/expense.js')
+const expenses = require('./controllers/expenses.js')
+const captain = require('./controllers/captain.js')
 
 // Home
 router.get('/', home.get)
@@ -65,6 +66,8 @@ router.post('/api/settings/delete', profile.delete) // Delete account *requires 
 // Committee Dashboard APIs
 router.post('/api/safety/award', safety.award) // Award certificate to member *requires safety*
 router.post('/api/safety/revoke', safety.revoke) // Remove certificate from member *requires safety*
+router.post('/api/captain/verify', captain.verify) // Set member to verified *requires captain*
+router.get('/api/captain/stats', captain.stats) // Get club statistics *requires captain*
 
 
 
@@ -72,7 +75,7 @@ router.post('/api/safety/revoke', safety.revoke) // Remove certificate from memb
 router.get('/trip/create', trip.create)
 router.get('/trip/:tripId', trip.view)
 // Trips API
-router.post('/api/trip/create', trip.apiCreate)
+router.post('/api/trip/create', trip.apiCreate) // Create a trip request *requires verified*
 
 
 
@@ -87,9 +90,11 @@ router.post('/api/equipment/delete')
 
 
 // Expenses
-router.get('/expenses', expense.get)
+router.get('/expenses', expenses.create)
 // Expenses API
-router.post('/api/expense/submit', expense.submit)
+router.post('/api/expenses/submit', expenses.submit)
+router.post('/api/expenses/resolve', expenses.resolve)
+router.post('/api/expenses/get', expenses.get)
 
 
 
@@ -121,7 +126,6 @@ router.get('/api/members', api.getMembers) // Get all members as array (Name and
 router.get('/api/safety_boaters', api.getSafetyBoaters) // Get all members as array (Name and ID only) *requires login*
 router.post('/api/member', api.getMember) // Get member with memberId *requires login*
 router.post('/api/cookie_choice', api.postCookie) // Set cookie choice to preference
-router.post('/api/verify', api.verify) // Allow the user to verify their account *requires login*
 
 
 // Export:

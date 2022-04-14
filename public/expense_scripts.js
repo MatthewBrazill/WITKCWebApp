@@ -27,7 +27,7 @@ $(document).ready(() => {
             })
 
             $.ajax({
-                url: '/api/expense/submit',
+                url: '/api/expenses/submit',
                 method: 'POST',
                 contentType: false,
                 processData: false,
@@ -60,7 +60,7 @@ $(document).ready(() => {
                 })))
             .append($('<div class="five wide field"></div>')
                 .append($('<div class="ui icon input"></div>')
-                    .append($('<input type="number" min="0" placeholder="Price">').on('input', function() {
+                    .append($('<input type="number" min="0" step="any" placeholder="Price">').on('input', function() {
                         const price = $(this)
                         const field = price.parent().parent()
 

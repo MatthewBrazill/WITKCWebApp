@@ -32,6 +32,7 @@ $(document).ready(() => {
                 inputs.each((index, element) => {
                     var input = $(element)
                     if (!input.prop('valid') && input.attr('type') != 'checkbox') valid = false
+                    console.log(data, input.val())
                 })
 
                 if (!valid) form.attr('class', 'ui error form')
@@ -46,7 +47,6 @@ $(document).ready(() => {
                             else if (input.prop('checked')) data.hazards.push(input.attr('id'))
                         } else if (input.attr('id').split('_')[1] == 'date') data[input.attr('id')] = input.prop('date')
                         else if (input.attr('id') != 'other_hazards') data[input.attr('id')] = input.val()
-                        console.log(data, input.val())
                     })
                     $.ajax({
                         url: '/api/trip/create',
@@ -72,7 +72,7 @@ $(document).ready(() => {
 
             $('#start_date').on('change', () => {
                 const start = $('#start_date')
-                const date = start.parent().parent().calendar('get date')
+                const date = new Date(start.parent().parent().calendar('get date'))
                 const field = start.parent().parent().parent()
                 if (date === null) {
                     field.attr('class', 'inline field error')
@@ -87,7 +87,7 @@ $(document).ready(() => {
 
             $('#end_date').on('change', () => {
                 const end = $('#end_date')
-                const date = end.parent().parent().calendar('get date')
+                const date = new Date(end.parent().parent().calendar('get date'))
                 const field = end.parent().parent().parent()
                 if (date === null) {
                     field.attr('class', 'inline field error')
