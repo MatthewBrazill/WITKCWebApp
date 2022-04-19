@@ -12,7 +12,7 @@ const members = require('../data_managers/witkc_members.js')
 const trip = {
     async create(req, res) {
         var data = await viewData.get(req, 'Create Trip')
-        data.scripts.trip = '/trip_scripts.js' //s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/trip_scripts.js' })
+        data.scripts.trip = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/trip_scripts.js' })
 
         if (data.logged_in) if (data.member.verified) {
             logger.info(`Session '${req.sessionID}': Getting Create Trip`)
@@ -30,6 +30,8 @@ const trip = {
                 if (trip !== null) {
                     data.trip = trip
                     data.trip.location.county = viewData.capitalize(data.trip.location.county)
+                    if (data.trip.attendees.includes(data.member.memberId)) data.joined = true
+                    else data.joined = false
 
                     for (var i in data.trip.safety) {
                         var member = await members.get(data.trip.safety[i])
@@ -49,17 +51,29 @@ const trip = {
                         }
                     }
 
+                    for (var i in data.trip.attendees) {
+                        var member = await members.get(data.trip.attendees[i])
+                        data.trip.attendees[i] = {
+                            memberId: member.memberId,
+                            firstName: member.firstName,
+                            lastName: member.lastName,
+                            img: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: member.img })
+                        }
+                    }
+
+                    if (data.logged_in) if (data.admin || !data.member.verified) data.trip.joinable = false
+                    else data.trip.joinable = false
+
                     logger.info(`Session '${req.sessionID}': Getting View Trip`)
                     res.render('view_trip', data)
                 } else res.redirect('/404')
-            }).catch((err) => { console.log(err); res.status(500).json(err) })
+            }).catch((err) => { res.status(500).json(err) })
         } else res.redirect('/404')
     },
 
     async apiCreate(req, res) {
         try {
             var data = await viewData.get(req, 'View Trip')
-            console.log(req.body)
 
             if (data.logged_in) if (data.member.verified) {
                 var valid = true
@@ -140,13 +154,55 @@ const trip = {
                         safety: req.body.safety.split(','),
                         enoughSafety: (req.body.enough_safety == 'true'),
                         approved: (data.committee == 'safety'),
-                        hazards: hazards
+                        hazards: hazards,
+                        attendees: req.body.safety.split(',')
                     }
 
                     trips.create(trip).then((success) => {
                         if (success) res.status(200).json({ url: `/trip/${trip.tripId}` })
                         else res.sendStatus(500)
-                    }).catch((err) => res.status(500).json(err))
+                    }).catch((err) => { res.status(500).json(err) })
+                }
+            } else res.sendStatus(403)
+            else res.sendStatus(403)
+        } catch (err) { res.status(500).json(err) }
+    },
+
+    async list(req, res) {
+        try {
+            var data = await viewData.get(req, 'View Trip')
+
+            if (req.params.tripId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
+                trips.list(req.params.tripId).then((trips) => {
+                    if (trips !== null) res.status(200).json(trips)
+                    else res.sendStatus(404)
+                }).catch((err) => { res.status(400).json(err) })
+            } else res.redirect(400)
+        } catch (err) { res.status(500).json(err) }
+    },
+
+    async join(req, res) {
+        try {
+            var data = await viewData.get(req, 'View Trip')
+
+            if (data.logged_in) if (data.member.verified) {
+                if (req.body.tripId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
+                    members.joinTrip(data.member.memberId, req.body.tripId)
+                    res.sendStatus(200)
+                }
+            } else res.sendStatus(403)
+            else res.sendStatus(403)
+        } catch (err) { res.status(500).json(err) }
+    },
+
+    async leave(req, res) {
+        try {
+            var data = await viewData.get(req, 'View Trip')
+
+            if (data.logged_in) if (data.member.verified) {
+                if (req.body.tripId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
+                    members.leaveTrip(data.member.memberId, req.body.tripId)
+                    res.sendStatus(200)
                 }
             } else res.sendStatus(403)
             else res.sendStatus(403)

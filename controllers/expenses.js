@@ -14,7 +14,7 @@ const committee = require('../data_managers/committee.js')
 const expenses = {
     async create(req, res) {
         var data = await viewData.get(req, 'Submit Expense')
-        data.scripts.expense = '/expense_scripts.js' //s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/expense_scripts.js' })
+        data.scripts.expense = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/expense_scripts.js' })
 
         if (data.logged_in) if (data.member.verified) {
             logger.info(`Session '${req.sessionID}': Getting Expenses`)
@@ -82,7 +82,7 @@ const expenses = {
 
                     logger.info(`Member ${data.member.memberId}: Successfully updated image!`)
                     res.sendStatus(200)
-                }).catch((err) => { console.log(err); res.status(500).json(err) })
+                }).catch((err) => { res.status(500).json(err) })
             } else res.sendStatus(403)
             else res.sendStatus(403)
         } catch (err) { res.status(500).json(err) }
@@ -108,7 +108,7 @@ const expenses = {
             } else res.sendStatus(403)
             else res.sendStatus(403)
             else res.sendStatus(403)
-        } catch (err) { console.log(err); res.status(500).json(err) }
+        } catch (err) { res.status(500).json(err) }
     },
 
     async resolve(req, res) {
@@ -157,7 +157,7 @@ const expenses = {
             } else res.sendStatus(403)
             else res.sendStatus(403)
             else res.sendStatus(403)
-        } catch (err) { console.log(err); res.status(500).json(err) }
+        } catch (err) { res.status(500).json(err) }
     }
 }
 

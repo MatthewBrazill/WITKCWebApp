@@ -32,7 +32,7 @@ $(document).ready(() => {
     $('#personal_form').submit((event) => {
         event.preventDefault()
         const form = $('#personal_form')
-        const inputs = $("form#personal_form input[type!=button][class!=search]")
+        const inputs = $("form#personal_form input[type != button][class != search]")
         var valid = true
 
         inputs.trigger('change')
@@ -223,7 +223,7 @@ $(document).ready(() => {
         event.preventDefault()
         const form = $('#customize_form')
         const file = $('#file')
-        const inputs = $("form#customize_form input[type=file], form#customize_form textarea")
+        const inputs = $("form#customize_form input[type = file], form#customize_form textarea")
 
         var valid = true
         inputs.trigger('change')

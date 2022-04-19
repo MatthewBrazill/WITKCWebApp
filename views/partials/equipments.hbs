@@ -1,4 +1,4 @@
-<script src="{{scripts.captain}}" hidden></script>
+<script src="{{scripts.equipments}}" hidden></script>
 <div class="ui segment">
 
     <h3 class="ui dividing header">Equipments Dashboard</h3>
@@ -7,18 +7,127 @@
 
         <div class="ui twelve wide column">
 
-            {{#if equipments.equipment.length}}
+            {{#if equipments.equipment}}
 
+            <!-- Boats -->
             <div class="ui items">
 
-                {{#each equipments.equipment}}
+                {{#each equipments.equipment.boats}}
 
-                <div class="item">
-                    <div class="header">{{this.name}}</div>
-                    <div class="ui two column grid">
-                        <div class="twelve wide column"></div>
-                        <div class="four wide column"></div>
-                        <div class="ui vertical divider"></div>
+                <div class="ui fluid card" id="{{this.equipmentId}}">
+                    <div class="content">
+                        <div class="header">
+                            <div class="ui left floated">{{this.brand}} {{this.name}}</div>
+                            <div class="ui right floated negative icon button delete_gear">
+                                <i class="trash icon"></i>
+                            </div>
+                        </div>
+                        <h5>Type: {{this.boatType}}, Size: {{this.boatSize}}, Cockpit: {{this.boatCockpit}}</h5>
+                    </div>
+                </div>
+
+                {{/each}}
+
+            </div>
+
+            <!-- Paddles -->
+            <div class="ui items">
+
+                {{#each equipments.equipment.paddles}}
+
+                <div class="ui fluid card" id="{{this.equipmentId}}">
+                    <div class="content">
+                        <div class="header">
+                            <div class="ui left floated">{{this.brand}} {{this.name}}</div>
+                            <div class="ui right floated negative icon button delete_gear">
+                                <i class="trash icon"></i>
+                            </div>
+                        </div>
+                        <h5>Type: {{this.paddleType}}, Length: {{this.paddleLength}}cm</h5>
+                    </div>
+                </div>
+
+                {{/each}}
+
+            </div>
+
+            <!-- Decks -->
+            <div class="ui items">
+
+                {{#each equipments.equipment.decks}}
+
+                <div class="ui fluid card" id="{{this.equipmentId}}">
+                    <div class="content">
+                        <div class="header">
+                            <div class="ui left floated">{{this.brand}} {{this.name}}</div>
+                            <div class="ui right floated negative icon button delete_gear">
+                                <i class="trash icon"></i>
+                            </div>
+                        </div>
+                        <h5>Type: {{this.deckType}}, Size: {{this.deckSize}}</h5>
+                    </div>
+                </div>
+
+                {{/each}}
+
+            </div>
+
+            <!-- BAs -->
+            <div class="ui items">
+
+                {{#each equipments.equipment.bas}}
+
+                <div class="ui fluid card" id="{{this.equipmentId}}">
+                    <div class="content">
+                        <div class="header">
+                            <div class="ui left floated">{{this.brand}} {{this.name}}</div>
+                            <div class="ui right floated negative icon button delete_gear">
+                                <i class="trash icon"></i>
+                            </div>
+                        </div>
+                        <h5>Size: {{this.baSize}}</h5>
+                    </div>
+                </div>
+
+                {{/each}}
+
+            </div>
+
+            <!-- Helmets -->
+            <div class="ui items">
+
+                {{#each equipments.equipment.helmets}}
+
+                <div class="ui fluid card" id="{{this.equipmentId}}">
+                    <div class="content">
+                        <div class="header">
+                            <div class="ui left floated">{{this.brand}} {{this.name}}</div>
+                            <div class="ui right floated negative icon button delete_gear">
+                                <i class="trash icon"></i>
+                            </div>
+                        </div>
+                        <h5>Type: {{this.helmetType}}, Size: {{this.helmetSize}}</h5>
+                    </div>
+                </div>
+
+                {{/each}}
+
+            </div>
+
+            <!-- Wetsuits -->
+            <div class="ui items">
+
+                {{#each equipments.equipment.wetsuits}}
+
+                <div class="ui fluid card" id="{{this.equipmentId}}">
+                    <div class="content">
+                        <div class="header">
+                            <div class="ui left floated">{{this.brand}} {{this.name}}</div>
+                            <div class="ui right floated negative icon button delete_gear">
+                                <i class="trash icon"></i>
+                            </div>
+                        </div>
+                        <h5>Size: {{this.wetsuitSize}}</h5>
                     </div>
                 </div>
 
@@ -39,8 +148,7 @@
         </div>
 
         <div class="ui four wide column">
-
-            <button class="ui fluid teal button" onclick="$('announcement_modal').show()">
+            <button class="ui disabled fluid teal button announcement">
                 <h4 class="ui center aligned icon header">
                     <i class="large announcement icon"></i>
                     Announcement
@@ -56,15 +164,211 @@
                 </h4>
             </button>
 
-            <div class="ui modal" id="add_equipment_modal">
+            <div class="ui mini modal" id="add_equipment_modal">
 
-                <div class="header">Award Certificate to Member</div>
+                <div class="header">Create Equipment</div>
 
                 <div class="content">
+                    <form class="ui form" id="gear_form" autocomplete="off">
 
-                    <form class="ui form" id="add_equipment_modal_form">
+                        <div class="field">
+                            <input type="text" id="name" placeholder="Name">
+                        </div>
 
+                        <div class="field">
+                            <input type="text" id="brand" placeholder="Brand">
+                        </div>
 
+                        <!-- Type of Equipment -->
+                        <div class="field">
+                            <div class="ui selection dropdown">
+                                <input type="hidden" id="type">
+                                <div class="default text">Type</div>
+                                <div class="menu">
+                                    <div class="item" data-value="boat">Boat</div>
+                                    <div class="item" data-value="paddle">Paddle</div>
+                                    <div class="item" data-value="deck">Spray-Deck</div>
+                                    <div class="item" data-value="ba">Buoyancy Aid</div>
+                                    <div class="item" data-value="helmet">Helmet</div>
+                                    <div class="item" data-value="wetsuit">Wetsuit</div>
+                                </div>
+                                <i class="dropdown icon"></i>
+                            </div>
+                        </div>
+
+                        <!-- Boat Fields -->
+                        <div id="boat_fields" hidden>
+                            <div class="field">
+                                <div class="ui selection dropdown">
+                                    <input type="hidden" id="boat_type">
+                                    <div class="default text">Boat Type</div>
+                                    <div class="menu">
+                                        <div class="item" data-value="polo">Polo Boat</div>
+                                        <div class="item" data-value="whitewater">Whitewater Boat</div>
+                                        <div class="item" data-value="freestyle">Freestyle Boat</div>
+                                        <div class="item" data-value="other">Other</div>
+                                    </div>
+                                    <i class="dropdown icon"></i>
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <div class="ui selection dropdown">
+                                    <input type="hidden" id="boat_size">
+                                    <div class="default text">Boat Size</div>
+                                    <div class="menu">
+                                        <div class="item" data-value="s">S</div>
+                                        <div class="item" data-value="m">M</div>
+                                        <div class="item" data-value="l">L</div>
+                                    </div>
+                                    <i class="dropdown icon"></i>
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <div class="ui selection dropdown">
+                                    <input type="hidden" id="boat_cockpit">
+                                    <div class="default text">Cockpit Size</div>
+                                    <div class="menu">
+                                        <div class="item" data-value="big">Big Cockpit</div>
+                                        <div class="item" data-value="key">Keyhole Cockpit</div>
+                                    </div>
+                                    <i class="dropdown icon"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Paddle -->
+                        <div id="paddle_fields" hidden>
+                            <div class="field">
+                                <div class="ui selection dropdown">
+                                    <input type="hidden" id="paddle_type">
+                                    <div class="default text">Paddle Type</div>
+                                    <div class="menu">
+                                        <div class="item" data-value="polo">Polo Paddle</div>
+                                        <div class="item" data-value="straight">Crank Shaft Paddle</div>
+                                        <div class="item" data-value="crank">Straight Shaft Paddle</div>
+                                    </div>
+                                    <i class="dropdown icon"></i>
+                                </div>
+                            </div>
+
+                            <style hidden>
+                                input[type="number"]::-webkit-outer-spin-button,
+                                input[type="number"]::-webkit-inner-spin-button {
+                                    -webkit-appearance: none;
+                                    margin: 0;
+                                }
+
+                                input[type="number"] {
+                                    -moz-appearance: textfield;
+                                }
+                            </style>
+                            <div class="inline field">
+                                <input type="number" id="paddle_length" placeholder="Paddle Length">
+                                <label>cm</label>
+                            </div>
+                        </div>
+
+                        <!-- Deck -->
+                        <div id="deck_fields" hidden>
+                            <div class="field">
+                                <div class="ui selection dropdown">
+                                    <input type="hidden" id="deck_type">
+                                    <div class="default text">Deck Type</div>
+                                    <div class="menu">
+                                        <div class="item" data-value="key">Keyhole</div>
+                                        <div class="item" data-value="big">Big Deck</div>
+                                    </div>
+                                    <i class="dropdown icon"></i>
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <div class="ui selection dropdown">
+                                    <input type="hidden" id="deck_size">
+                                    <div class="default text">Deck Size</div>
+                                    <div class="menu">
+                                        <div class="item" data-value="xxxs/xxs">XXXS/XXS</div>
+                                        <div class="item" data-value="xxs/xs">XXS/XS</div>
+                                        <div class="item" data-value="xs/s">XS/S</div>
+                                        <div class="item" data-value="m/l">M/L</div>
+                                        <div class="item" data-value="xl/xxl">XL/XXL</div>
+                                    </div>
+                                    <i class="dropdown icon"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- BA -->
+                        <div id="ba_fields" hidden>
+                            <div class="field">
+                                <div class="ui selection dropdown">
+                                    <input type="hidden" id="ba_size">
+                                    <div class="default text">BA Size</div>
+                                    <div class="menu">
+                                        <div class="item" data-value="s">S</div>
+                                        <div class="item" data-value="l">L</div>
+                                    </div>
+                                    <i class="dropdown icon"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Helmet -->
+                        <div id="helmet_fields" hidden>
+                            <div class="field">
+                                <div class="ui selection dropdown">
+                                    <input type="hidden" id="helmet_type">
+                                    <div class="default text">Helmet Type</div>
+                                    <div class="menu">
+                                        <div class="item" data-value="polo">Polo Helmet</div>
+                                        <div class="item" data-value="full">Full Face Helmet</div>
+                                        <div class="item" data-value="half">Standard Helmet</div>
+                                    </div>
+                                    <i class="dropdown icon"></i>
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <div class="ui selection dropdown">
+                                    <input type="hidden" id="helmet_size">
+                                    <div class="default text">Helmet Size</div>
+                                    <div class="menu">
+                                        <div class="item" data-value="s">S</div>
+                                        <div class="item" data-value="m">M</div>
+                                        <div class="item" data-value="l">L</div>
+                                        <div class="item" data-value="xl">XL</div>
+                                    </div>
+                                    <i class="dropdown icon"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Wetsuit -->
+                        <div id="wetsuit_fields" hidden>
+                            <div class="field">
+                                <div class="ui selection dropdown">
+                                    <input type="hidden" id="wetsuit_size">
+                                    <div class="default text">Wetsuit Size</div>
+                                    <div class="menu">
+                                        <div class="item" data-value="s">S</div>
+                                        <div class="item" data-value="m">M</div>
+                                        <div class="item" data-value="l">L</div>
+                                        <div class="item" data-value="xl">XL</div>
+                                    </div>
+                                    <i class="dropdown icon"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <br>
+
+                        <div class="field">
+                            <input class="ui file input" type="file" id="file" accept="image/*">
+                        </div>
+
+                        <!-- Error -->
                         <div class="ui error message">
                             <div class="header">
                                 There was an error connecting to the server. Please reload the page and try again!
@@ -75,7 +379,7 @@
 
                 <div class="right aligned actions">
                     <button class="ui negative button" id="add_equipment_modal_cancel">Cancel</button>
-                    <button class="ui positive button" id="add_equipment_modal_confirm">Confirm</button>
+                    <button class="ui positive button" id="add_equipment_modal_add">Add Equipment</button>
                 </div>
             </div>
         </div>

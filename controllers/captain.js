@@ -49,10 +49,7 @@ const captain = {
                     res.status(200).json(stats)
                 } else res.sendStatus(403)
             } else res.sendStatus(403)
-        } catch (err) {
-            console.log(err)
-            res.status(500).json(err)
-        }
+        } catch (err) { res.status(500).json(err) }
     }
 }
 

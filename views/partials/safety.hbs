@@ -9,16 +9,17 @@
 
             {{#if safety.trips.length}}
 
-            <div class="ui items">
+            <div class="ui cards">
 
                 {{#each safety.trips}}
 
-                <div class="item">
-                    <div class="header">{{this.name}}</div>
-                    <div class="ui two column grid">
-                        <div class="twelve wide column"></div>
-                        <div class="four wide column"></div>
-                        <div class="ui vertical divider"></div>
+                <div class="ui fluid link card trip" id="{{this.tripId}}">
+                    <div class="content">
+                        <div class="header">
+                            <div class="ui left floated">{{this.name}}:</div>
+                            <div class="ui right floated negative icon button"><i class="times icon"></i></div>
+                            <div class="ui right floated positive icon button"><i class="check icon"></i></div>
+                        </div>
                     </div>
                 </div>
 
@@ -39,8 +40,7 @@
         </div>
 
         <div class="ui four wide column">
-
-            <button class="ui fluid teal button" onclick="$('announcement_modal').show()">
+            <button class="ui disabled fluid teal button announcement">
                 <h4 class="ui center aligned icon header">
                     <i class="large announcement icon"></i>
                     Announcement

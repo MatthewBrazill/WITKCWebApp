@@ -4,6 +4,8 @@
 const logger = require('../log.js')
 const AWS = require('aws-sdk')
 const members = require('./witkc_members.js')
+const equipment = require('./equipment.js')
+const trips = require('./trips.js')
 const dynamo = new AWS.DynamoDB()
 
 const committee = {
@@ -64,10 +66,12 @@ const committee = {
                         role.expenseRequests.push(item)
                     }
                 }
+                if (role.roleId == 'safety') role.trips = await trips.pending()
+                if (role.roleId == 'equipments') role.equipment = await equipment.getAll()
                 return role
             } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Could not get all members of the committee! ${err}`)
+            logger.warn(`Could not get committee member for role '${roleId}'! ${err}`)
             return null
         })
     },

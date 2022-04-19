@@ -6,6 +6,7 @@ const s3 = new AWS.S3()
 const logger = require('./log.js')
 const members = require('./data_managers/witkc_members')
 const committee = require('./data_managers/committee.js')
+const trips = require('./data_managers/trips.js')
 
 const viewData = {
     async get(req, title) {
@@ -25,8 +26,10 @@ const viewData = {
             data.member = await members.get(req.session.userID)
             data.logged_in = true
 
+            data.member.trips = await trips.getAllFor(data.member.memberId)
+
             if (data.member.memberId == '96e01799-74bb-4772-bd5c-fd92528cc510') data.admin = true
-            else data.committee = committee.isCommittee(data.member.memberId).then((roleId) => roleId)
+            else data.committee = await committee.isCommittee(data.member.memberId).then((roleId) => roleId)
 
             if (req.method != 'POST') {
                 data.member.img = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: data.member.img })

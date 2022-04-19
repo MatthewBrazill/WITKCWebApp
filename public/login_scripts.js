@@ -48,7 +48,6 @@ $(document).ready(() => {
 
     $('#hide_password').click(() => {
         const password = $('#password')
-        console.log(password.attr('type'))
 
         if (password.attr('type') == 'password') {
             password.attr('type', 'text')

@@ -23,9 +23,41 @@
             onSelect: () => false
         })
 
-
         $('#trip_calendar').calendar('set startDate', new Date('{{trip.startDate}}'))
         $('#trip_calendar').calendar('set endDate', new Date('{{trip.endDate}}'))
+
+        $('#participation').click(() => {
+            const button = $('#participation')
+
+            button.addClass('loading')
+            if (button.attr('data-state') == 'true') {
+                $.ajax({
+                    url: '/api/trip/leave',
+                    method: 'POST',
+                    data: {
+                        tripId: '{{trip.tripId}}'
+                    },
+                    success: () => {
+                        button.text('Join Trip')
+                        button.attr('class', 'ui right floated positive button')
+                        button.prop('joined', false)
+                    }
+                })
+            } else {
+                $.ajax({
+                    url: '/api/trip/join',
+                    method: 'POST',
+                    data: {
+                        tripId: '{{trip.tripId}}'
+                    },
+                    success: () => {
+                        button.text('Leave Trip')
+                        button.attr('class', 'ui right floated negative button')
+                        button.prop('joined', false)
+                    }
+                })
+            }
+        })
     })
 </script>
 <div class="twelve wide column">
@@ -34,7 +66,13 @@
 
         <h1 class="ui dividing header">
             {{trip.name}}
-            <div class="ui right floated positive button">Join Trip</div>
+            {{#if trip.joinable}}
+            {{#if joined}}
+            <div class="ui right floated negative button" id="participation" data-state="{{joined}}">Leave Trip</div>
+            {{else}}
+            <div class="ui right floated positive button" id="participation" data-state="{{joined}}">Join Trip</div>
+            {{/if}}
+            {{/if}}
         </h1>
 
         <div class="ui two column grid">
@@ -71,10 +109,10 @@
 
                 <h5 class="ui header">Safety Boaters:</h5>
                 {{#if trip.safety}}
-                <div class="ui divided items">
+                <div class="ui divided list">
                     {{#each trip.safety}}
                     <div class="ui item">
-                        <div class="ui mini image"><img src="{{this.img}}"></div>
+                        <img class="ui avatar image" src="{{this.img}}">
                         <div class="content">
                             <a class="header" href="/profile/{{this.memberId}}">{{this.firstName}} {{this.lastName}}</a>
                             <div class="description">{{this.cert}}</div>
@@ -92,6 +130,21 @@
             </div>
         </div>
 
+        {{#if logged_in}}
+
+        <h5 class="ui header">Attendees:</h5>
+        <div class="ui divided list">
+            {{#each trip.attendees}}
+            <div class="ui item">
+                <img class="ui avatar image" src="{{this.img}}">
+                <div class="content">
+                    <a class="header" href="/profile/{{this.memberId}}">{{this.firstName}} {{this.lastName}}</a>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+
+        {{/if}}
     </div>
 </div>
 

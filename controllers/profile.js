@@ -1,6 +1,6 @@
 'use strict'
 
-// Imports  
+// Imports
 const AWS = require('aws-sdk')
 const s3 = new AWS.S3()
 const fs = require('fs')
@@ -16,18 +16,18 @@ const committee = require('../data_managers/committee.js')
 const profile = {
     async me(req, res) {
         var data = await viewData.get(req, 'My Profile')
-        data.scripts.profile = '/profile_scripts.js' //s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/profile_scripts.js' })
+        data.scripts.profile = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/profile_scripts.js' })
 
         if (data.logged_in) {
             if (data.committee) {
-                data.scripts.committee = '/committee_scripts.js' //s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/committee_scripts.js' })
+                data.scripts.committee = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/committee_scripts.js' })
                 data[data.committee] = await committee.getRole(data.committee)
-                data.scripts[data.committee] = `/${data.committee}_scripts.js` //s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: `js/${data.committee}_scripts.js` })
+                data.scripts[data.committee] = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: `js/${data.committee}_scripts.js` })
             } else if (data.admin) {
-                data.scripts.committee = '/committee_scripts.js' //s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/committee_scripts.js' })
+                data.scripts.committee = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/committee_scripts.js' })
                 for (var role of ['captain', 'vice', 'safety', 'treasurer', 'equipments', 'pro', 'freshers']) {
                     data[role] = await committee.getRole(role)
-                    data.scripts[role] = `/${role}_scripts.js` //s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: `js/${role}_scripts.js` })
+                    data.scripts[role] = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: `js/${role}_scripts.js` })
                 }
             }
 
@@ -38,7 +38,7 @@ const profile = {
 
     async settings(req, res) {
         var data = await viewData.get(req, 'Settings')
-        data.scripts.profile = '/profile_scripts.js' //s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/profile_scripts.js' })
+        data.scripts.profile = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/profile_scripts.js' })
 
         if (data.logged_in) {
             if (data.member.committeeRole == 'admin') data.admin = true
@@ -104,7 +104,6 @@ const profile = {
                 new Promise((resolve, reject) => {
                     form.parse(req, (err, fields, files) => {
                         var valid = true
-                        console.log(files.file)
                         if (err) reject(err)
                         else {
                             if (!fields.bio.match(/^.{1,500}$/u)) valid = false
@@ -132,10 +131,7 @@ const profile = {
                     res.status(200).json({
                         url: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: data.member.img })
                     })
-                }).catch((err) => {
-                    console.log(err.stack)
-                    res.status(500).json(err)
-                })
+                }).catch((err) => { res.status(500).json(err) })
             } else res.sendStatus(403)
         } catch (err) { res.status(500).json(err) }
     },
@@ -177,7 +173,7 @@ const profile = {
 
     async user(req, res) {
         var data = await viewData.get(req, 'View Profile')
-        data.scripts.profile = '/profile_scripts.js' //s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/profile_scripts.js' })
+        data.scripts.profile = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/profile_scripts.js' })
 
         if (data.logged_in) {
             if (req.params.userId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {

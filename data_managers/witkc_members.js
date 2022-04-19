@@ -244,8 +244,8 @@ const members = {
         if (memberId === null || memberId === undefined || tripId === null || tripId === undefined) return false
         return dynamo.updateItem({
             Key: { 'tripId': { S: tripId } },
-            ExpressionAttributeValues: { ':member': { L: [{ S: memberId }] } },
-            UpdateExpression: 'SET members = list_append(members, :member)',
+            ExpressionAttributeValues: { ':attendee': { L: [{ S: memberId }] } },
+            UpdateExpression: 'SET attendees = list_append(attendees, :attendee)',
             TableName: 'witkc-trips'
         }).promise().then((data) => {
             if (data) return true
@@ -259,20 +259,20 @@ const members = {
     async leaveTrip(memberId, tripId) {
         if (memberId === null || memberId === undefined || tripId === null || tripId === undefined) return false
         return dynamo.getItem({
-            ExpressionAttributeNames: { '#MBRS': 'members' },
+            ExpressionAttributeNames: { '#ATT': 'attendees' },
             Key: { 'tripId': { S: tripId } },
-            ProjectionExpression: '#MBRS',
+            ProjectionExpression: '#ATT',
             TableName: 'witkc-trips'
         }).promise().then((data) => {
             if (data.Item != undefined) {
-                for (var i in data.Item['members'].L) if (data.Item['members'].L[i].S == memberId) return i
+                for (var i in data.Item['attendees'].L) if (data.Item['attendees'].L[i].S == memberId) return i
                 return -1
             }
             else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).then((index) => {
             if (index != -1) return dynamo.updateItem({
                 Key: { 'tripId': { S: tripId } },
-                UpdateExpression: `REMOVE members[${index}]`,
+                UpdateExpression: `REMOVE attendees[${index}]`,
                 TableName: 'witkc-trips'
             }).promise().then((data) => {
                 if (data) return true
@@ -280,7 +280,7 @@ const members = {
             }).catch((err) => { throw err })
             else return false
         }).catch((err) => {
-            logger.warn(`Could not remove member '${memberId}' from trip '${tripId}'! ${err}`)
+            logger.warn(`Could not remove attendee '${memberId}' from trip '${tripId}'! ${err}`)
             return false
         })
     },

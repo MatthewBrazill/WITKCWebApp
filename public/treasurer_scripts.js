@@ -1,5 +1,5 @@
 $(document).ready(() => {
-
+ 
     $('.expenseRequest').click(function () {
         $('#expense_modal').modal({
             closeIcon: true,
@@ -49,7 +49,10 @@ $(document).ready(() => {
                 expenseId: $('#expense_modal_confirm').attr('data-expense-id'),
                 accepted: true
             },
-            success: () => { $('#expense_modal').modal('hide') },
+            success: () => {
+                $('#expense_modal').modal('hide')
+                $($('#expense_modal_confirm').attr('data-expense-id')).remove()
+            },
             error: () => {
                 $('#expense_modal_receipts').last().remove()
                 $('#expense_modal_receipts').append($(`<div class="ui error message"><div class="header">There was an error connecting to the server. Please reload the page and try again!</div></div>`))
@@ -68,7 +71,10 @@ $(document).ready(() => {
                     accepted: false,
                     reason: $('#expense_modal_reason').val()
                 },
-                success: () => { $('#expense_modal').modal('hide') },
+                success: () => {
+                    $('#expense_modal').modal('hide')
+                    $($('#expense_modal_reject').attr('data-expense-id')).remove()
+                },
                 error: () => {
                     $('#expense_modal_receipts').last().remove()
                     $('#expense_modal_receipts').append($(`<div class="ui error message"><div class="header">There was an error connecting to the server. Please reload the page and try again!</div></div>`))

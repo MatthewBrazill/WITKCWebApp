@@ -21,6 +21,7 @@ const safety = require('./controllers/safety.js')
 const trip = require('./controllers/trip.js')
 const expenses = require('./controllers/expenses.js')
 const captain = require('./controllers/captain.js')
+const gear = require('./controllers/gear.js')
 
 // Home
 router.get('/', home.get)
@@ -66,6 +67,8 @@ router.post('/api/settings/delete', profile.delete) // Delete account *requires 
 // Committee Dashboard APIs
 router.post('/api/safety/award', safety.award) // Award certificate to member *requires safety*
 router.post('/api/safety/revoke', safety.revoke) // Remove certificate from member *requires safety*
+router.post('/api/safety/accept', safety.accept) // Accept trip too allow it to happen *requires safety*
+router.post('/api/safety/reject', safety.reject) // Reject trip due to safety concerns *requires safety*
 router.post('/api/captain/verify', captain.verify) // Set member to verified *requires captain*
 router.get('/api/captain/stats', captain.stats) // Get club statistics *requires captain*
 
@@ -76,25 +79,28 @@ router.get('/trip/create', trip.create)
 router.get('/trip/:tripId', trip.view)
 // Trips API
 router.post('/api/trip/create', trip.apiCreate) // Create a trip request *requires verified*
+router.post('/api/trip/join', trip.join) // Join a trip *requires verified*
+router.post('/api/trip/leave', trip.leave) // Leave a trip *requires verified*
+router.post('/api/trip/list', trip.list) // List all trips
 
 
 
 // Equipment
-router.get('/equipment/book')
+router.get('/equipment/book', gear.book)
 // Equipment API
-router.post('/api/equipment/add')
-router.post('/api/equipment/get')
-router.post('/api/equipment/update')
-router.post('/api/equipment/delete')
+router.post('/api/equipment/add', gear.create) // Add trip to the club *requires equipments*
+router.post('/api/equipment/get', gear.get) // Get a specific pice of equipment *requires verified*
+router.post('/api/equipment/get_all', gear.getAll) // Get all equipment; may be filtered to catagories *requires verified*
+router.post('/api/equipment/delete', gear.delete) // Delete a pice of equipment *requires equipments*
 
 
 
 // Expenses
 router.get('/expenses', expenses.create)
 // Expenses API
-router.post('/api/expenses/submit', expenses.submit)
-router.post('/api/expenses/resolve', expenses.resolve)
-router.post('/api/expenses/get', expenses.get)
+router.post('/api/expenses/submit', expenses.submit) // Submit a expense request *requires verified*
+router.post('/api/expenses/resolve', expenses.resolve) // Resolve a expense request *requires treasurer*
+router.post('/api/expenses/get', expenses.get) // Get a expense request *requires treasurer*
 
 
 

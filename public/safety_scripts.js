@@ -118,7 +118,7 @@ $(document).ready(() => {
                         .append($('<div class="content"></div>')
                             .append($('<div class="header"></div>')
                                 .append($('<div class="ui left floated"></div>').text(cert.name))
-                                .append($(`<button class="ui right floated negative button revoke" data-cert-id="${cert.id}">Revoke</button>`).click(function() {
+                                .append($(`<button class="ui right floated negative button revoke" data-cert-id="${cert.id}">Revoke</button>`).click(function () {
                                     $.ajax({
                                         url: '/api/safety/revoke',
                                         method: 'POST',
@@ -141,5 +141,27 @@ $(document).ready(() => {
             },
             error: () => { $('#revoke_cert_modal_error').show() }
         })
+    })
+
+    $('.trip').click(function (event) {
+        const card = $(this)
+        const reject = card.find('.negative')
+        const accept = card.find('.positive')
+
+        if (accept.is(event.target) || accept.children().is(event.target)) {
+            $.ajax({
+                url: '/api/safety/accept',
+                method: 'POST',
+                data: { tripId: card.attr('id') },
+                success: () => card.remove()
+            })
+        } else if (reject.is(event.target) || reject.children().is(event.target)) {
+            $.ajax({
+                url: '/api/safety/reject',
+                method: 'POST',
+                data: { tripId: card.attr('id') },
+                success: () => card.remove()
+            })
+        } else window.location = `/trip/${card.attr('id')}`
     })
 })

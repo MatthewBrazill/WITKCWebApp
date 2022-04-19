@@ -32,7 +32,6 @@ $(document).ready(() => {
                 inputs.each((index, element) => {
                     var input = $(element)
                     if (!input.prop('valid') && input.attr('type') != 'checkbox') valid = false
-                    console.log(data, input.val())
                 })
 
                 if (!valid) form.attr('class', 'ui error form')
@@ -188,8 +187,6 @@ $(document).ready(() => {
                 const level = $('#level')
                 const field = level.parent().parent()
 
-                console.log(level.val())
-
                 if (level.val() < 1 || level.val() > 5 || level.val() == '') {
                     field.attr('class', 'field error')
                     level.prop('valid', false)
@@ -222,7 +219,6 @@ $(document).ready(() => {
             $('#safety').on('change', () => {
                 const safety = $('#safety')
                 const field = safety.parent().parent()
-                console.log(safety.val().split(','))
                 if (!safety.val().split(',').every(item => memberIds.includes(item))) {
                     field.attr('class', 'field error')
                     safety.prop('valid', false)
