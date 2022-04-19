@@ -12,6 +12,7 @@ const contact = {
     async get(req, res) {
         var data = await viewData.get(req, 'Contact Us')
         data.scripts.contact = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/contact_scripts.js' })
+        
         logger.info(`Session '${req.sessionID}': Getting Contact`)
         res.render('contact', data)
     },
@@ -24,14 +25,20 @@ const contact = {
 
             if (!req.body.first_name.match(/^\p{L}{1,16}$/u)) valid = false
             if (!req.body.last_name.match(/^\p{L}{1,16}$/u)) valid = false
-            if (!req.body.email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)+$/)) valid = false
+            if (!req.body.email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.[a-z]{2,})$/i)) valid = false
             if (!req.body.message.match(/^.{1,500}$/u)) valid = false
 
             if (valid) {
                 ses.sendEmail({
                     Content: {
                         Simple: {
-                            Body: { Text: { Data: `From: ${req.body.first_name} ${req.body.last_name}\nE-Mail: ${req.body.email}\nTime: ${new Date()}\nTicket: ${ticket}\n\n\n${req.body.message}` } },
+                            Body: { Text: { Data: 
+                                `From: ${req.body.first_name} ${req.body.last_name}\n
+                                E-Mail: ${req.body.email}\n
+                                Time: ${new Date()}\n
+                                Ticket: ${ticket}\n
+                                \n
+                                \n${req.body.message}` } },
                             Subject: { Data: `Contact Form Message: ${ticket}` }
                         }
                     },
@@ -43,13 +50,13 @@ const contact = {
                     res.sendStatus(200)
                 }).catch((err) => {
                     logger.info(`Session '${req.sessionID}': Failed to send message! ${err}`)
-                    res.sendStatus(500)
+                    res.status(500).json(err)
                 })
             } else {
                 logger.info(`Session '${req.sessionID}': Tried to send invalid message!`)
                 res.sendStatus(400)
             }
-        } catch (err) { res.status(500).send(err) }
+        } catch (err) { res.status(500).json(err) }
     }
 }
 

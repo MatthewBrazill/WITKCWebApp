@@ -6,7 +6,7 @@
         <!-- Request trip button -->
         <div class="column">
 
-            <a class="ui {{#if member.verified}}{{else}}disabled{{/if}} fluid teal button" href="/trip/plan">
+            <a class="ui {{#if member.verified}}{{else}}disabled{{/if}} fluid teal button" href="/trip/create">
                 <div class="ui first center aligned icon header">
                     <i class="big map icon"></i>
                     Request Trip
@@ -17,7 +17,7 @@
         <!-- Book gear button -->
         <div class="column">
 
-            <a class="ui {{#if member.verified}}{{else}}disabled{{/if}} fluid teal button" href="/gear/book">
+            <a class="ui disabled fluid teal button" href="/equipment/book">
                 <div class="ui first center aligned icon header">
                     <i class="big shopping cart icon"></i>
                     Book Gear
@@ -39,7 +39,7 @@
         <!-- Expenses button -->
         <div class="column">
 
-            <a class="ui {{#if member.verified}}{{else}}disabled{{/if}} fluid teal button" href="/volunteer">
+            <a class="ui disabled fluid teal button" href="/volunteer">
                 <div class="ui first center aligned icon header">
                     <i class="big heart icon"></i>
                     Volunteering
@@ -60,20 +60,21 @@
             </h3>
         </a>
 
-        {{#if member.trips.count}}
+        {{#if member.trips.length}}
 
         <div class="ui items">
 
             {{#each member.trips}}
 
-            <div class="item">
-                <div class="header">{{this.name}}</div>
-                <div class="ui two column grid">
-                    <div class="twelve wide column"></div>
-                    <div class="four wide column"></div>
-                    <div class="ui vertical divider"></div>
+            <a class="ui fluid link card" href="/trip/{{this.tripId}}" style="color: black;">
+                <div class="content">
+                    <div class="header">
+                        <div class="ui left floated">{{this.name}}</div>
+                        <div class="ui right floated">Minimum Level: {{this.level}}</div>
+                    </div>
+                    <h5>From {{this.startDate}} to {{this.endDate}}</h5>
                 </div>
-            </div>
+            </a>
 
             {{/each}}
 
@@ -133,6 +134,20 @@
 
         {{/if}}
     </div>
+
+    {{#if committee}}
+    <div class="ui modal" id="announcement_modal">
+        <div id="text_editor"></div>
+    </div>
+    <script type="module">
+        import Editor from 'https://cdn.jsdelivr.net/npm/@tiptap/core@2.0.0-beta.174/dist/tiptap-core.cjs.min.js'
+        import StarterKit from 'https://cdn.jsdelivr.net/npm/@tiptap/starter-kit@2.0.0-beta.183/dist/tiptap-starter-kit.cjs.min.js'
+        new Editor({
+            element: document.getElementById('text_editor'),
+            extensions: [StarterKit],
+        })
+    </script>
+    {{/if}}
 
     {{#if captain}}{{> captain}}{{/if}}
 

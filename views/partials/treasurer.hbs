@@ -1,0 +1,88 @@
+<script src="{{scripts.treasurer}}" hidden></script>
+<div class="ui segment">
+
+    <h3 class="ui dividing header">Treasurer Dashboard</h3>
+
+    <div class="ui divided grid">
+
+        <div class="ui twelve wide column">
+
+            {{#if treasurer.expenseRequests.length}}
+
+            <div class="ui loading modal" id="expense_modal">
+                <div class="header">Review Expense</div>
+
+                <div class="content">
+                    <div class="ui two column grid">
+                        <div class="ui six wide column" id="expense_modal_receipts"></div>
+
+                        <div class="ui ten wide column">
+                            <div class="ui list" id="expense_modal_expenses"></div>
+
+                            <hr style="border: 1px solid black">
+
+                            <div class="ui items">
+                                <div class="ui item">
+                                    <div class="content">
+                                        <div class="ui left floated"><strong>TOTAL:</strong></div>
+                                        <div class="ui right floated" id="expense_modal_total"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <form class="ui form">
+                                <div class="field">
+                                    <label>Reason for expense rejection (May be left empty when Accepted):</label>
+                                    <textarea style="resize: none" rows="5" id="expense_modal_reason" placeholder="Reason..." maxlength="500"></textarea>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="right aligned actions">
+                    <button class="ui positive button" id="expense_modal_confirm" data-expense-id="">Accept</button>
+                    <button class="ui negative button" id="expense_modal_reject" data-expense-id="">Reject</button>
+                    <button class="ui button" id="expense_modal_close">Close</button>
+                </div>
+            </div>
+
+            <div class="ui cards">
+
+                {{#each treasurer.expenseRequests}}
+
+                <div class="ui fluid link card expenseRequest" id="{{this.expenseId}}">
+                    <div class="content">
+                        <div class="header">
+                            <div class="ui left floated">{{this.member.firstName}} {{this.member.lastName}}:</div>
+                            <div class="ui right floated">€ {{this.total}}</div>
+                        </div>
+                    </div>
+                </div>
+
+                {{/each}}
+
+            </div>
+
+            {{else}}
+
+            <div class="ui fluid placeholder segment">
+                <div class="ui icon header">
+                    <i class="check double icon"></i>
+                    No pending expenses!
+                </div>
+            </div>
+
+            {{/if}}
+        </div>
+
+        <div class="ui four wide column">
+            <button class="ui disabled fluid teal button announcement">
+                <h4 class="ui center aligned icon header">
+                    <i class="large announcement icon"></i>
+                    Announcement
+                </h4>
+            </button>
+        </div>
+    </div>
+</div>

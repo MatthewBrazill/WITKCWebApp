@@ -18,6 +18,10 @@ const privacy = require('./controllers/privacy.js')
 const terms = require('./controllers/terms.js')
 const api = require('./api.js')
 const safety = require('./controllers/safety.js')
+const trip = require('./controllers/trip.js')
+const expenses = require('./controllers/expenses.js')
+const captain = require('./controllers/captain.js')
+const gear = require('./controllers/gear.js')
 
 // Home
 router.get('/', home.get)
@@ -51,7 +55,7 @@ router.post('/api/contact', contact.post) // Send a contact form message
 // Profiles
 router.get('/profile/me', profile.me)
 router.get('/profile/me/settings', profile.settings)
-router.get('/profile/:username', profile.user)
+router.get('/profile/:userId', profile.user)
 // Profile APIs
 router.post('/api/settings/personal', profile.personal) // Update personal settings *requires login*
 router.post('/api/settings/customize', profile.customize) // Update customization settings *requires login*
@@ -63,6 +67,40 @@ router.post('/api/settings/delete', profile.delete) // Delete account *requires 
 // Committee Dashboard APIs
 router.post('/api/safety/award', safety.award) // Award certificate to member *requires safety*
 router.post('/api/safety/revoke', safety.revoke) // Remove certificate from member *requires safety*
+router.post('/api/safety/accept', safety.accept) // Accept trip too allow it to happen *requires safety*
+router.post('/api/safety/reject', safety.reject) // Reject trip due to safety concerns *requires safety*
+router.post('/api/captain/verify', captain.verify) // Set member to verified *requires captain*
+router.get('/api/captain/stats', captain.stats) // Get club statistics *requires captain*
+
+
+
+// Trips
+router.get('/trip/create', trip.create)
+router.get('/trip/:tripId', trip.view)
+// Trips API
+router.post('/api/trip/create', trip.apiCreate) // Create a trip request *requires verified*
+router.post('/api/trip/join', trip.join) // Join a trip *requires verified*
+router.post('/api/trip/leave', trip.leave) // Leave a trip *requires verified*
+router.post('/api/trip/list', trip.list) // List all trips
+
+
+
+// Equipment
+router.get('/equipment/book', gear.book)
+// Equipment API
+router.post('/api/equipment/add', gear.create) // Add trip to the club *requires equipments*
+router.post('/api/equipment/get', gear.get) // Get a specific pice of equipment *requires verified*
+router.post('/api/equipment/get_all', gear.getAll) // Get all equipment; may be filtered to catagories *requires verified*
+router.post('/api/equipment/delete', gear.delete) // Delete a pice of equipment *requires equipments*
+
+
+
+// Expenses
+router.get('/expenses', expenses.create)
+// Expenses API
+router.post('/api/expenses/submit', expenses.submit) // Submit a expense request *requires verified*
+router.post('/api/expenses/resolve', expenses.resolve) // Resolve a expense request *requires treasurer*
+router.post('/api/expenses/get', expenses.get) // Get a expense request *requires treasurer*
 
 
 
@@ -91,7 +129,8 @@ router.get('/terms', terms.get)
 router.get('/api/cookie_choice', api.getCookie) // Get cookie choice as boolean (true = allow)
 router.get('/api/certs', api.getCerts) // Get all certs as array *requires committee*
 router.get('/api/members', api.getMembers) // Get all members as array (Name and ID only) *requires committee*
-router.post('/api/member', api.getMember) // Get members with memberId *requires committee*
+router.get('/api/safety_boaters', api.getSafetyBoaters) // Get all members as array (Name and ID only) *requires login*
+router.post('/api/member', api.getMember) // Get member with memberId *requires login*
 router.post('/api/cookie_choice', api.postCookie) // Set cookie choice to preference
 
 

@@ -21,7 +21,6 @@ $(document).ready(() => {
             method: 'POST',
             data: { date: calendar.calendar('get date') },
             success: (res) => {
-                console.log(res)
                 if (res.events.length == 0) {
                     list.attr('class', 'ui placeholder segment')
                     list.html('<div class="ui icon header"><i class="calendar alternate icon"></i>There are currently no events planed on this day!</div>')

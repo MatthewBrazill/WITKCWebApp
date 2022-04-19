@@ -6,11 +6,11 @@
 
         <div class="ui twelve wide column">
 
-            {{#if safety.trips.count}}
+            {{#if freshers.trips.length}}
 
             <div class="ui items">
 
-                {{#each safety.trips}}
+                {{#each freshers.trips}}
 
                 <div class="item">
                     <div class="header">{{this.name}}</div>
@@ -38,13 +38,12 @@
         </div>
 
         <div class="ui four wide column">
-
-            <a class="ui fluid teal button" href="/committee/announce">
+            <button class="ui disabled fluid teal button announcement">
                 <h4 class="ui center aligned icon header">
                     <i class="large announcement icon"></i>
                     Announcement
                 </h4>
-            </a>
+            </button>
         </div>
     </div>
 </div>

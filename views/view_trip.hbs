@@ -1,0 +1,151 @@
+<script hidden>
+    $(document).ready(() => {
+        $('#trip_calendar').calendar({
+            type: 'date',
+            constantHeight: true,
+            firstDayOfWeek: 1,
+            minDate: new Date('{{trip.startDate}}'),
+            maxDate: new Date('{{trip.endDate}}'),
+            disableYear: true,
+            disableMonth: true,
+            className: {
+                prev: '',
+                next: '',
+                prevIcon: '',
+                nextIcon: '',
+                link: '',
+                cell: '',
+                disabledCell: 'adjacent',
+                focusCell: '',
+                rangeCell: 'teal'
+            },
+            onBeforeChange: () => false,
+            onSelect: () => false
+        })
+
+        $('#trip_calendar').calendar('set startDate', new Date('{{trip.startDate}}'))
+        $('#trip_calendar').calendar('set endDate', new Date('{{trip.endDate}}'))
+
+        $('#participation').click(() => {
+            const button = $('#participation')
+
+            button.addClass('loading')
+            if (button.attr('data-state') == 'true') {
+                $.ajax({
+                    url: '/api/trip/leave',
+                    method: 'POST',
+                    data: {
+                        tripId: '{{trip.tripId}}'
+                    },
+                    success: () => {
+                        button.text('Join Trip')
+                        button.attr('class', 'ui right floated positive button')
+                        button.prop('joined', false)
+                    }
+                })
+            } else {
+                $.ajax({
+                    url: '/api/trip/join',
+                    method: 'POST',
+                    data: {
+                        tripId: '{{trip.tripId}}'
+                    },
+                    success: () => {
+                        button.text('Leave Trip')
+                        button.attr('class', 'ui right floated negative button')
+                        button.prop('joined', false)
+                    }
+                })
+            }
+        })
+    })
+</script>
+<div class="twelve wide column">
+
+    <div class="ui segment">
+
+        <h1 class="ui dividing header">
+            {{trip.name}}
+            {{#if trip.joinable}}
+            {{#if joined}}
+            <div class="ui right floated negative button" id="participation" data-state="{{joined}}">Leave Trip</div>
+            {{else}}
+            <div class="ui right floated positive button" id="participation" data-state="{{joined}}">Join Trip</div>
+            {{/if}}
+            {{/if}}
+        </h1>
+
+        <div class="ui two column grid">
+
+            <!-- Description -->
+            <div class="nine wide column">
+
+                <div class="ui calendar" id="trip_calendar"></div>
+
+                <h5 class="ui header">Trip description:</h5>
+                <p class="ui segment">{{trip.description}}</p>
+            </div>
+
+            <!-- Details -->
+            <div class="seven wide column">
+
+                <h5 class="ui header">The trip will go to:</h5>
+                <ol class="ui list">
+                    <li value="">{{trip.location.lineOne}}</li>
+                    {{#if trip.location.lineTwo}}<li value="">{{trip.location.lineTwo}}</li>{{/if}}
+                    <li value="">{{trip.location.city}}</li>
+                    <li value="">{{trip.location.county}}</li>
+                    <li value="">{{trip.location.code}}</li>
+                </ol>
+
+                <h5 class="ui header">On this trip you will likely encounter:</h5>
+                <ol class="ui list">
+                    {{#each trip.hazards}}
+                    <li value="-">{{this}}</li>
+                    {{/each}}
+                </ol>
+
+                {{#if logged_in}}
+
+                <h5 class="ui header">Safety Boaters:</h5>
+                {{#if trip.safety}}
+                <div class="ui divided list">
+                    {{#each trip.safety}}
+                    <div class="ui item">
+                        <img class="ui avatar image" src="{{this.img}}">
+                        <div class="content">
+                            <a class="header" href="/profile/{{this.memberId}}">{{this.firstName}} {{this.lastName}}</a>
+                            <div class="description">{{this.cert}}</div>
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+                {{else}}
+                <div class="ui error message">
+                    <div class="header">There are currently no Safety Boaters on this trip!</div>
+                </div>
+                {{/if}}
+
+                {{/if}}
+            </div>
+        </div>
+
+        {{#if logged_in}}
+
+        <h5 class="ui header">Attendees:</h5>
+        <div class="ui divided list">
+            {{#each trip.attendees}}
+            <div class="ui item">
+                <img class="ui avatar image" src="{{this.img}}">
+                <div class="content">
+                    <a class="header" href="/profile/{{this.memberId}}">{{this.firstName}} {{this.lastName}}</a>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+
+        {{/if}}
+    </div>
+</div>
+
+{{> sidebar}}

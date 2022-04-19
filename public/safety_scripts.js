@@ -112,38 +112,56 @@ $(document).ready(() => {
             method: 'POST',
             data: { memberId: $('#revoke_cert_modal_member_dropdown_input').val() },
             success: (member) => {
+                cards.empty()
                 for (var cert of member.certs) {
-                    cards.append(
-                        $('<div class="ui fluid card"></div>').append(
-                            $('<div class="content"></div>').append(
-                                $('<div class="header"></div>').append(
-                                    $('<div class="ui left floated"></div>').text(cert.name),
-                                    $('<button class="ui right floated negative button revoke" data-cert="'+cert.id+'">Revoke</button>').click(() => {
-                                        var id = cert.id
-                                        $.ajax({
-                                            url: '/api/safety/revoke',
-                                            method: 'POST',
-                                            data: {
-                                                certId: id,
-                                                memberId: member.memberId
-                                            },
-                                            success: () => {
-                                                $('#revoke_cert_modal_error').hide()
-                                            },
-                                            error: () => {
-                                                $('#revoke_cert_modal_error').show()
-                                            }
-                                        })
+                    cards.append($('<div class="ui fluid card"></div>')
+                        .append($('<div class="content"></div>')
+                            .append($('<div class="header"></div>')
+                                .append($('<div class="ui left floated"></div>').text(cert.name))
+                                .append($(`<button class="ui right floated negative button revoke" data-cert-id="${cert.id}">Revoke</button>`).click(function () {
+                                    $.ajax({
+                                        url: '/api/safety/revoke',
+                                        method: 'POST',
+                                        data: {
+                                            certId: $(this).attr('data-cert-id'),
+                                            memberId: member.memberId
+                                        },
+                                        success: () => {
+                                            $('#revoke_cert_modal_error').hide()
+                                            $(this).parent().parent().parent().remove()
+                                        },
+                                        error: () => {
+                                            $('#revoke_cert_modal_error').show()
+                                        }
                                     })
-                                ),
-                                $('<h5></h5>').text(cert.category + ' Certificate')
-                            )
-                        )
-                    )
+                                })))
+                            .append($('<h5></h5>').text(cert.category + ' Certificate'))))
                 }
                 $('#revoke_cert_modal_error').hide()
             },
             error: () => { $('#revoke_cert_modal_error').show() }
         })
+    })
+
+    $('.trip').click(function (event) {
+        const card = $(this)
+        const reject = card.find('.negative')
+        const accept = card.find('.positive')
+
+        if (accept.is(event.target) || accept.children().is(event.target)) {
+            $.ajax({
+                url: '/api/safety/accept',
+                method: 'POST',
+                data: { tripId: card.attr('id') },
+                success: () => card.remove()
+            })
+        } else if (reject.is(event.target) || reject.children().is(event.target)) {
+            $.ajax({
+                url: '/api/safety/reject',
+                method: 'POST',
+                data: { tripId: card.attr('id') },
+                success: () => card.remove()
+            })
+        } else window.location = `/trip/${card.attr('id')}`
     })
 })
