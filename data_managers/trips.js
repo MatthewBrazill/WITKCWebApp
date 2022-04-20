@@ -112,6 +112,43 @@ const trips = {
         })
     },
 
+    async getOnDate(date) {
+        if (date === null || date === undefined) return null
+        return dynamo.scan({
+            TableName: 'witkc-trips'
+        }).promise().then((data) => {
+            if (data.Items != undefined) {
+                var trips = []
+                for (var item of data.Items) {
+                    if (new Date(item['startDate'].S) <= new Date(date) && new Date(date) <= new Date(item['endDate'].S)) {
+                        var trip = {}
+                        for (var attr in item) {
+                            if ('S' in item[attr]) trip[attr] = item[attr].S
+                            else if ('BOOL' in item[attr]) trip[attr] = item[attr].BOOL
+                            else if (attr == 'location') {
+                                trip.location = {
+                                    lineOne: item['location'].L[0].S,
+                                    lineTwo: item['location'].L[1].S,
+                                    city: item['location'].L[2].S,
+                                    county: item['location'].L[3].S,
+                                    code: item['location'].L[4].S
+                                }
+                            } else if ('L' in item[attr]) {
+                                trip[attr] = []
+                                for (var i of item[attr].L) trip[attr].push(i.S)
+                            }
+                        }
+                        trips.push(trip)
+                    }
+                }
+                return trips
+            } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
+        }).catch((err) => {
+            logger.warn(`Failed to list trips since ${date}! ${err}`)
+            return null
+        })
+    },
+
     async list(memberId) {
         if (memberId === null || memberId === undefined) return null
         return dynamo.scan({
@@ -186,16 +223,64 @@ const trips = {
     async since(date) {
         if (date === null || date === undefined) return null
         return dynamo.scan({
-            ExpressionAttributeNames: { '#SD': 'startDate' },
-            ProjectionExpression: '#SD',
             TableName: 'witkc-trips'
         }).promise().then((data) => {
             if (data.Items != undefined) {
                 var trips = []
-                for (var item of data.Items) {
-                    if (new Date(date) <= new Date(item['startDate'].S) && new Date(item['startDate'].S) <= new Date()) {
-                        trips.push(item['startDate'].S)
+                for (var item of data.Items) if (new Date(date) <= new Date(item['startDate'].S) && new Date(item['startDate'].S) <= new Date()) {
+                    var trip = {}
+                    for (var attr in item) {
+                        if ('S' in item[attr]) trip[attr] = item[attr].S
+                        else if ('BOOL' in item[attr]) trip[attr] = item[attr].BOOL
+                        else if (attr == 'location') {
+                            trip.location = {
+                                lineOne: item['location'].L[0].S,
+                                lineTwo: item['location'].L[1].S,
+                                city: item['location'].L[2].S,
+                                county: item['location'].L[3].S,
+                                code: item['location'].L[4].S
+                            }
+                        } else if ('L' in item[attr]) {
+                            trip[attr] = []
+                            for (var i of item[attr].L) trip[attr].push(i.S)
+                        }
                     }
+                    trips.push(trip)
+                }
+                return trips
+            } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
+        }).catch((err) => {
+            logger.warn(`Failed to list trips since ${date}! ${err}`)
+            return null
+        })
+    },
+
+    async from(date) {
+        if (date === null || date === undefined) return null
+        return dynamo.scan({
+            TableName: 'witkc-trips'
+        }).promise().then((data) => {
+            if (data.Items != undefined) {
+                var trips = []
+                for (var item of data.Items) if (new Date(item['startDate'].S) >= new Date(date)) {
+                    var trip = {}
+                    for (var attr in item) {
+                        if ('S' in item[attr]) trip[attr] = item[attr].S
+                        else if ('BOOL' in item[attr]) trip[attr] = item[attr].BOOL
+                        else if (attr == 'location') {
+                            trip.location = {
+                                lineOne: item['location'].L[0].S,
+                                lineTwo: item['location'].L[1].S,
+                                city: item['location'].L[2].S,
+                                county: item['location'].L[3].S,
+                                code: item['location'].L[4].S
+                            }
+                        } else if ('L' in item[attr]) {
+                            trip[attr] = []
+                            for (var i of item[attr].L) trip[attr].push(i.S)
+                        }
+                    }
+                    trips.push(trip)
                 }
                 return trips
             } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`

@@ -30,8 +30,14 @@ const trip = {
                 if (trip !== null) {
                     data.trip = trip
                     data.trip.location.county = viewData.capitalize(data.trip.location.county)
-                    if (data.trip.attendees.includes(data.member.memberId)) data.joined = true
-                    else data.joined = false
+
+                    if (data.logged_in) {
+                        if (data.admin || !data.member.verified) data.trip.joinable = false
+                        else data.trip.joinable = false
+
+                        if (data.trip.attendees.includes(data.member.memberId)) data.joined = true
+                        else data.joined = false
+                    }
 
                     for (var i in data.trip.safety) {
                         var member = await members.get(data.trip.safety[i])
@@ -61,13 +67,11 @@ const trip = {
                         }
                     }
 
-                    if (data.logged_in) if (data.admin || !data.member.verified) data.trip.joinable = false
-                    else data.trip.joinable = false
 
                     logger.info(`Session '${req.sessionID}': Getting View Trip`)
                     res.render('view_trip', data)
                 } else res.redirect('/404')
-            }).catch((err) => { res.status(500).json(err) })
+            }).catch((err) => { console.log(err); res.redirect('/404') })
         } else res.redirect('/404')
     },
 
