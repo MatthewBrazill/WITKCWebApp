@@ -94,6 +94,7 @@ const committee = {
                         img: 'img/placeholder_avatar.webp'
                     }
                     else role.member = await members.get(item['memberId'].S)
+                    committee.push(role)
                 }
                 return committee
             } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`

@@ -20,7 +20,7 @@ const viewData = {
             logged_in: false
         }
 
-        if (await members.exists(req.session.userID)) {
+        if (req.session != undefined) if (await members.exists(req.session.userID)) {
             logger.debug(`Session '${req.sessionID}' is Logged In`)
 
             data.member = await members.get(req.session.userID)
