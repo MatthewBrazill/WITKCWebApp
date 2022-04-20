@@ -19,19 +19,27 @@ $(document).ready(() => {
         $.ajax({
             url: '/api/events/day',
             method: 'POST',
-            data: { date: calendar.calendar('get date') },
-            success: (res) => {
-                if (res.events.length == 0) {
+            data: { date: calendar.calendar('get date').toISOString().substring(0, 10) },
+            success: (events) => {
+                if (events.length == 0) {
                     list.attr('class', 'ui placeholder segment')
                     list.html('<div class="ui icon header"><i class="calendar alternate icon"></i>There are currently no events planed on this day!</div>')
                 } else {
-                    list.attr('class', 'ui segment')
-                    var listContent = '<ul>'
-                    for (var event in res.events) {
-                        listContent.concat(`<li>${event}</li>`)
+                    list.attr('class', 'ui items')
+                    list.html('')
+                    for (var event of events) {
+                        console.log(event)
+                        list.append($(`
+                        <a class="ui fluid link card" href="/trip/${event.tripId}" target="_blank">
+                            <div class="content">
+                                <div class="header">
+                                    <div class="ui left floated">${event.name}:</div>
+                                    <div class="ui right floated">Level: ${event.level}</div>
+                                </div>
+                            </div>
+                        </a>
+                        `))
                     }
-                    listContent.concat('</ul>')
-                    list.html(listContent)
                 }
             },
             error: () => {

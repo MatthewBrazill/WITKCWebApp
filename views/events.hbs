@@ -1,6 +1,39 @@
 <script src="{{scripts.events}}" hidden></script>
 <div class="twelve wide column">
-    <div class="ui segment" style="height: 100%">
+    <div class="ui segment">
+
+        <h1 class="ui dividing header">Upcoming Trips</h1>
+
+        {{#if events.length}}
+
+        <div class="ui items">
+            {{#each events}}
+            <a class="ui fluid link card" href="/trip/{{this.tripId}}" target="_blank">
+                <div class="content">
+                    <div class="header">
+                        <div class="ui left floated">{{this.name}}, {{this.startDate}}</div>
+                        <div class="ui right floated">Level: {{this.level}}</div>
+                    </div>
+                </div>
+            </a>
+            {{/each}}
+        </div>
+
+        {{else}}
+
+        <div class="ui placeholder segment">
+            <div class="ui icon header">
+                <i class="calendar alternate icon"></i>There are currently no future events planed!
+            </div>
+        </div>
+
+        {{/if}}
+
+    </div>
+
+    <div class="ui segment">
+
+        <h1 class="ui dividing header">Browse Calendar</h1>
 
         <div class="ui calendar" id="event_calendar"></div>
 
