@@ -23,6 +23,11 @@ const profile = {
                 data.scripts.committee = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/committee_scripts.js' })
                 data[data.committee] = await committee.getRole(data.committee)
                 data.scripts[data.committee] = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: `js/${data.committee}_scripts.js` })
+
+                if (data.committee == 'equipments') {
+                    for (var attr in data.equipments.equipment) for (var gear of data.equipments.equipment[attr]) for (var a in gear)
+                        if (!['equipmentId', 'img'].includes(a)) gear[a] = viewData.capitalize(gear[a].toString())
+                }
             } else if (data.admin) {
                 data.scripts.committee = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/committee_scripts.js' })
                 for (var role of ['captain', 'vice', 'safety', 'treasurer', 'equipments', 'pro', 'freshers']) {
