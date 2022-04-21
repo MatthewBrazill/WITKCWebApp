@@ -120,7 +120,7 @@ const expenses = {
 
                 if (!req.body.expenseId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) valid = false
                 if (req.body.accepted != 'true' && req.body.accepted != 'false') valid = false
-                if (!(req.body.accepted == 'true')) if (!req.body.reason.match(/^.{1,200}$/u)) valid = false
+                if (!(req.body.accepted == 'true')) if (!req.body.reason.match(/^[^<>]{1,200}$/u)) valid = false
 
                 if (valid) {
                     var treasurer = await committee.getRole('treasurer')

@@ -106,7 +106,7 @@ const profile = {
                         var valid = true
                         if (err) reject(err)
                         else {
-                            if (!fields.bio.match(/^.{1,500}$/u)) valid = false
+                            if (!fields.bio.match(/^[^<>]{1,500}$/u)) valid = false
                             if (files.file.type.split('/')[0] != 'image') valid = false
 
                             if (!valid) reject('Malformed Input')

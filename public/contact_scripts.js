@@ -23,7 +23,7 @@ $(document).ready(() => {
                 data[input.attr('id')] = input.val()
             })
             $.ajax({
-                url: '/contact',
+                url: '/api/contact',
                 method: 'POST',
                 data: data,
                 success: () => {
@@ -70,7 +70,12 @@ $(document).ready(() => {
 
     $('#message').on('input', () => {
         const message = $('#message')
-        if (!message.val().match(/^.{1,500}$/u)) message.prop('valid', false)
-        else message.prop('valid', true)
+        if (!message.val().match(/^[^<>]{1,500}$/u)) {
+            message.prop('valid', false)
+            message.parent().attr('class', 'field error')
+        } else {
+            message.prop('valid', true)
+            message.parent().attr('class', 'field success')
+        }
     })
 })

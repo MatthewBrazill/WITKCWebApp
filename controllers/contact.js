@@ -11,7 +11,7 @@ const viewData = require('../view_data.js')
 const contact = {
     async get(req, res) {
         var data = await viewData.get(req, 'Contact Us')
-        data.scripts.contact = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/contact_scripts.js' })
+        data.scripts.contact = '/contact_scripts.js'//s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/contact_scripts.js' })
         
         logger.info(`Session '${req.sessionID}': Getting Contact`)
         res.render('contact', data)
@@ -26,7 +26,7 @@ const contact = {
             if (!req.body.first_name.match(/^\p{L}{1,16}$/u)) valid = false
             if (!req.body.last_name.match(/^\p{L}{1,16}$/u)) valid = false
             if (!req.body.email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.[a-z]{2,})$/i)) valid = false
-            if (!req.body.message.match(/^.{1,500}$/u)) valid = false
+            if (!req.body.message.match(/^[^<>]{1,500}$/u)) valid = false
 
             if (valid) {
                 ses.sendEmail({

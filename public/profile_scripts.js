@@ -264,7 +264,7 @@ $(document).ready(() => {
         if (bio.val() == '') {
             field.attr('class', 'field')
             bio.prop('valid', true)
-        } else if (!bio.val().match(/^.{1,500}$/u)) {
+        } else if (!bio.val().match(/^[^<>]{1,500}$/u)) {
             field.attr('class', 'error field')
             bio.prop('valid', false)
         } else {

@@ -102,7 +102,7 @@ $(document).ready(() => {
             $('#description').on('input', () => {
                 const description = $('#description')
                 const field = description.parent()
-                if (!description.val().match(/^.{1,500}$/u)) {
+                if (!description.val().match(/^[\s\S]{1,500}$/u)) {
                     field.attr('class', 'field error')
                     description.prop('valid', false)
                 } else {
