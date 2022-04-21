@@ -113,7 +113,7 @@ const committee = {
             ProjectionExpression: '#ID',
             TableName: 'witkc-committee'
         }).promise().then((data) => {
-            if (data.Items[0] != undefined) return data.Items[0]['roleId']
+            if (data.Items[0] != undefined) return data.Items[0]['roleId'].S
             else null
         }).catch((err) => {
             logger.warn(`Could not determine committee membership of member '${memberId}'! ${err}`)
