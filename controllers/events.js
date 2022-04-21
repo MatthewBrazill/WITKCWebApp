@@ -10,7 +10,7 @@ const viewData = require('../view_data.js')
 const events = {
     async get(req, res) {
         var data = await viewData.get(req, 'Events')
-        data.scripts.events = '/events_scripts.js' //s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/events_scripts.js' })
+        data.scripts.events = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/events_scripts.js' })
         data.events = await trips.from(new Date()).then((result) => {
             var i = 0
             while (i < result.length-1) {

@@ -11,7 +11,7 @@ const viewData = require('../view_data.js')
 const contact = {
     async get(req, res) {
         var data = await viewData.get(req, 'Contact Us')
-        data.scripts.contact = '/contact_scripts.js'//s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/contact_scripts.js' })
+        data.scripts.contact = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/contact_scripts.js' })
         
         logger.info(`Session '${req.sessionID}': Getting Contact`)
         res.render('contact', data)

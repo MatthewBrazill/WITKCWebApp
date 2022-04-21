@@ -12,7 +12,7 @@ const members = require('../data_managers/witkc_members.js')
 const trip = {
     async create(req, res) {
         var data = await viewData.get(req, 'Create Trip')
-        data.scripts.trip = '/trip_scripts.js'//s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/trip_scripts.js' })
+        data.scripts.trip = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/trip_scripts.js' })
 
         if (data.logged_in) if (data.member.verified) {
             logger.info(`Session '${req.sessionID}': Getting Create Trip`)
