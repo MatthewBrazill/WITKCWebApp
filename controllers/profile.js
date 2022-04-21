@@ -162,12 +162,13 @@ const profile = {
         try {
             var data = await viewData.get(req, 'Delete')
 
-            if (data.logged_in && req.body.delete) {
+            if (data.logged_in) {
                 members.delete(data.member.memberId).then(() => {
-                    res.redirect('/logout')
                     logger.info(`Member ${data.member.memberId}: Successfully deleted account!`)
+                    req.session.destroy()
+                    res.sendStatus(200)
                 }).catch(() => res.status(500).json(err))
-            } else res.sendStatus(403)
+            } else res.sendStatus(401)
         } catch (err) { res.status(500).json(err) }
     },
 
