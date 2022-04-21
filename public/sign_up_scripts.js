@@ -63,8 +63,24 @@ $(document).ready(() => {
             field.attr('class', 'field error')
             name.prop('valid', false)
         } else {
-            field.attr('class', 'field success')
-            name.prop('valid', true)
+            field.attr('class', 'loading field')
+            $.ajax({
+                url: `/api/username/exists/${name.val()}`,
+                method: 'GET',
+                success: (res) => {
+                    if (!res) {
+                        field.attr('class', 'field success')
+                        name.prop('valid', true)
+                    } else {
+                        field.attr('class', 'field error')
+                        name.prop('valid', false)
+                    }
+                },
+                error: () => {
+                    field.attr('class', 'field error')
+                    name.prop('valid', false)
+                }
+            })
         }
     })
 

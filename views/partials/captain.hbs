@@ -2,22 +2,32 @@
 <div class="ui segment">
     <h3 class="ui dividing header">Captain Dashboard</h3>
 
-    <div class="ui four statistics">
-        <div class="teal statistic">
-            <div class="value" id="captain_members_stat">0</div>
-            <div class="label">Club Members</div>
+    <div class="ui two column grid">
+
+        <div class="ui twelve wide column">
+            <div class="ui three statistics">
+                <div class="teal statistic">
+                    <div class="value" id="captain_members_stat">0</div>
+                    <div class="label">Club Members</div>
+                </div>
+                <div class="teal statistic">
+                    <div class="value" id="captain_trips_stat">0</div>
+                    <div class="label">Trips This Year So Far</div>
+                </div>
+                <div class="teal statistic">
+                    <div class="value" id="captain_boats_stat">0</div>
+                    <div class="label">Club Boats</div>
+                </div>
+            </div>
         </div>
-        <div class="teal statistic">
-            <div class="value" id="captain_trips_stat">0</div>
-            <div class="label">Trips This Year So Far</div>
-        </div>
-        <div class="teal statistic">
-            <div class="value" id="captain_boats_stat">0</div>
-            <div class="label">Club Boats</div>
-        </div>
-        <div class="teal statistic">
-            <div class="value" id="captain_expenses_stat">€ 0</div>
-            <div class="label">Club Reimbursement</div>
+
+        <div class="ui four wide column">
+            <button class="ui disabled fluid teal button announcement">
+                <h4 class="ui center aligned icon header">
+                    <i class="large announcement icon"></i>
+                    Announcement
+                </h4>
+            </button>
         </div>
     </div>
 </div>

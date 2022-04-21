@@ -5,6 +5,7 @@ const logger = require('../log.js')
 const viewData = require('../view_data.js')
 const members = require('../data_managers/witkc_members')
 const trips = require('../data_managers/trips.js')
+const equipment = require('../data_managers/equipment.js')
 
 const captain = {
     async verify(req, res) {
@@ -39,12 +40,12 @@ const captain = {
 
                     var m = await members.list()
                     var t = await trips.since(lastSeptember)
+                    var e = await equipment.getAll().then((result) => result.boats)
 
                     var stats = {
                         members: m.length,
                         trips: t.length,
-                        boats: 3,
-                        expenses: 168
+                        boats: e.length
                     }
                     res.status(200).json(stats)
                 } else res.sendStatus(403)

@@ -33,11 +33,10 @@ const trip = {
 
                     if (data.logged_in) {
                         if (data.admin || !data.member.verified) data.trip.joinable = false
-                        else data.trip.joinable = false
 
                         if (data.trip.attendees.includes(data.member.memberId)) data.joined = true
                         else data.joined = false
-                    }
+                    } else data.trip.joinable = false
 
                     for (var i in data.trip.safety) {
                         var member = await members.get(data.trip.safety[i])
@@ -95,10 +94,10 @@ const trip = {
                 ]
 
                 // Server-Side Validation
-                if (!req.body.name.match(/^[\p{L} ]{1,64}$/u)) valid = false
+                if (!req.body.name.match(/^[\p{L}\d ]{1,64}$/u)) valid = false
                 if (!req.body.start_date.match(/^20\d\d-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/)) valid = false
                 if (!req.body.end_date.match(/^20\d\d-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/)) valid = false
-                if (!req.body.description.match(/^.{1,500}$/u)) valid = false
+                if (!req.body.description.match(/^[^<>]{1,500}$/u)) valid = false
                 if (!req.body.line_one.match(/^[\w- ]{1,32}$/)) valid = false
                 if (!req.body.line_two.match(/^[\w- ]{1,32}$/) && req.body.line_two != '') valid = false
                 if (!req.body.city.match(/^[\w- ]{1,32}$/)) valid = false

@@ -54,11 +54,7 @@
     <div class="ui segment">
 
         <!-- Trips -->
-        <a href="/profile/me/trips">
-            <h3 class="ui dividing header" style="width: 100%;">
-                My Trips <i class="small angle double right icon"></i>
-            </h3>
-        </a>
+        <h3 class="ui dividing header">My Trips</h3>
 
         {{#if member.trips.length}}
 
@@ -66,7 +62,7 @@
 
             {{#each member.trips}}
 
-            <a class="ui fluid link card" href="/trip/{{this.tripId}}" style="color: black;">
+            <a class="ui fluid link card" href="/trip/{{this.tripId}}" target="_blank" style="color: black;">
                 <div class="content">
                     <div class="header">
                         <div class="ui left floated">{{this.name}}</div>
@@ -103,7 +99,7 @@
         <div class="ui items">
 
             {{#each member.certs}}
-            <a class="ui fluid link card" href="{{this.link}}" style="color: black;">
+            <a class="ui fluid link card" href="{{this.link}}" target="_blank" style="color: black;">
                 <div class="content">
                     <div class="header">
                         <div class="ui left floated">{{this.name}}</div>
@@ -165,32 +161,4 @@
 
 </div>
 
-<!-- Dashboard sidebar -->
-<div class="four wide column">
-
-    <div class="ui top attached fitted segment">
-
-        <a class="ui large top attached negative button" href="/logout">Logout</a>
-
-        <img class="ui fluid image" src="{{member.img}}" alt="User Image">
-    </div>
-
-    <div class="ui bottom attached segment" style="border: 0px;">
-
-        <div class="ui items">
-            <div class="item">
-                <div class="content">
-
-                    <div class="header" style="width: 100%;">
-                        {{member.firstName}} {{member.lastName}}
-                        <a class="ui right floated" href="/profile/me/settings" style="color: black;">
-                            <i class="cog icon"></i>
-                        </a>
-                    </div>
-                    <div class="meta">Member since {{member.dateJoined}}</div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+{{> sidebar}}

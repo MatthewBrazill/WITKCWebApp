@@ -60,7 +60,7 @@ router.get('/profile/:userId', profile.user)
 router.post('/api/settings/personal', profile.personal) // Update personal settings *requires login*
 router.post('/api/settings/customize', profile.customize) // Update customization settings *requires login*
 router.post('/api/settings/password', profile.password) // Update password *requires login*
-router.post('/api/settings/delete', profile.delete) // Delete account *requires login*
+router.get('/api/settings/delete', profile.delete) // Delete account *requires login*
 
 
 

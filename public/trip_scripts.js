@@ -60,7 +60,7 @@ $(document).ready(() => {
             $('#name').on('input', () => {
                 const name = $('#name')
                 const field = name.parent()
-                if (!name.val().match(/^[\p{L} ]{1,64}$/u)) {
+                if (!name.val().match(/^[\p{L}\d ]{1,64}$/u)) {
                     field.attr('class', 'field error')
                     name.prop('valid', false)
                 } else {
@@ -102,7 +102,7 @@ $(document).ready(() => {
             $('#description').on('input', () => {
                 const description = $('#description')
                 const field = description.parent()
-                if (!description.val().match(/^.{1,500}$/u)) {
+                if (!description.val().match(/^[^<>]{1,500}$/u)) {
                     field.attr('class', 'field error')
                     description.prop('valid', false)
                 } else {

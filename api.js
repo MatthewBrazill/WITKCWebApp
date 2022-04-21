@@ -11,12 +11,12 @@ const committee = require('./data_managers/committee.js')
 const api = {
     async existsUsername(req, res) {
         try {
-            if (!req.body.username.match(/^[\w-]{1,16}$/)) {
+            if (req.params.username.match(/^[\w-]{1,16}$/)) {
                 logger.info(`API Request: Username Check`)
-                if (members.resolveUsername(req.param.username) === null) res.status(200).send('false')
-                else res.status(200).send('true')
-            } else res.status(400)
-        } catch (err) { res.status(500).json(err) }
+                if (await members.resolveUsername(req.params.username) === null) res.status(200).json(false)
+                else res.status(200).json(true)
+            } else res.sendStatus(400)
+        } catch (err) { res.status(500).json(err); console.log(err) }
     },
 
     async getCookie(req, res) {

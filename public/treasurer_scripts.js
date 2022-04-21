@@ -86,7 +86,7 @@ $(document).ready(() => {
     $('#expense_modal_reason').on('input', () => {
         const reason = $('#expense_modal_reason')
         const field = reason.parent()
-        if (!reason.val().match(/^.{1,200}$/u)) {
+        if (!reason.val().match(/^[^<>]{1,200}$/u)) {
             field.attr('class', 'field error')
             reason.prop('valid', false)
         } else {

@@ -197,22 +197,21 @@ $(document).ready(() => {
     $('#promotion').trigger('change')
 
     $('#prompt_delete').click(() => $('#modal').modal('show'))
+    $('#cancel').click(() => $('#modal').modal('hide'))
     $('#delete').click(() => {
         $('#modal').modal('hide')
         $('#personal_form').attr('class', 'ui loading form')
         $.ajax({
             url: '/api/settings/delete',
-            method: 'POST',
-            data: { delete: true },
+            method: 'GET',
+            success: () => window.location = '/',
             error: () => {
                 $('#modal').modal('show')
                 $('#personal_form').attr('class', 'ui form')
-                $('#modal_error').attr('hidden', 'false')
+                $('#modal_error').show()
             }
         })
     })
-
-    $('#cancel').modal('hide')
 
 
 
@@ -264,7 +263,7 @@ $(document).ready(() => {
         if (bio.val() == '') {
             field.attr('class', 'field')
             bio.prop('valid', true)
-        } else if (!bio.val().match(/^.{1,500}$/u)) {
+        } else if (!bio.val().match(/^[^<>]{1,500}$/u)) {
             field.attr('class', 'error field')
             bio.prop('valid', false)
         } else {

@@ -253,12 +253,15 @@
 
             <div class="ui seven wide column">
 
-                <form class="ui form" id="password_form" autocomplete="off">
+                <form class="ui form" id="password_form" autocomplete="on">
+
+                    <!-- Username field for accessability - Does nothing -->
+                    <input type="hidden" autocomplete="username">
 
                     <!-- Old password -->
                     <div class="field">
                         <div class="ui action input">
-                            <input type="password" placeholder="Password" id="old_password">
+                            <input type="password" placeholder="Password" id="old_password" autocomplete="current-password">
                             <button class="ui icon button" type="button" id="hide_old_password">
                                 <i class="eye slash icon"></i>
                             </button>
@@ -269,7 +272,7 @@
                     <!-- New password -->
                     <div class="field">
                         <div class="ui action input">
-                            <input type="password" placeholder="New Password" id="new_password">
+                            <input type="password" placeholder="New Password" id="new_password" autocomplete="new-password">
                             <button class="ui icon button" type="button" id="hide_new_password">
                                 <i class="eye slash icon"></i>
                             </button>
@@ -295,7 +298,7 @@
 
                     <!-- Confirm new password -->
                     <div class="field">
-                        <input type="password" placeholder="Confirm Password" id="confirm_password">
+                        <input type="password" placeholder="Confirm Password" id="confirm_password" autocomplete="new-password">
                     </div>
                     <br>
 
