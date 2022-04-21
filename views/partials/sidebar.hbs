@@ -1,88 +1,84 @@
 <sidebar class="four wide column">
-    <div class="ui fitted segment" style="height: 100%{{#if logged_in}}{{else}}; border: 0px{{/if}}">
+    <div class="ui fitted segment" style="height: 100%">
         {{#if logged_in}}
 
         <!-- Logged In Version -->
-        <a class="ui large top attached negative button" href="/logout">Logout</a>
+        <div class="ui top attached fitted segment" style="border: 0px;">
 
-        <a href="/profile/me">
+            <a class="ui large top attached negative button" href="/logout">Logout</a>
+
             <img class="ui fluid image" src="{{member.img}}" alt="User Image">
+        </div>
 
-            <div class="ui attached segment">
-                <div class="ui items">
-                    <div class="item">
+        <div class="ui bottom attached segment" style="border: 0px;">
 
-                        <div class="content">
-                            <div class="header">{{member.firstName}} {{member.lastName}}</div>
-                            <div class="meta">Member since {{member.dateJoined}}</div>
+            <div class="ui items">
+                <div class="item">
+                    <div class="content">
+
+                        <div class="header" style="width: 100%;">
+                            {{member.firstName}} {{member.lastName}}
+                            <a class="ui right floated" href="/profile/me/settings" style="color: black;">
+                                <i class="cog icon"></i>
+                            </a>
                         </div>
+                        <div class="meta">Member since {{member.dateJoined}}</div>
 
                     </div>
                 </div>
             </div>
-
-            <div class="ui celled relaxed list" style="margin: 0px">
-
-                <div class="item">
-                    <div class="content">
-                        {{#if member.trips.length}}
-                        <div class="header">You have been to {{member.trips.length}} trips!</div>
-                        {{else}}
-                        <div class="header">You have not been on any trips yet!</div>
-                        <br>
-                        <div class="description">Check the events calender for any upcoming trips.</div>
-                        {{/if}}
-                    </div>
-                </div>
-
-                <div class="item">
-                    <div class="content">
-                        {{#if member.certs.length}}
-                        <div class="header">In total you have {{member.certs.length}} certs!</div>
-                        {{else}}
-                        <div class="header">You have no certifications yet!</div>
-                        <br>
-                        <div class="description">
-                            If you want to get any certifications, check the events calender or
-                            talk to the Safety Officer about upcoming courses.
-                        </div>
-                        {{/if}}
-                    </div>
-                </div>
-
-            </div>
-        </a>
+        </div>
 
         {{else}}
 
         <!-- Logged Out Version -->
-        <div class="ui top attached buttons">
-            <a class="ui large positive button" href="/login">Login</a>
-            <a class="ui large blue button" href="/signup">Sign Up</a>
+        <div class="ui top attached fitted segment" style="border: 0px;">
+
+            <div class="ui top attached buttons">
+                <a class="ui large positive button" href="/login">Login</a>
+                <a class="ui large blue button" href="/signup">Sign Up</a>
+            </div>
+
+            <img class="ui fluid image" src="{{witkc_logo}}" alt="Club Logo">
         </div>
 
-        <img class="ui fluid image" src="{{witkc_logo}}" alt="Club Logo">
+        <div class="ui bottom attached segment" style="border: 0px;">
 
-        <div class="ui attached basic segment" style="border: 0px">
-            <h4>We are always exited about new members!</h4>
-            <p>
-                Any active students at WIT are welcome to join us at our weekly pool meetings. We have several
-                initiatives
-                for new members who might want to chat to members of the club about different aspects of kayaking
-                and
-                get to
-                know the ins and outs of the sport.
-            </p>
-            <p>
-                To join, just come to a pool sessions Tuesdays and Thursdays at 9:30pm, or contact the club for more
-                information!
-            </p>
-            <p>
-                Once you've joined the club you can sign up to the online portal here, and get your WITKC account.
-            </p>
+            <div class="ui items">
+                <div class="item">
+                    <div class="content">
+
+                        <div class="header">We are always exited about new members!</div>
+
+                        <div class="description">
+                            <p>
+                                Any active students at WIT are welcome to join us at our weekly pool meetings. We have
+                                several
+                                initiatives
+                                for new members who might want to chat to members of the club about different aspects of
+                                kayaking
+                                and
+                                get to
+                                know the ins and outs of the sport.
+                            </p>
+                            <p>
+                                To join, just come to a pool sessions Tuesdays and Thursdays at 9:30pm, or contact the
+                                club for more
+                                information!
+                            </p>
+                            <p>
+                                Once you've joined the club you can sign up to the online portal here, and get your
+                                WITKC account.
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
         </div>
 
         <a class="ui large attached basic button" href="/contact">Contact The Club</a>
+
         {{/if}}
     </div>
 </sidebar>

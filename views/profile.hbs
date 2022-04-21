@@ -165,32 +165,4 @@
 
 </div>
 
-<!-- Dashboard sidebar -->
-<div class="four wide column">
-
-    <div class="ui top attached fitted segment">
-
-        <a class="ui large top attached negative button" href="/logout">Logout</a>
-
-        <img class="ui fluid image" src="{{member.img}}" alt="User Image">
-    </div>
-
-    <div class="ui bottom attached segment" style="border: 0px;">
-
-        <div class="ui items">
-            <div class="item">
-                <div class="content">
-
-                    <div class="header" style="width: 100%;">
-                        {{member.firstName}} {{member.lastName}}
-                        <a class="ui right floated" href="/profile/me/settings" style="color: black;">
-                            <i class="cog icon"></i>
-                        </a>
-                    </div>
-                    <div class="meta">Member since {{member.dateJoined}}</div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+{{> sidebar}}
