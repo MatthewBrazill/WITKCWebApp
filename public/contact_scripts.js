@@ -28,7 +28,10 @@ $(document).ready(() => {
                 data: data,
                 success: () => {
                     form.attr('class', 'ui success form')
-                    inputs.each((index, element) => $(element).val(''))
+                    inputs.each((index, element) => {
+                        $(element).parent().removeClass('success')
+                        $(element).val('')
+                    })
                 },
                 error: () => form.attr('class', 'ui error form')
             })
