@@ -33,7 +33,14 @@ $(document).ready(() => {
                 processData: false,
                 enctype: 'multipart/form-data',
                 data: data,
-                success: () => form.attr('class', 'ui success form'),
+                success: () => {
+                    form.attr('class', 'ui success form')
+                    inputs.each((index, element) => {
+                        $(element).parent().removeClass('success')
+                        $(element).parent().parent().removeClass('success')
+                        $(element).val('')
+                    })
+                },
                 error: () => form.attr('class', 'ui error form')
             })
         }
@@ -46,7 +53,7 @@ $(document).ready(() => {
 
         var element = $('<div class="ui fields"></div>')
             .append($('<div class="eleven wide field"></div>')
-                .append($('<input type="text" placeholder="Purchase Description">').on('input', function() {
+                .append($('<input type="text" placeholder="Purchase Description">').on('input', function () {
                     const desc = $(this)
                     const field = desc.parent()
 
@@ -60,7 +67,7 @@ $(document).ready(() => {
                 })))
             .append($('<div class="five wide field"></div>')
                 .append($('<div class="ui icon input"></div>')
-                    .append($('<input type="number" min="0" step="any" placeholder="Price">').on('input', function() {
+                    .append($('<input type="number" min="0" step="any" placeholder="Price">').on('input', function () {
                         const price = $(this)
                         const field = price.parent().parent()
 
