@@ -72,7 +72,7 @@ const safety = {
         } catch (err) { res.status(500).json(err) }
     },
 
-    async reject(req, res) {
+    async delete(req, res) {
         try {
             var data = await viewData.get(req, 'API')
 
@@ -81,7 +81,7 @@ const safety = {
                     if (req.body.tripId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
                         await s3.putObject({
                             Bucket: 'witkc',
-                            Key: `rejectedTrips/${req.body.tripId}.json`,
+                            Key: `deletedTrips/${req.body.tripId}.json`,
                             Body: JSON.stringify(await trips.get(req.body.tripId))
                         }).promise().catch((err) => { throw err })
                         trips.delete(req.body.tripId)

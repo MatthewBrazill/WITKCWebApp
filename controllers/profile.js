@@ -108,34 +108,27 @@ const profile = {
                 var form = new formidable.IncomingForm()
                 new Promise((resolve, reject) => {
                     form.parse(req, (err, fields, files) => {
-                        var valid = true
                         if (err) reject(err)
-                        else {
-                            if (!fields.bio.match(/^[^<>]{1,500}$/u)) valid = false
-                            if (files.file.type.split('/')[0] != 'image') valid = false
-
-                            if (!valid) reject('Malformed Input')
-                            else resolve(fields, files)
-                        }
+                        else resolve([fields, files])
                     })
-                }).then(async (fields, files) => {
-                    if (files !== undefined) {
-                        await sharp(files.file.filepath).resize({ width: 400 }).webp().toFile(`${files.file.filepath}-new`).catch((err) => { throw err })
+                }).then(async (values) => {
+                    if (values[1].file !== undefined) if (values[1].file.type.split('/')[0] == 'image') {
+                        await sharp(values[1].file.filepath).resize({ width: 400 }).webp().toFile(`${values[1].file.filepath}-new`).catch((err) => { res.status(500).json(err) })
                         await s3.putObject({
                             Bucket: 'witkc',
                             Key: data.member.img,
-                            Body: fs.readFileSync(`${files.file.filepath}-new`)
-                        }).promise().catch((err) => { throw err })
+                            Body: fs.readFileSync(`${values[1].file.filepath}-new`)
+                        }).promise().catch((err) => { res.status(500).json(err) })
                     }
 
-                    members.update({
-                        memberId: data.member.memberId,
-                        bio: fields.bio
-                    })
-                    logger.info(`Member ${data.member.memberId}: Successfully updated image!`)
-                    res.status(200).json({
-                        url: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: data.member.img })
-                    })
+                    if (values[0].bio.match(/^[^<>]{1,500}$/u)) {
+                        members.update({
+                            memberId: data.member.memberId,
+                            bio: values[0].bio
+                        })
+                    }
+                    logger.info(`Member ${data.member.memberId}: Successfully updated customizations!`)
+                    res.status(200).json({ url: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: data.member.img }) })
                 }).catch((err) => { res.status(500).json(err) })
             } else res.sendStatus(403)
         } catch (err) { res.status(500).json(err) }
