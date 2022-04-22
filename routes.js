@@ -68,7 +68,7 @@ router.get('/api/settings/delete', profile.delete) // Delete account *requires l
 router.post('/api/safety/award', safety.award) // Award certificate to member *requires safety*
 router.post('/api/safety/revoke', safety.revoke) // Remove certificate from member *requires safety*
 router.post('/api/safety/accept', safety.accept) // Accept trip too allow it to happen *requires safety*
-router.post('/api/safety/reject', safety.reject) // Reject trip due to safety concerns *requires safety*
+router.post('/api/safety/reject', safety.delete) // Reject trip due to safety concerns *requires safety*
 router.post('/api/captain/verify', captain.verify) // Set member to verified *requires captain*
 router.get('/api/captain/stats', captain.stats) // Get club statistics *requires captain*
 
