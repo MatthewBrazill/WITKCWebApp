@@ -1,9 +1,9 @@
 'use strict'
 
-const equipment = require('../data_managers/equipment.js')
+const equipment = require('../../data_managers/equipment.js')
 // Imports
-const logger = require('../log.js')
-const viewData = require('../view_data.js')
+const logger = require('../../log.js')
+const viewData = require('../../view_data.js')
 const formidable = require('formidable')
 const uuid = require('uuid')
 

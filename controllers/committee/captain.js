@@ -1,11 +1,11 @@
 'use strict'
 
 // Imports
-const logger = require('../log.js')
-const viewData = require('../view_data.js')
-const members = require('../data_managers/witkc_members')
-const trips = require('../data_managers/trips.js')
-const equipment = require('../data_managers/equipment.js')
+const logger = require('../../log.js')
+const viewData = require('../../view_data.js')
+const members = require('../../data_managers/witkc_members')
+const trips = require('../../data_managers/trips.js')
+const equipment = require('../../data_managers/equipment.js')
 
 const captain = {
     async verify(req, res) {

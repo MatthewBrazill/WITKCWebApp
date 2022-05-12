@@ -3,11 +3,11 @@
 // Imports
 const AWS = require('aws-sdk')
 const s3 = new AWS.S3()
-const logger = require('../log.js')
+const logger = require('../../log.js')
 const uuid = require('uuid')
-const viewData = require('../view_data.js')
-const trips = require('../data_managers/trips.js')
-const members = require('../data_managers/witkc_members.js')
+const viewData = require('../../view_data.js')
+const trips = require('../../data_managers/trips.js')
+const members = require('../../data_managers/witkc_members.js')
 
 const trip = {
     async create(req, res) {

@@ -4,12 +4,12 @@
 const AWS = require('aws-sdk')
 const s3 = new AWS.S3()
 const formidable = require('formidable')
-const logger = require('../log.js')
-const viewData = require('../view_data.js')
+const logger = require('../../log.js')
+const viewData = require('../../view_data.js')
 const uuid = require('uuid')
 const sharp = require('sharp')
 const fs = require('fs')
-const committee = require('../data_managers/committee.js')
+const committee = require('../../data_managers/committee.js')
 
 const expenses = {
     async create(req, res) {

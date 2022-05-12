@@ -5,13 +5,13 @@ const AWS = require('aws-sdk')
 const s3 = new AWS.S3()
 const fs = require('fs')
 const formidable = require('formidable')
-const logger = require('../log.js')
-const members = require('../data_managers/witkc_members')
-const passwords = require("../data_managers/passwords.js")
+const logger = require('../../log.js')
+const members = require('../../data_managers/witkc_members')
+const passwords = require("../../data_managers/passwords.js")
 const bcrypt = require('bcrypt')
 const sharp = require('sharp')
-const viewData = require('../view_data.js')
-const committee = require('../data_managers/committee.js')
+const viewData = require('../../view_data.js')
+const committee = require('../../data_managers/committee.js')
 
 const profile = {
     async me(req, res) {
