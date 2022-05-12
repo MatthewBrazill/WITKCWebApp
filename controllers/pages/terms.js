@@ -1,8 +1,8 @@
 'use strict'
 
 // Imports
-const logger = require('../log.js')
-const viewData = require('../view_data.js')
+const logger = require('../../log.js')
+const viewData = require('../../view_data.js')
 
 const terms = {
     async terms(req, res) {

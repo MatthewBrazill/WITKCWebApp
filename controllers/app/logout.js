@@ -1,7 +1,7 @@
 'use strict'
 
 // Imports
-const logger = require('../log.js')
+const logger = require('../../log.js')
 
 const logout = {
     async get(req, res) {

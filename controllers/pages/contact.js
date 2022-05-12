@@ -5,8 +5,8 @@ const AWS = require('aws-sdk')
 const s3 = new AWS.S3()
 const ses = new AWS.SESV2()
 const uuid = require('uuid')
-const logger = require('../log.js')
-const viewData = require('../view_data.js')
+const logger = require('../../log.js')
+const viewData = require('../../view_data.js')
 
 const contact = {
     async get(req, res) {

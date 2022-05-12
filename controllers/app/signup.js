@@ -3,12 +3,12 @@
 // Imports
 const AWS = require('aws-sdk')
 const s3 = new AWS.S3()
-const logger = require('../log.js')
-const members = require('../data_managers/witkc_members.js')
-const passwords = require("../data_managers/passwords.js")
+const logger = require('../../log.js')
+const members = require('../../data_managers/witkc_members.js')
+const passwords = require("../../data_managers/passwords.js")
 const bcrypt = require('bcrypt')
 const uuid = require('uuid')
-const viewData = require('../view_data.js')
+const viewData = require('../../view_data.js')
 
 const signup = {
     async get(req, res) {
