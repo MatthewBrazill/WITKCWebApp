@@ -12,7 +12,7 @@ const gear = {
         var data = await viewData.get(req, 'Book Equipment')
         data.scripts.gear = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/gear_scripts.js' })
 
-        if (data.logged_in) if (data.member.verified) {
+        if (data.loggedIn) if (data.member.verified) {
             logger.info(`Session '${req.sessionID}': Getting Book Equipment`)
             res.render('gear', data)
         } else res.redirect('/')
@@ -23,7 +23,7 @@ const gear = {
         try {
             var data = await viewData.get(req, 'API')
 
-            if (data.logged_in) if (data.committee == 'safety' || data.admin) {
+            if (data.loggedIn) if (data.committee == 'safety' || data.admin) {
                 var form = new formidable.IncomingForm()
                 new Promise((resolve, reject) => {
                     form.parse(req, (err, fields, files) => {
@@ -113,7 +113,7 @@ const gear = {
         try {
             var data = await viewData.get(req, 'API')
 
-            if (data.logged_in) if (data.member.verified) {
+            if (data.loggedIn) if (data.member.verified) {
                 if (req.body.equipmentId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
                     equipment.get(req.body.equipmentId).then((result) => {
                         if (result != null) res.status(200).json(result)
@@ -129,7 +129,7 @@ const gear = {
         try {
             var data = await viewData.get(req, 'API')
 
-            if (data.logged_in) if (data.member.verified) {
+            if (data.loggedIn) if (data.member.verified) {
                 if (req.body.filter == undefined || req.body.filter == '') {
                     equipment.getAll().then((result) => {
                         if (result != null) res.status(200).json(result)
@@ -150,7 +150,7 @@ const gear = {
         try {
             var data = await viewData.get(req, 'API')
 
-            if (data.logged_in) if (data.committee == 'equipments' || data.admin) {
+            if (data.loggedIn) if (data.committee == 'equipments' || data.admin) {
                 if (req.body.equipmentId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
                     equipment.delete(req.body.equipmentId).then((success) => {
                         if (success) res.sendStatus(200)

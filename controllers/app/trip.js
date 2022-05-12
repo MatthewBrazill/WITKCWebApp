@@ -14,7 +14,7 @@ const trip = {
         var data = await viewData.get(req, 'Create Trip')
         data.scripts.trip = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/trip_scripts.js' })
 
-        if (data.logged_in) if (data.member.verified) {
+        if (data.loggedIn) if (data.member.verified) {
             logger.info(`Session '${req.sessionID}': Getting Create Trip`)
             res.render('trip', data)
         } else res.redirect('/')
@@ -31,7 +31,7 @@ const trip = {
                     data.trip = trip
                     data.trip.location.county = viewData.capitalize(data.trip.location.county)
 
-                    if (data.logged_in) {
+                    if (data.loggedIn) {
                         if (data.admin || !data.member.verified) data.trip.joinable = false
 
                         if (data.trip.attendees.includes(data.member.memberId)) data.joined = true
@@ -78,7 +78,7 @@ const trip = {
         try {
             var data = await viewData.get(req, 'View Trip')
 
-            if (data.logged_in) if (data.member.verified) {
+            if (data.loggedIn) if (data.member.verified) {
                 var valid = true
                 var memberIds = await members.list().then((members) => {
                     var memberIds = []
@@ -188,7 +188,7 @@ const trip = {
         try {
             var data = await viewData.get(req, 'View Trip')
 
-            if (data.logged_in) if (data.member.verified) {
+            if (data.loggedIn) if (data.member.verified) {
                 if (req.body.tripId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
                     members.joinTrip(data.member.memberId, req.body.tripId)
                     res.sendStatus(200)
@@ -202,7 +202,7 @@ const trip = {
         try {
             var data = await viewData.get(req, 'View Trip')
 
-            if (data.logged_in) if (data.member.verified) {
+            if (data.loggedIn) if (data.member.verified) {
                 if (req.body.tripId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
                     members.leaveTrip(data.member.memberId, req.body.tripId)
                     res.sendStatus(200)

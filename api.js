@@ -39,7 +39,7 @@ const api = {
         try {
             var data = await viewData.get(req, 'API')
 
-            if (data.logged_in) {
+            if (data.loggedIn) {
                 if (data.committee || data.admin) {
                     members.list().then((mems) => {
                         if (mems !== null) res.status(200).json(mems)
@@ -54,7 +54,7 @@ const api = {
         try {
             var data = await viewData.get(req, 'API')
 
-            if (data.logged_in) {
+            if (data.loggedIn) {
                 members.list().then((mems) => {
                     if (mems !== null) res.status(200).json(mems)
                     else throw 'Failed to retrieve members!'
@@ -67,7 +67,7 @@ const api = {
         try {
             var data = await viewData.get(req, 'API')
 
-            if (data.logged_in) {
+            if (data.loggedIn) {
                 if (data.committee || data.admin) {
                     if (req.body.memberId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
                         members.get(req.body.memberId).then((member) => {
@@ -84,7 +84,7 @@ const api = {
         try {
             var data = await viewData.get(req, 'API')
 
-            if (data.logged_in) {
+            if (data.loggedIn) {
                 if (data.committee || data.admin) {
                     certificates.list().then((certs) => {
                         if (certs !== null) res.status(200).json(certs)

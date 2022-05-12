@@ -13,9 +13,9 @@ const viewData = require('../view_data.js')
 const signup = {
     async get(req, res) {
         var data = await viewData.get(req, 'Sign Up')
-        data.scripts.sign_up = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/sign_up_scripts.js' })
+        data.scripts.signUp = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/sign_up_scripts.js' })
 
-        if (data.logged_in) req.session.destroy()
+        if (data.loggedIn) req.session.destroy()
         logger.info(`Session '${req.sessionID}': Getting Sign Up`)
         res.render('signup', data)
     },

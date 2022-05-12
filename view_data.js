@@ -13,18 +13,18 @@ const viewData = {
         var data = {
             title: title,
             scripts: {
-                global: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/global_scripts.js' }),
+                global: '/global_scripts.js' //s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/global_scripts.js' }),
             },
-            witkc_logo: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'img/witkc_logo.webp' }),
-            witkc_icon: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'img/witkc_icon.ico' }),
-            logged_in: false
+            witkcLogo: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'img/witkc_logo.webp' }),
+            witkcIcon: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'img/witkc_icon.ico' }),
+            loggedIn: false
         }
 
         if (req.session != undefined) if (await members.exists(req.session.userID)) {
             logger.debug(`Session '${req.sessionID}' is Logged In`)
 
             data.member = await members.get(req.session.userID)
-            data.logged_in = true
+            data.loggedIn = true
 
             data.member.trips = await trips.getAllFor(data.member.memberId)
 

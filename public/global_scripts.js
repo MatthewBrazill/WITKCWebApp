@@ -34,6 +34,7 @@ $(document).ready(() => {
     })
 
 
+
     $.ajax({
         url: '/api/cookie_choice',
         method: 'GET',
@@ -49,6 +50,18 @@ $(document).ready(() => {
             url: '/api/cookie_choice',
             method: 'POST',
             data: { allow_cookies: true }
+        })
+    })
+
+
+
+    $('.announcement.icon').click(function () {
+        const announcement = $(this).parent().parent()
+        $.ajax({
+            url: '/api/announcement/mark_as_read',
+            method: 'POST',
+            data: { announcementId: announcement.attr('id') },
+            success: () => announcement.remove(),
         })
     })
 })

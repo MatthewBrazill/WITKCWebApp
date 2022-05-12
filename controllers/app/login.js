@@ -14,7 +14,7 @@ const login = {
         var data = await viewData.get(req, 'Login')
         data.scripts.login = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/login_scripts.js' })
 
-        if (data.logged_in) req.session.destroy()
+        if (data.loggedIn) req.session.destroy()
         logger.info(`Session '${req.sessionID}': Getting Login`)
         res.render('login', data)
     },

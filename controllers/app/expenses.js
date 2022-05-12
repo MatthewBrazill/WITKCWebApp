@@ -16,7 +16,7 @@ const expenses = {
         var data = await viewData.get(req, 'Submit Expense')
         data.scripts.expense = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/expense_scripts.js' })
 
-        if (data.logged_in) if (data.member.verified) {
+        if (data.loggedIn) if (data.member.verified) {
             logger.info(`Session '${req.sessionID}': Getting Expenses`)
             res.render('expense', data)
         } else res.redirect('/')
@@ -27,7 +27,7 @@ const expenses = {
         try {
             var data = await viewData.get(req, 'API')
 
-            if (data.logged_in) if (data.member.verified) {
+            if (data.loggedIn) if (data.member.verified) {
                 var form = new formidable.IncomingForm()
                 new Promise((resolve, reject) => {
                     form.parse(req, (err, fields, files) => {
@@ -92,7 +92,7 @@ const expenses = {
         try {
             var data = await viewData.get(req, 'API')
 
-            if (data.logged_in) if (data.member.verified) if (data.committee == 'treasurer' || data.admin) {
+            if (data.loggedIn) if (data.member.verified) if (data.committee == 'treasurer' || data.admin) {
                 if (req.body.expenseId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
                     var treasurer = await committee.getRole('treasurer')
 
@@ -115,7 +115,7 @@ const expenses = {
         try {
             var data = await viewData.get(req, 'API')
 
-            if (data.logged_in) if (data.member.verified) if (data.committee == 'treasurer' || data.admin) {
+            if (data.loggedIn) if (data.member.verified) if (data.committee == 'treasurer' || data.admin) {
                 var valid = true
 
                 if (!req.body.expenseId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) valid = false

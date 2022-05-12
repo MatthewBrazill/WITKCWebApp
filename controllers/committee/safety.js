@@ -14,7 +14,7 @@ const safety = {
             var data = await viewData.get(req, 'API')
             var valid = true
 
-            if (data.logged_in) if (data.committee == 'safety' || data.admin) {
+            if (data.loggedIn) if (data.committee == 'safety' || data.admin) {
                 // Server-Side Validation
                 if (!req.body.memberIds.match(/^([a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}){1}(,[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12})*$/i)) valid = false
                 if (!req.body.certId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) valid = false
@@ -36,7 +36,7 @@ const safety = {
             var data = await viewData.get(req, 'API')
             var valid = true
 
-            if (data.logged_in) {
+            if (data.loggedIn) {
                 if (data.committee == 'safety' || data.admin) {
 
                     // Server-Side Validation
@@ -58,7 +58,7 @@ const safety = {
         try {
             var data = await viewData.get(req, 'API')
 
-            if (data.logged_in) {
+            if (data.loggedIn) {
                 if (data.committee == 'safety' || data.admin) {
                     if (req.body.tripId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
                         trips.update({
@@ -76,7 +76,7 @@ const safety = {
         try {
             var data = await viewData.get(req, 'API')
 
-            if (data.logged_in) {
+            if (data.loggedIn) {
                 if (data.committee == 'safety' || data.admin) {
                     if (req.body.tripId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
                         await s3.putObject({
