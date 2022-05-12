@@ -65,8 +65,8 @@ router.get('/api/settings/delete', profile.delete) // Delete account *requires l
 
 
 // Committee Dashboard APIs
-router.post('/api/committee/announcement/create', )
-router.post('/api/committee/announcement/mark_as_read')
+router.post('/api/committee/announcement/create', committee.createAnnouncement) // Create a announcement *requires committee*
+router.post('/api/committee/announcement/mark_as_read', committee.markAnnouncementRead) // Mark an announcement as read *requires login*
 router.post('/api/captain/verify', captain.verify) // Set member to verified *requires captain*
 router.get('/api/captain/stats', captain.stats) // Get club statistics *requires captain*
 router.post('/api/safety/award', safety.award) // Award certificate to member *requires safety*

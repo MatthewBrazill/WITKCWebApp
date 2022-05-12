@@ -83,7 +83,7 @@ async function start() {
 
     app.listen(8000, () => {
         logger.info(`Listening on port 8000`)
-        console.log(`Listening on port 8000  ->  http://localhost:8000/ or https://witkc.brazill.net`)
+        console.log(`Listening on port 8000  ->  https://witkc.brazill.net`)
     })
 }
 

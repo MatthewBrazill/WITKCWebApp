@@ -60,7 +60,7 @@ $(document).ready(() => {
             $('#name').on('input', () => {
                 const name = $('#name')
                 const field = name.parent()
-                if (!name.val().match(/^[\p{L}\d ]{1,64}$/u)) {
+                if (!name.val().match(/^[\p{L}\d!?&() ]{1,64}$/u)) {
                     field.attr('class', 'field error')
                     name.prop('valid', false)
                 } else {

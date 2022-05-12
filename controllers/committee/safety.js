@@ -26,9 +26,7 @@ const safety = {
                 } else res.sendStatus(400)
             } else res.sendStatus(403)
             else res.sendStatus(403)
-        } catch (err) {
-            res.status(500).json(err)
-        }
+        } catch (err) { res.status(500).json(err) }
     },
 
     async revoke(req, res) {
@@ -49,9 +47,7 @@ const safety = {
                     } else res.sendStatus(400)
                 } else res.sendStatus(403)
             } else res.sendStatus(403)
-        } catch (err) {
-            res.status(500).json(err)
-        }
+        } catch (err) { res.status(500).json(err) }
     },
 
     async accept(req, res) {

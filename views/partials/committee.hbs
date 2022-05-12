@@ -1,0 +1,32 @@
+<script src="{{scripts.committee}}" hidden></script>
+<div class="ui mini modal" id="announcement_modal">
+
+    <div class="header">Make Announcement</div>
+
+    <div class="content">
+        <form class="ui form" id="announcement_form" autocomplete="off">
+
+            <div class="field">
+                <label>Title</label>
+                <input type="text" id="title" placeholder="Title">
+            </div>
+
+            <div class="field">
+                <label>Content</label>
+                <textarea rows="5" id="content" placeholder="Content..." maxlength="500"></textarea>
+            </div>
+
+            <!-- Error -->
+            <div class="ui error message">
+                <div class="header">
+                    There was an error connecting to the server. Please reload the page and try again!
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="right aligned actions">
+        <button class="ui negative button" id="announcement_modal_cancel">Cancel</button>
+        <button class="ui positive button" id="announcement_modal_create">Make Announcement</button>
+    </div>
+</div>
