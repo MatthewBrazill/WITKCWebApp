@@ -104,8 +104,8 @@ $(document).ready(() => {
         }
     })
 
-    $('.selection.dropdown').dropdown()
-    $(':input[type = hidden]').on('change', function () {
+    $('.add_equipments_modal_dropdown').dropdown()
+    $('.add_equipments_modal_dropdown_input').on('change', function () {
         const dropdown = $(this)
 
         if (dropdown.val() == null || dropdown.val() == '') {
