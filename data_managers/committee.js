@@ -44,6 +44,15 @@ const committee = {
                     img: 'img/placeholder_avatar.webp'
                 }
                 else role.member = await members.get(data.Item['memberId'].S)
+                if (role.roleId == 'captain') {
+                    role.verificationRequest = []
+                    for (var verificationRequest of data.Item['verificationRequest'].L) {
+                        role.verificationRequest.push({
+                            requestId: verificationRequest.M['requestId'].S,
+                            member: await members.get(verificationRequest.M['memberId'].S),
+                        })
+                    }
+                }
                 if (role.roleId == 'treasurer') {
                     role.expenseRequests = []
                     for (var expenseRequest of data.Item['expenseRequests'].L) {
@@ -150,7 +159,7 @@ const committee = {
             if (data) return true
             else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Could not submit expense request '${expense.expenseId}'! ${err}`)
+            logger.warn(`Could not submit expense request '${expenseRequest.expenseId}'! ${err}`)
             return false
         })
     },
@@ -180,6 +189,63 @@ const committee = {
             else return false
         }).catch((err) => {
             logger.warn(`Could not delete expense request '${expenseId}'! ${err}`)
+            return false
+        })
+    },
+
+    requestVerification(verificationRequest) {
+        if (verificationRequest === null || verificationRequest === undefined) return false
+        return dynamo.updateItem({
+            Key: { 'roleId': { S: 'treasurer' } },
+            ExpressionAttributeValues: {
+                ':verificationRequest': {
+                    L: [{
+                        M: {
+                            'expenseId': { S: verificationRequest.requestId },
+                            'memberId': { S: verificationRequest.memberId }
+                        }
+                    }]
+                }
+            },
+            UpdateExpression: 'SET verificationRequests = list_append(verificationRequests, :verificationRequest)',
+            TableName: 'witkc-committee'
+        }).promise().then((data) => {
+            if (data) return true
+            else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
+        }).catch((err) => {
+            logger.warn(`Could not submit verification request '${verificationRequest.requestId}'! ${err}`)
+            return false
+        })
+    },
+
+    resolveVerification(requestId, decision) {
+        if (requestId === null || requestId === undefined || decision === null || decision === undefined) return false
+        return dynamo.getItem({
+            ExpressionAttributeNames: { '#REQ': 'verificationRequests' },
+            Key: { 'roleId': { S: 'captain' } },
+            ProjectionExpression: '#REQ',
+            TableName: 'witkc-committee'
+        }).promise().then((data) => {
+            if (data.Item != undefined) {
+                for (var i in data.Item['verificationRequests'].L) if (data.Item['verificationRequests'].L[i].M['requestId'].S == requestId) return [i, data.Item['verificationRequests'].L[i].M['memberId'].S]
+                return -1
+            }
+            else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
+        }).then((result) => {
+            if (result[0] != -1) {
+                if (decision) members.verify(result[1])
+                dynamo.updateItem({
+                    Key: { 'roleId': { S: 'captain' } },
+                    UpdateExpression: `REMOVE verificationRequests[${result[0]}]`,
+                    TableName: 'witkc-committee'
+                }).promise().then((data) => {
+                    if (data) return true
+                    else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
+                }).catch((err) => { throw err })
+            }
+            else return false
+        }).catch((err) => {
+            logger.warn(`Could not resolve verification request '${requestId}'! ${err}`)
             return false
         })
     }

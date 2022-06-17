@@ -195,6 +195,22 @@ const members = {
         })
     },
 
+    async verify(memberId) {
+        if (memberId === null || memberId === undefined) return false
+        return dynamo.updateItem({
+            Key: { 'memberId': { S: memberId } },
+            ExpressionAttributeValues: { ':bool': { BOOL: true } },
+            UpdateExpression: 'SET verified = :bool',
+            TableName: 'witkc-members'
+        }).promise().then((data) => {
+            if (data) return true
+            else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
+        }).catch((err) => {
+            logger.warn(`Could not verify member '${memberId}'! ${err}`)
+            return false
+        })
+    },
+
     async awardCert(memberId, certId) {
         if (memberId === null || memberId === undefined || certId === null || certId === undefined) return false
         return dynamo.updateItem({
