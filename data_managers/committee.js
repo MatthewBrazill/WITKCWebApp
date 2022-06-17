@@ -45,9 +45,9 @@ const committee = {
                 }
                 else role.member = await members.get(data.Item['memberId'].S)
                 if (role.roleId == 'captain') {
-                    role.verificationRequest = []
+                    role.verificationRequests = []
                     for (var verificationRequest of data.Item['verificationRequest'].L) {
-                        role.verificationRequest.push({
+                        role.verificationRequests.push({
                             requestId: verificationRequest.M['requestId'].S,
                             member: await members.get(verificationRequest.M['memberId'].S),
                         })

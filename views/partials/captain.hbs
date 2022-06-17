@@ -5,23 +5,54 @@
     <div class="ui two column grid">
 
         <div class="ui twelve wide column">
-            <div class="ui three statistics">
-                <div class="teal statistic">
-                    <div class="value" id="captain_members_stat">0</div>
-                    <div class="label">Club Members</div>
+
+            {{#if captain.verificationRequests.length}}
+
+            <div class="ui cards">
+
+                {{#each captain.verificationRequests}}
+
+                <div class="ui fluid link card expenseRequest" id="{{this.requestId}}">
+                    <div class="content">
+                        <div class="header">
+                            <div class="ui left floated">{{this.member.firstName}} {{this.member.lastName}}</div>
+                            <div class="ui right floated buttons">
+                                <div class="ui negative icon button"><i class="trash icon"></i></div>
+                                <div class="ui positive icon button"><i class="check icon"></i></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="teal statistic">
-                    <div class="value" id="captain_trips_stat">0</div>
-                    <div class="label">Trips This Year So Far</div>
-                </div>
-                <div class="teal statistic">
-                    <div class="value" id="captain_boats_stat">0</div>
-                    <div class="label">Club Boats</div>
+
+                {{/each}}
+
+            </div>
+
+            {{else}}
+
+            <div class="ui fluid placeholder segment">
+                <div class="ui icon header">
+                    <i class="check double icon"></i>
+                    No pending verifications!
                 </div>
             </div>
+
+            {{/if}}
         </div>
 
         <div class="ui four wide column">
+            <div class="teal statistic">
+                <div class="value" id="captain_members_stat">0</div>
+                <div class="label">Club Members</div>
+            </div>
+            <div class="teal statistic">
+                <div class="value" id="captain_trips_stat">0</div>
+                <div class="label">Trips This Year So Far</div>
+            </div>
+            <div class="teal statistic">
+                <div class="value" id="captain_boats_stat">0</div>
+                <div class="label">Club Boats</div>
+            </div>
             <button class="ui disabled fluid teal button announcement">
                 <h4 class="ui center aligned icon header">
                     <i class="large announcement icon"></i>
