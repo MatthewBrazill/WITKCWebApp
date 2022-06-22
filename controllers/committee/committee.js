@@ -44,7 +44,7 @@ const committee = {
                     else throw 'Could not mark announcement as read.'
                 } else res.sendStatus(400)
             } else res.sendStatus(403)
-        } catch (err) { res.status(500).json(err); console.log(err) }
+        } catch (err) { res.status(500).json(err) }
     }
 }
 

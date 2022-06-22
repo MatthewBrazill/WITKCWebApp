@@ -20,6 +20,7 @@ const trip = require('./controllers/app/trip.js')
 const expenses = require('./controllers/app/expenses.js')
 const captain = require('./controllers/committee/captain.js')
 const gear = require('./controllers/app/gear.js')
+const pro = require('./controllers/committee/pro.js')
 
 
 
@@ -69,10 +70,15 @@ router.post('/api/committee/announcement/create', committee.createAnnouncement) 
 router.post('/api/committee/announcement/mark_as_read', committee.markAnnouncementRead) // Mark an announcement as read *requires login*
 router.post('/api/captain/verify', captain.verify) // Set member to verified *requires captain*
 router.get('/api/captain/stats', captain.stats) // Get club statistics *requires captain*
-router.post('/api/safety/award', safety.award) // Award certificate to member *requires safety*
-router.post('/api/safety/revoke', safety.revoke) // Remove certificate from member *requires safety*
-router.post('/api/safety/accept', safety.accept) // Accept trip too allow it to happen *requires safety*
-router.post('/api/safety/reject', safety.delete) // Reject trip due to safety concerns *requires safety*
+router.post('/api/safety/certificate/award', safety.award) // Award certificate to member *requires safety*
+router.post('/api/safety/certificate/revoke', safety.revoke) // Remove certificate from member *requires safety*
+router.post('/api/safety/trip/accept', safety.accept) // Accept trip too allow it to happen *requires safety*
+router.post('/api/safety/trip/reject', safety.delete) // Reject trip due to safety concerns *requires safety*
+router.post('/api/pro/article/create', pro.create)
+router.post('/api/pro/article/get', pro.get)
+router.get('/api/pro/article/list', pro.list)
+router.post('/api/pro/article/update', pro.update)
+router.post('/api/pro/article/delete', pro.delete)
 
 
 

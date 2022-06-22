@@ -16,7 +16,7 @@ const api = {
                 if (await members.resolveUsername(req.params.username) === null) res.status(200).json(false)
                 else res.status(200).json(true)
             } else res.sendStatus(400)
-        } catch (err) { res.status(500).json(err); console.log(err) }
+        } catch (err) { res.status(500).json(err) }
     },
 
     async getCookie(req, res) {

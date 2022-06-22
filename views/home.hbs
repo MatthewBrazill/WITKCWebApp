@@ -1,6 +1,12 @@
 <div class="twelve wide column">
     <div class="ui segment" style="height: 100%">
         <div class="ui grid">
+            {{#each articles}}
+            <div class="ui sixteen wide column">
+                <h4 class="ui dividing header">{{this.title}}</h4>
+                {{{this.article}}}
+            </div>
+            {{/each}}
             <div class="ui sixteen wide column">
                 <h4 class="ui dividing header">Whitewater</h4>
                 <img class="ui medium rounded right floated image" src="/img/ww.jpg" alt="Whitewater Image">

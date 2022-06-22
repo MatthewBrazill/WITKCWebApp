@@ -58,7 +58,7 @@ $(document).ready(() => {
 
     $('#award_cert_modal_confirm').click(() => {
         $.ajax({
-            url: '/api/safety/award',
+            url: '/api/safety/certificate/award',
             method: 'POST',
             data: {
                 certId: $('#award_cert_modal_cert_dropdown_input').val(),
@@ -115,7 +115,7 @@ $(document).ready(() => {
                         .append($('<div class="content"></div>')
                             .append($(`<button class="ui right floated mini negative icon button" style="margin-top: 7px;" data-cert-id="${cert.id}"><i class="trash icon"></i></button>`).click(function () {
                                 $.ajax({
-                                    url: '/api/safety/revoke',
+                                    url: '/api/safety/certificate/revoke',
                                     method: 'POST',
                                     data: {
                                         certId: $(this).attr('data-cert-id'),
@@ -146,14 +146,14 @@ $(document).ready(() => {
 
         if (accept.is(event.target) || accept.children().is(event.target)) {
             $.ajax({
-                url: '/api/safety/accept',
+                url: '/api/safety/trip/accept',
                 method: 'POST',
                 data: { tripId: card.attr('id') },
                 success: () => card.remove()
             })
         } else if (reject.is(event.target) || reject.children().is(event.target)) {
             $.ajax({
-                url: '/api/safety/reject',
+                url: '/api/safety/trip/reject',
                 method: 'POST',
                 data: { tripId: card.attr('id') },
                 success: () => card.remove()
