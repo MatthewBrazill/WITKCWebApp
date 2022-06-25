@@ -2,58 +2,75 @@
 
 // Imports
 const logger = require('../log.js')
-const fs = require('fs')
+const AWS = require('aws-sdk')
+const members = require('./witkc_members.js')
+const equipment = require('./equipment.js')
+const trips = require('./trips.js')
+const dynamo = new AWS.DynamoDB()
 
 const announcements = {
     async create(announcement) {
-        try {
-            if (announcement == null || announcement == undefined) throw `Received invalid announcement!`
-            const announcements = JSON.parse(fs.readFileSync('./data_managers/announcements.json'))
-            announcements.push(announcement)
-            fs.writeFileSync('./data_managers/announcements.json', JSON.stringify(announcements))
+        if (announcement == undefined || announcement == null) return false
+        return dynamo.putItem({
+            Item: {
+                'announcementId': { S: announcement.announcementId },
+                'title': { S: announcement.title },
+                'content': { S: announcement.content },
+                'readBy': { SS: [] },
+                'date': { S: announcement.date },
+                'author': { S: announcement.author }
+            },
+            TableName: 'witkc-announcements'
+        }).promise().then(() => {
+            logger.info(`Announcement '${announcement.announcementId}': Created`)
             return true
-        } catch (err) {
-            logger.warn(`Failed to create announcement! ${err}`)
+        }).catch((err) => {
+            logger.warn(`Failed to create announcement '${announcement.announcementId}'! ${err}`)
             return false
-        }
+        })
     },
 
     async getUnread(memberId) {
-        try {
-            if (memberId == null || memberId == undefined) throw `Received invalid memberId!`
-            var unreads = []
-            const announcements = JSON.parse(fs.readFileSync('./data_managers/announcements.json'))
-            for (var announcement of announcements) if (!announcement.readBy.includes(memberId)) unreads.push(announcement)
-            return unreads
-        } catch (err) {
+        if (memberId == null || memberId == undefined) return false
+        return dynamo.scan({
+            TableName: 'witkc-announcements'
+        }).promise().then((data) => {
+            if (data.Items != undefined) {
+                var unreads = []
+                for (var item of data.Items) {
+                    var read = false
+                    for (var readers of item['readBy'].L) if (readers.S == memberId) read = true
+
+                    if (!read) unreads.push({
+                        announcementId: item['announcementId'].S,
+                        title: item['title'].S,
+                        content: item['content'].S,
+                        date: item['date'].S,
+                        author: item['author'].S
+                    })
+                }
+                return unreads
+            } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
+        }).catch((err) => {
             logger.warn(`Failed to get unread announcements! ${err}`)
             return null
-        }
-    },
-
-    async update(announcement) {
-
+        })
     },
 
     async markRead(announcementId, memberId) {
-        try {
-            if (memberId == null || memberId == undefined) throw `Received invalid memberId!`
-            if (announcementId == null || announcementId == undefined) throw `Received invalid announcementId!`
-            const announcements = JSON.parse(fs.readFileSync('./data_managers/announcements.json'))
-            for (var announcement of announcements) if (announcement.announcementId == announcementId) {
-                announcement.readBy.push(memberId)
-                fs.writeFileSync('./data_managers/announcements.json', JSON.stringify(announcements))
-                return true
-            }
-            throw 'Failed to find announcement.'
-        } catch (err) {
-            logger.warn(`Failed to mark announcement '${announcementId}' as read! ${err}`)
+        if (announcementId == undefined || announcementId == null || memberId == undefined || memberId == null) return false
+        return dynamo.updateItem({
+            Key: { 'announcementId': { S: announcementId } },
+            ExpressionAttributeValues: { ':memberId': { L: [{ S: memberId }] } },
+            UpdateExpression: 'ADD readBy :memberId',
+            TableName: 'witkc-announcements'
+        }).promise().then((data) => {
+            if (data) return true
+            else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
+        }).catch((err) => {
+            logger.warn(`Could not mark announcement '${announcementId}' as read by '${memberId}'! ${err}`)
             return false
-        }
-    },
-
-    async delete(announcementId) {
-
+        })
     }
 }
 
