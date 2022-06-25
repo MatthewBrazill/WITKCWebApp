@@ -16,7 +16,6 @@ const announcements = {
                 'announcementId': { S: announcement.announcementId },
                 'title': { S: announcement.title },
                 'content': { S: announcement.content },
-                'readBy': { SS: [] },
                 'date': { S: announcement.date },
                 'author': { S: announcement.author }
             },
@@ -33,15 +32,14 @@ const announcements = {
     async getUnread(memberId) {
         if (memberId == null || memberId == undefined) return false
         return dynamo.scan({
+            ExpressionAttributeValues: { ':memberId': { S: memberId } },
+            FilterExpression: 'NOT contains(readBy, :memberId)',
             TableName: 'witkc-announcements'
         }).promise().then((data) => {
             if (data.Items != undefined) {
                 var unreads = []
                 for (var item of data.Items) {
-                    var read = false
-                    for (var readers of item['readBy'].L) if (readers.S == memberId) read = true
-
-                    if (!read) unreads.push({
+                    unreads.push({
                         announcementId: item['announcementId'].S,
                         title: item['title'].S,
                         content: item['content'].S,
@@ -61,7 +59,7 @@ const announcements = {
         if (announcementId == undefined || announcementId == null || memberId == undefined || memberId == null) return false
         return dynamo.updateItem({
             Key: { 'announcementId': { S: announcementId } },
-            ExpressionAttributeValues: { ':memberId': { L: [{ S: memberId }] } },
+            ExpressionAttributeValues: { ':memberId': { SS: [memberId] } },
             UpdateExpression: 'ADD readBy :memberId',
             TableName: 'witkc-announcements'
         }).promise().then((data) => {
