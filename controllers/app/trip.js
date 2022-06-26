@@ -69,7 +69,7 @@ const trip = {
                     logger.info(`Session '${req.sessionID}': Getting View Trip`)
                     res.render('view_trip', data)
                 } else res.redirect('/404')
-            }).catch((err) => { console.log(err); res.redirect('/404') })
+            }).catch((err) => { res.redirect('/404') })
         } else res.redirect('/404')
     },
 

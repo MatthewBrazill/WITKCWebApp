@@ -28,7 +28,6 @@ $(document).ready(() => {
                     list.attr('class', 'ui items')
                     list.html('')
                     for (var event of events) {
-                        console.log(event)
                         list.append($(`
                         <a class="ui fluid link card" href="/trip/${event.tripId}" target="_blank">
                             <div class="content">

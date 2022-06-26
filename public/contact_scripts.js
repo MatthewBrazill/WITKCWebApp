@@ -10,7 +10,6 @@ $(document).ready(() => {
         inputs.trigger('input')
         inputs.each((index, element) => {
             var input = $(element)
-            console.log(element)
             if (!input.prop('valid')) valid = false
         })
 
