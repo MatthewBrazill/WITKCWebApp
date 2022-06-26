@@ -3,18 +3,18 @@
 // Imports
 const AWS = require('aws-sdk')
 const s3 = new AWS.S3()
-const logger = require('../log.js')
+const logger = require('../../log.js')
 const uuid = require('uuid')
-const viewData = require('../view_data.js')
-const trips = require('../data_managers/trips.js')
-const members = require('../data_managers/witkc_members.js')
+const viewData = require('../../view_data.js')
+const trips = require('../../data_managers/trips.js')
+const members = require('../../data_managers/witkc_members.js')
 
 const trip = {
     async create(req, res) {
         var data = await viewData.get(req, 'Create Trip')
         data.scripts.trip = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/trip_scripts.js' })
 
-        if (data.logged_in) if (data.member.verified) {
+        if (data.loggedIn) if (data.member.verified) {
             logger.info(`Session '${req.sessionID}': Getting Create Trip`)
             res.render('trip', data)
         } else res.redirect('/')
@@ -31,7 +31,7 @@ const trip = {
                     data.trip = trip
                     data.trip.location.county = viewData.capitalize(data.trip.location.county)
 
-                    if (data.logged_in) {
+                    if (data.loggedIn) {
                         if (data.admin || !data.member.verified) data.trip.joinable = false
 
                         if (data.trip.attendees.includes(data.member.memberId)) data.joined = true
@@ -66,11 +66,10 @@ const trip = {
                         }
                     }
 
-
                     logger.info(`Session '${req.sessionID}': Getting View Trip`)
                     res.render('view_trip', data)
                 } else res.redirect('/404')
-            }).catch((err) => { console.log(err); res.redirect('/404') })
+            }).catch((err) => { res.redirect('/404') })
         } else res.redirect('/404')
     },
 
@@ -78,7 +77,7 @@ const trip = {
         try {
             var data = await viewData.get(req, 'View Trip')
 
-            if (data.logged_in) if (data.member.verified) {
+            if (data.loggedIn) if (data.member.verified) {
                 var valid = true
                 var memberIds = await members.list().then((members) => {
                     var memberIds = []
@@ -94,7 +93,7 @@ const trip = {
                 ]
 
                 // Server-Side Validation
-                if (!req.body.name.match(/^[\p{L}\d ]{1,64}$/u)) valid = false
+                if (!req.body.name.match(/^[\p{L}\d!?&() ]{1,64}$/u)) valid = false
                 if (!req.body.start_date.match(/^20\d\d-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/)) valid = false
                 if (!req.body.end_date.match(/^20\d\d-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/)) valid = false
                 if (!req.body.description.match(/^[^<>]{1,500}$/u)) valid = false
@@ -106,7 +105,7 @@ const trip = {
                 if (req.body.level < 1 || req.body.level > 5) valid = false
                 if (req.body.enough_safety != 'true' && req.body.enough_safety != 'false') valid = false
                 if (!req.body.safety.split(',').every((item) => memberIds.includes(item))) valid = false
-                if (!req.body.hazards.every(item => {
+                if (req.body.hazards != undefined) if (!req.body.hazards.every(item => {
                     if (!commonHazards.includes(item)) {
                         if (item.match(/^[\w- ]{1,24}$/)) {
                             return true
@@ -117,7 +116,8 @@ const trip = {
 
                 if (valid) {
                     var hazards = []
-                    for (var hazard of req.body.hazards) switch (hazard) {
+                    if (req.body.hazards == undefined) hazards = ['No hazards.']
+                    else for (var hazard of req.body.hazards) switch (hazard) {
                         case 'strainers':
                             hazards.push('Stainers and sweepers.')
                             break;
@@ -163,9 +163,9 @@ const trip = {
 
                     trips.create(trip).then((success) => {
                         if (success) res.status(200).json({ url: `/trip/${trip.tripId}` })
-                        else res.sendStatus(500)
+                        else res.status(500).json({ err: 'The creation of the trip was unsuccessful!' })
                     }).catch((err) => { res.status(500).json(err) })
-                }
+                } else res.sendStatus(400)
             } else res.sendStatus(403)
             else res.sendStatus(403)
         } catch (err) { res.status(500).json(err) }
@@ -173,14 +173,10 @@ const trip = {
 
     async list(req, res) {
         try {
-            var data = await viewData.get(req, 'View Trip')
-
-            if (req.params.tripId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
-                trips.list(req.params.tripId).then((trips) => {
-                    if (trips !== null) res.status(200).json(trips)
-                    else res.sendStatus(404)
-                }).catch((err) => { res.status(400).json(err) })
-            } else res.redirect(400)
+            trips.list().then((trips) => {
+                if (trips !== null) res.status(200).json(trips)
+                else res.sendStatus(404)
+            }).catch((err) => { res.status(400).json(err) })
         } catch (err) { res.status(500).json(err) }
     },
 
@@ -188,11 +184,11 @@ const trip = {
         try {
             var data = await viewData.get(req, 'View Trip')
 
-            if (data.logged_in) if (data.member.verified) {
+            if (data.loggedIn) if (data.member.verified) {
                 if (req.body.tripId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
                     members.joinTrip(data.member.memberId, req.body.tripId)
                     res.sendStatus(200)
-                }
+                } else res.sendStatus(400)
             } else res.sendStatus(403)
             else res.sendStatus(403)
         } catch (err) { res.status(500).json(err) }
@@ -202,11 +198,11 @@ const trip = {
         try {
             var data = await viewData.get(req, 'View Trip')
 
-            if (data.logged_in) if (data.member.verified) {
+            if (data.loggedIn) if (data.member.verified) {
                 if (req.body.tripId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
                     members.leaveTrip(data.member.memberId, req.body.tripId)
                     res.sendStatus(200)
-                }
+                } else res.sendStatus(400)
             } else res.sendStatus(403)
             else res.sendStatus(403)
         } catch (err) { res.status(500).json(err) }

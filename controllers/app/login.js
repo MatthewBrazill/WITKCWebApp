@@ -3,18 +3,18 @@
 // Imports
 const AWS = require('aws-sdk')
 const s3 = new AWS.S3()
-const logger = require('../log.js')
-const members = require('../data_managers/witkc_members.js')
-const passwords = require("../data_managers/passwords.js")
+const logger = require('../../log.js')
+const members = require('../../data_managers/witkc_members.js')
+const passwords = require("../../data_managers/passwords.js")
 const bcrypt = require('bcrypt')
-const viewData = require('../view_data.js')
+const viewData = require('../../view_data.js')
 
 const login = {
     async get(req, res) {
         var data = await viewData.get(req, 'Login')
         data.scripts.login = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/login_scripts.js' })
 
-        if (data.logged_in) req.session.destroy()
+        if (data.loggedIn) req.session.destroy()
         logger.info(`Session '${req.sessionID}': Getting Login`)
         res.render('login', data)
     },

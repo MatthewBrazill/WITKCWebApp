@@ -111,6 +111,22 @@ $(document).ready(() => {
         }
     })
 
+    $('#verify_link').on('click', () => {
+        const text = $('#verify_link').parent()
+        text.append('<div class="ui active inline loader"></div>')
+        $.ajax({
+            url: '/api/verify',
+            method: 'POST',
+            success: () => {
+                text.html()
+                text.text('Verification Requested!')
+            },
+            error: () => {
+                text.html('There was an issue, please try again later!')
+            }
+        })
+    })
+
     $('#line_one').on('input', () => {
         const line = $('#line_one')
         const field = line.parent()

@@ -5,20 +5,20 @@ const AWS = require('aws-sdk')
 const s3 = new AWS.S3()
 const fs = require('fs')
 const formidable = require('formidable')
-const logger = require('../log.js')
-const members = require('../data_managers/witkc_members')
-const passwords = require("../data_managers/passwords.js")
+const logger = require('../../log.js')
+const members = require('../../data_managers/witkc_members')
+const passwords = require("../../data_managers/passwords.js")
 const bcrypt = require('bcrypt')
 const sharp = require('sharp')
-const viewData = require('../view_data.js')
-const committee = require('../data_managers/committee.js')
+const viewData = require('../../view_data.js')
+const committee = require('../../data_managers/committee.js')
 
 const profile = {
     async me(req, res) {
         var data = await viewData.get(req, 'My Profile')
         data.scripts.profile = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/profile_scripts.js' })
 
-        if (data.logged_in) {
+        if (data.loggedIn) {
             if (data.committee) {
                 data.scripts.committee = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/committee_scripts.js' })
                 data[data.committee] = await committee.getRole(data.committee)
@@ -29,6 +29,7 @@ const profile = {
                         if (!['equipmentId', 'img'].includes(a)) gear[a] = viewData.capitalize(gear[a].toString())
                 }
             } else if (data.admin) {
+                data.committee = true
                 data.scripts.committee = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/committee_scripts.js' })
                 for (var role of ['captain', 'vice', 'safety', 'treasurer', 'equipments', 'pro', 'freshers']) {
                     data[role] = await committee.getRole(role)
@@ -45,7 +46,7 @@ const profile = {
         var data = await viewData.get(req, 'Settings')
         data.scripts.profile = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/profile_scripts.js' })
 
-        if (data.logged_in) {
+        if (data.loggedIn) {
             if (data.member.committeeRole == 'admin') data.admin = true
             logger.info(`Session '${req.sessionID}': Getting Settings`)
             res.render('settings', data)
@@ -56,7 +57,7 @@ const profile = {
         try {
             var data = await viewData.get(req, 'Personal')
 
-            if (data.logged_in) {
+            if (data.loggedIn) {
                 var valid = true
                 var counties = [
                     'antrim', 'armagh', 'carlow', 'cavan', 'clare', 'cork', 'derry', 'donegal', 'down',
@@ -104,7 +105,7 @@ const profile = {
         try {
             var data = await viewData.get(req, 'Customize')
 
-            if (data.logged_in) {
+            if (data.loggedIn) {
                 var form = new formidable.IncomingForm()
                 new Promise((resolve, reject) => {
                     form.parse(req, (err, fields, files) => {
@@ -138,7 +139,7 @@ const profile = {
         try {
             var data = await viewData.get(req, 'Password')
 
-            if (data.logged_in) {
+            if (data.loggedIn) {
                 if (await bcrypt.compare(req.body.old_password, await passwords.get(data.member.memberId))) {
                     var valid = true
                     // Server-Side Validation
@@ -160,7 +161,7 @@ const profile = {
         try {
             var data = await viewData.get(req, 'Delete')
 
-            if (data.logged_in) {
+            if (data.loggedIn) {
                 members.delete(data.member.memberId).then(() => {
                     logger.info(`Member ${data.member.memberId}: Successfully deleted account!`)
                     req.session.destroy()
@@ -174,7 +175,7 @@ const profile = {
         var data = await viewData.get(req, 'View Profile')
         data.scripts.profile = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/profile_scripts.js' })
 
-        if (data.logged_in) {
+        if (data.loggedIn) {
             if (req.params.userId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
 
                 data.user = await members.get(req.params.userId)

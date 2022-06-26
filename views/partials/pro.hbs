@@ -1,42 +1,86 @@
+<script src="{{scripts.pro}}" hidden></script>
+<script src="https://cdn.quilljs.com/1.3.6/quill.js" hidden></script>
 <div class="ui segment">
     <h3 class="ui dividing header">Public Relations Dashboard</h3>
 
-    <div class="ui four column grid">
+    <div class="ui two column grid">
 
         <div class="ui column">
-            <button class="ui disabled fluid teal button announcement">
+            <button class="ui fluid teal button announcement_button">
                 <h4 class="ui center aligned icon header">
                     <i class="large announcement icon"></i>
-                    Announcement
+                    Announcements
                 </h4>
             </button>
         </div>
 
         <div class="ui column">
-            <button class="ui disabled fluid teal button" id="create_article">
-                <h4 class="ui center aligned icon header">
-                    <i class="large pen icon"></i>
-                    Create Article
-                </h4>
-            </button>
-        </div>
-
-        <div class="ui column">
-            <button class="ui disabled fluid teal button" id="create_article">
+            <button class="ui fluid teal button" id="articles">
                 <h4 class="ui center aligned icon header">
                     <i class="large edit icon"></i>
-                    Edit Article
+                    Articles
                 </h4>
             </button>
         </div>
 
-        <div class="ui column">
-            <button class="ui disabled fluid teal button" id="delete_article">
-                <h4 class="ui center aligned icon header">
-                    <i class="large trash icon"></i>
-                    Delete Article
-                </h4>
-            </button>
+        <div class="ui mini modal" id="select_article_modal">
+            <div class="header">Website Articles</div>
+
+            <div class="content">
+                <div class="ui items" id="select_article_modal_cards"></div>
+            </div>
+
+            <div class="right aligned actions">
+                <button class="ui positive button" id="select_article_modal_new">New Article</button>
+                <button class="ui button" id="select_article_modal_close">Close</button>
+            </div>
+        </div>
+
+        <div class="ui modal" id="article_modal">
+            <div class="header">
+                <i class="arrow left link icon article_modal_back"></i>
+                <span id="article_modal_title"></span>
+            </div>
+
+            <div class="content" id="article_modal_content" style="height: 60vh;"></div>
+
+            <div class="right aligned actions">
+                <div class="ui buttons">
+                    <button class="ui negative icon button" id="article_modal_delete">
+                        <i class="trash icon"></i>
+                    </button>
+                    <button class="ui positive icon button" id="article_modal_edit">
+                        <i class="pen icon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="ui modal" id="editor_article_modal">
+            <div class="header">
+                <i class="arrow left link icon article_modal_back"></i>
+                <div class="ui input" style="font-size: 14; width: 60%;">
+                    <input type="text" id="editor_article_modal_title" placeholder="Article Title..."
+                        autocomplete="off">
+                </div>
+            </div>
+
+            <div class="content" id="editor_article_modal_editor" style="height: 60vh;"></div>
+
+            <div class="ui error message" id="input_error" style="margin: 14px;" hidden>
+                <div class="header">Could not create this article because it does not match minimal requirements.</div>
+            </div>
+
+            <div class="ui error message" id="network_error" style="margin: 14px;" hidden>
+                <div class="header">
+                    There was an error connecting to the server. Please reload the page and try again!
+                </div>
+            </div>
+
+            <div class="right aligned actions">
+                <button class="ui positive icon button" id="editor_article_modal_save">Save</button>
+                <button class="ui positive icon button" id="editor_article_modal_update">Update</button>
+            </div>
         </div>
     </div>
 </div>

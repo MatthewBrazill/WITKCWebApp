@@ -30,8 +30,6 @@ const members = {
                         { S: member.address.code }
                     ]
                 },
-                'certs': { L: [] },
-                'trips': { L: [] },
                 'img': { S: member.img },
                 'dateJoined': { S: member.dateJoined }
             },
@@ -55,7 +53,7 @@ const members = {
             TableName: 'witkc-members'
         }).promise().then((data) => {
             if (data.Items[0] != undefined) return data.Items[0]['memberId'].S
-            else return null
+            else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
             logger.warn(`Could not resolve username ${username}! ${err}`)
             return null
@@ -69,9 +67,10 @@ const members = {
             TableName: 'witkc-members'
         }).promise().then(async (data) => {
             if (data.Item != undefined) {
-                var member = {}
+                var member = { certs: [] }
                 for (var attr in data.Item) {
                     if ('S' in data.Item[attr]) member[attr] = data.Item[attr].S
+                    else if ('SS' in data.Item[attr]) member[attr] = data.Item[attr].SS
                     else if ('BOOL' in data.Item[attr]) member[attr] = data.Item[attr].BOOL
                     else if (attr == 'address') {
                         member.address = {
@@ -82,27 +81,10 @@ const members = {
                             code: data.Item['address'].L[4].S
                         }
                     }
-                    else if (attr == 'certs') {
-                        member.certs = []
-                        for (var item of data.Item['certs'].L) {
-                            member.certs.push(await certificates.get(item.S))
-                        }
-                    }
-                    else if (attr == 'trips') {
-                        member.trips = []
-                        for (var item of data.Item['trips'].L) {
-                            member.trips.push(await trips.get(item.S))
-                        }
-                    }
-                    else if ('L' in data.Item[attr]) {
-                        member[attr] = []
-                        for (var item of data.Item[attr].L) member[attr].push(item.S)
-                    }
                 }
                 return member
-
             }
-            else return null
+            else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
             logger.warn(`Failed to retrieve member ${memberId}! ${err}`)
             return null
@@ -147,7 +129,7 @@ const members = {
             TableName: 'witkc-members'
         }).promise().then((data) => {
             if (data.Item != undefined) return true
-            else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
+            else return false
         }).catch((err) => {
             logger.warn(`Failed to verify existence of member ${memberId}! ${err}`)
             return false
@@ -199,8 +181,8 @@ const members = {
         if (memberId === null || memberId === undefined || certId === null || certId === undefined) return false
         return dynamo.updateItem({
             Key: { 'memberId': { S: memberId } },
-            ExpressionAttributeValues: { ':cert': { L: [{ S: certId }] } },
-            UpdateExpression: 'SET certs = list_append(certs, :cert)',
+            ExpressionAttributeValues: { ':cert': { SS: [certId] } },
+            UpdateExpression: 'ADD certs :cert',
             TableName: 'witkc-members'
         }).promise().then((data) => {
             if (data) return true
@@ -213,29 +195,16 @@ const members = {
 
     async revokeCert(memberId, certId) {
         if (memberId === null || memberId === undefined || certId === null || certId === undefined) return false
-        return dynamo.getItem({
-            ExpressionAttributeNames: { '#CERT': 'certs' },
+        return dynamo.updateItem({
             Key: { 'memberId': { S: memberId } },
-            ProjectionExpression: '#CERT',
+            ExpressionAttributeValues: { ':cert': { SS: [certId] } },
+            UpdateExpression: 'DELETE certs :cert)',
             TableName: 'witkc-members'
         }).promise().then((data) => {
-            if (data.Item != undefined) {
-                for (var i in data.Item['certs'].L) if (data.Item['certs'].L[i].S == certId) return i
-                return -1
-            }
+            if (data) return true
             else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
-        }).then((index) => {
-            if (index != -1) return dynamo.updateItem({
-                Key: { 'memberId': { S: memberId } },
-                UpdateExpression: `REMOVE certs[${index}]`,
-                TableName: 'witkc-members'
-            }).promise().then((data) => {
-                if (data) return true
-                else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
-            }).catch((err) => { throw err })
-            else return false
         }).catch((err) => {
-            logger.warn(`Could not remove certificate '${certId}' from member '${memberId}'! ${err}`)
+            logger.warn(`Could not revoke certificate '${certId}' from member '${memberId}'! ${err}`)
             return false
         })
     },
@@ -244,8 +213,8 @@ const members = {
         if (memberId === null || memberId === undefined || tripId === null || tripId === undefined) return false
         return dynamo.updateItem({
             Key: { 'tripId': { S: tripId } },
-            ExpressionAttributeValues: { ':attendee': { L: [{ S: memberId }] } },
-            UpdateExpression: 'SET attendees = list_append(attendees, :attendee)',
+            ExpressionAttributeValues: { ':attendee': { SS: [memberId] } },
+            UpdateExpression: 'ADD attendees :attendee',
             TableName: 'witkc-trips'
         }).promise().then((data) => {
             if (data) return true
@@ -258,29 +227,16 @@ const members = {
 
     async leaveTrip(memberId, tripId) {
         if (memberId === null || memberId === undefined || tripId === null || tripId === undefined) return false
-        return dynamo.getItem({
-            ExpressionAttributeNames: { '#ATT': 'attendees' },
+        return dynamo.updateItem({
             Key: { 'tripId': { S: tripId } },
-            ProjectionExpression: '#ATT',
+            ExpressionAttributeValues: { ':attendee': { SS: [memberId] } },
+            UpdateExpression: 'DELETE attendees :attendee',
             TableName: 'witkc-trips'
         }).promise().then((data) => {
-            if (data.Item != undefined) {
-                for (var i in data.Item['attendees'].L) if (data.Item['attendees'].L[i].S == memberId) return i
-                return -1
-            }
+            if (data) return true
             else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
-        }).then((index) => {
-            if (index != -1) return dynamo.updateItem({
-                Key: { 'tripId': { S: tripId } },
-                UpdateExpression: `REMOVE attendees[${index}]`,
-                TableName: 'witkc-trips'
-            }).promise().then((data) => {
-                if (data) return true
-                else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
-            }).catch((err) => { throw err })
-            else return false
         }).catch((err) => {
-            logger.warn(`Could not remove attendee '${memberId}' from trip '${tripId}'! ${err}`)
+            logger.warn(`Could not remove member '${memberId}' from trip '${tripId}'! ${err}`)
             return false
         })
     },

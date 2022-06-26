@@ -7,6 +7,7 @@ const logger = require('./log.js')
 const members = require('./data_managers/witkc_members')
 const committee = require('./data_managers/committee.js')
 const trips = require('./data_managers/trips.js')
+const announcements = require('./data_managers/announcements.js')
 
 const viewData = {
     async get(req, title) {
@@ -15,18 +16,19 @@ const viewData = {
             scripts: {
                 global: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/global_scripts.js' }),
             },
-            witkc_logo: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'img/witkc_logo.webp' }),
-            witkc_icon: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'img/witkc_icon.ico' }),
-            logged_in: false
+            witkcLogo: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'img/witkc_logo.webp' }),
+            witkcIcon: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'img/witkc_icon.ico' }),
+            loggedIn: false
         }
 
         if (req.session != undefined) if (await members.exists(req.session.userID)) {
             logger.debug(`Session '${req.sessionID}' is Logged In`)
 
             data.member = await members.get(req.session.userID)
-            data.logged_in = true
+            data.loggedIn = true
 
             data.member.trips = await trips.getAllFor(data.member.memberId)
+            data.announcements = await announcements.getUnread(data.member.memberId)
 
             if (data.member.memberId == '96e01799-74bb-4772-bd5c-fd92528cc510' || data.member.memberId == '9edd4ca4-a596-4469-af30-b8a92e74098c') data.admin = true
             else data.committee = await committee.isCommittee(data.member.memberId).then((roleId) => roleId)

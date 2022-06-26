@@ -15,10 +15,10 @@
 
                 <div class="ui fluid link card trip" id="{{this.tripId}}">
                     <div class="content">
-                        <div class="header">
-                            <div class="ui left floated">{{this.name}}:</div>
-                            <div class="ui right floated negative icon button"><i class="times icon"></i></div>
-                            <div class="ui right floated positive icon button"><i class="check icon"></i></div>
+                        <div class="ui left floated header" style="margin: 0px; padding-top: 4px">{{this.name}}: </div>
+                        <div class="ui right floated mini buttons">
+                            <div class="ui negative icon button"><i class="close icon"></i></div>
+                            <div class="ui positive icon button"><i class="check icon"></i></div>
                         </div>
                     </div>
                 </div>
@@ -40,10 +40,10 @@
         </div>
 
         <div class="ui four wide column">
-            <button class="ui disabled fluid teal button announcement">
+            <button class="ui fluid teal button announcement_button">
                 <h4 class="ui center aligned icon header">
                     <i class="large announcement icon"></i>
-                    Announcement
+                    Announcements
                 </h4>
             </button>
 
@@ -51,12 +51,12 @@
 
             <button class="ui fluid teal button" id="award_cert">
                 <h4 class="ui center aligned icon header">
-                    <i class="large certificate icon"></i>
+                    <i class="large award icon"></i>
                     Award Certificate
                 </h4>
             </button>
 
-            <div class="ui modal" id="award_cert_modal">
+            <div class="ui mini modal" id="award_cert_modal">
 
                 <div class="header">Award Certificate to Member</div>
 
@@ -64,25 +64,23 @@
 
                     <form class="ui form" id="award_cert_modal_form">
 
-                        <div class="inline fields">
-
-                            <div class="ten wide field">
-                                <div class="ui fluid search selection dropdown" id="award_cert_modal_cert_dropdown">
-                                    <input type="hidden" id="award_cert_modal_cert_dropdown_input">
-                                    <div class="text"></div>
-                                    <i class="dropdown icon"></i>
-                                </div>
+                        <div class="field">
+                            <label>Award</label>
+                            <div class="ui fluid search selection dropdown" id="award_cert_modal_cert_dropdown">
+                                <input type="hidden" id="award_cert_modal_cert_dropdown_input">
+                                <div class="text"></div>
+                                <i class="dropdown icon"></i>
                             </div>
+                        </div>
 
-                            <label>to</label>
 
-                            <div class="ten wide field">
-                                <div class="ui fluid multiple search selection dropdown"
-                                    id="award_cert_modal_member_dropdown">
-                                    <input type="hidden" id="award_cert_modal_member_dropdown_input">
-                                    <div class="text"></div>
-                                    <i class="dropdown icon"></i>
-                                </div>
+                        <div class="field">
+                            <label>To</label>
+                            <div class="ui fluid multiple search selection dropdown"
+                                id="award_cert_modal_member_dropdown">
+                                <input type="hidden" id="award_cert_modal_member_dropdown_input">
+                                <div class="text"></div>
+                                <i class="dropdown icon"></i>
                             </div>
                         </div>
 
@@ -109,7 +107,7 @@
                 </h4>
             </button>
 
-            <div class="ui modal" id="revoke_cert_modal">
+            <div class="ui mini modal" id="revoke_cert_modal">
                 <div class="header">Revoke Certificate from Member</div>
 
                 <div class="content">

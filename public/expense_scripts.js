@@ -1,6 +1,4 @@
 $(document).ready(() => {
-
-
     $('#expense_form').submit((event) => {
         event.preventDefault()
         const form = $('#expense_form')
@@ -45,8 +43,6 @@ $(document).ready(() => {
             })
         }
     })
-
-    $('#bio').on('input',)
 
     $('#add').click(() => {
         const button = $('#add')

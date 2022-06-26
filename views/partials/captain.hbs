@@ -22,12 +22,48 @@
         </div>
 
         <div class="ui four wide column">
-            <button class="ui disabled fluid teal button announcement">
+            <button class="ui fluid teal button announcement_button">
                 <h4 class="ui center aligned icon header">
                     <i class="large announcement icon"></i>
                     Announcement
                 </h4>
             </button>
+        </div>
+
+        <div class="ui sixteen wide column">
+
+            {{#if captain.verificationRequests.length}}
+
+            <div class="ui cards">
+
+                {{#each captain.verificationRequests}}
+
+                <div class="ui fluid link card expenseRequest" id="{{this.requestId}}">
+                    <div class="content">
+                        <div class="header">
+                            <div class="ui left floated">{{this.member.firstName}} {{this.member.lastName}}</div>
+                            <div class="ui right floated buttons">
+                                <div class="ui negative icon button"><i class="trash icon"></i></div>
+                                <div class="ui positive icon button"><i class="check icon"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{/each}}
+
+            </div>
+
+            {{else}}
+
+            <div class="ui fluid placeholder segment">
+                <div class="ui icon header">
+                    <i class="check double icon"></i>
+                    No pending verifications!
+                </div>
+            </div>
+
+            {{/if}}
         </div>
     </div>
 </div>

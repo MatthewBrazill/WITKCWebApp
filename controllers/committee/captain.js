@@ -1,18 +1,18 @@
 'use strict'
 
 // Imports
-const logger = require('../log.js')
-const viewData = require('../view_data.js')
-const members = require('../data_managers/witkc_members')
-const trips = require('../data_managers/trips.js')
-const equipment = require('../data_managers/equipment.js')
+const logger = require('../../log.js')
+const viewData = require('../../view_data.js')
+const members = require('../../data_managers/witkc_members')
+const trips = require('../../data_managers/trips.js')
+const equipment = require('../../data_managers/equipment.js')
 
 const captain = {
     async verify(req, res) {
         try {
             var data = await viewData.get(req, 'API')
 
-            if (data.logged_in) {
+            if (data.loggedIn) {
                 if (data.committee == 'captain' || data.admin) {
                     if (req.body.memberId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
                         members.update({
@@ -32,7 +32,7 @@ const captain = {
         try {
             var data = await viewData.get(req, 'API')
 
-            if (data.logged_in) {
+            if (data.loggedIn) {
                 if (data.committee == 'captain' || data.admin) {
                     var today = new Date()
                     if (today.getMonth() < 9) var lastSeptember = new Date(new Date('2020-09-01').setFullYear(today.getFullYear() - 1)).toUTCString().substring(5, 16)

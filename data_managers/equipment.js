@@ -11,7 +11,7 @@ const equipment = {
         if (equipment === null || equipment === undefined) return false
         var attributes = {}
         for (var attr in equipment) {
-            if (typeof equipment[attr] == 'boolean') attributes[`:${attr}`] = { BOOL: equipment[attr] }
+            if (typeof equipment[attr] == 'boolean') attributes[`${attr}`] = { BOOL: equipment[attr] }
             else attributes[`${attr}`] = { S: equipment[attr] }
         }
         return dynamo.putItem({
@@ -32,10 +32,43 @@ const equipment = {
             Key: { 'equipmentId': { S: equipmentId } },
             TableName: 'witkc-equipment'
         }).promise().then((data) => {
-            if (data.Item != undefined) return data.Item['hash'].S
+            if (data.Item != undefined) {
+                var gear = {
+                    equipmentId: data.Item['equipmentId'].S,
+                    name: data.Item['name'].S,
+                    brand: data.Item['brand'].S,
+                    img: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: data.Item['img'].S })
+                }
+                if (data.Item['unavailableDates'] != undefined) gear.unavailableDates = data.Item['unavailableDates'].SS
+                if (data.Item['type'].S == 'boat') {
+                    gear.boatType = data.Item['boatType'].S
+                    gear.boatSize = data.Item['boatSize'].S
+                    gear.boatCockpit = data.Item['boatCockpit'].S
+                    equipment.boats.push(gear)
+                } else if (data.Item['type'].S == 'paddle') {
+                    gear.paddleType = data.Item['paddleType'].S
+                    gear.paddleLength = data.Item['paddleLength'].S
+                    equipment.paddles.push(gear)
+                } else if (data.Item['type'].S == 'deck') {
+                    gear.deckType = data.Item['deckType'].S
+                    gear.deckSize = data.Item['deckSize'].S
+                    equipment.decks.push(gear)
+                } else if (data.Item['type'].S == 'ba') {
+                    gear.baSize = item['baSize'].S
+                    equipment.bas.push(gear)
+                } else if (data.Item['type'].S == 'helmet') {
+                    gear.helmetType = data.Item['helmetType'].S
+                    gear.helmetSize = data.Item['helmetSize'].S
+                    equipment.helmets.push(gear)
+                } else if (data.Item['type'].S == 'wetsuit') {
+                    gear.wetsuitSize = data.Item['wetsuitSize'].S
+                    equipment.wetsuits.push(gear)
+                }
+                return gear
+            }
             else return null
         }).catch((err) => {
-            logger.warn(`Failed to retrieve retrieve equipment '${equipmentId}'! ${err}`)
+            logger.warn(`Failed to retrieve equipment '${equipmentId}'! ${err}`)
             return null
         })
     },
@@ -58,8 +91,10 @@ const equipment = {
                         equipmentId: item['equipmentId'].S,
                         name: item['name'].S,
                         brand: item['brand'].S,
+                        unavailableDates: [],
                         img: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: item['img'].S })
                     }
+                    if (item['unavailableDates'] != undefined) gear.unavailableDates = item['unavailableDates'].SS
                     if (item['type'].S == 'boat') {
                         gear.boatType = item['boatType'].S
                         gear.boatSize = item['boatSize'].S
@@ -88,9 +123,13 @@ const equipment = {
                 return equipment
             } else return null
         }).catch((err) => {
-            logger.warn(`Failed to retrieve retrieve all equipment! ${err}`)
+            logger.warn(`Failed to retrieve all equipment! ${err}`)
             return null
         })
+    },
+
+    async update() {
+
     },
 
     async delete(equipmentId) {

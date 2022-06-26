@@ -1,6 +1,6 @@
 <sidebar class="four wide column">
     <div class="ui fitted segment" style="height: 100%">
-        {{#if logged_in}}
+        {{#if loggedIn}}
 
         <!-- Logged In Version -->
         <div class="ui top attached fitted segment" style="border: 0px;">
@@ -10,7 +10,7 @@
             <img class="ui fluid image" src="{{member.img}}" alt="User Image">
         </div>
 
-        <div class="ui bottom attached segment" style="border: 0px;">
+        <div class="ui attached segment" style="border: 0px;">
 
             <div class="ui items">
                 <div class="item">
@@ -29,6 +29,17 @@
             </div>
         </div>
 
+        {{#each announcements}}
+        <div id="{{this.announcementId}}" class="ui segment" style="margin: 0px 14px 14px 14px;">
+            <i class="close link icon announcement_icon" style="position: absolute; right: 0px; top: 7px"></i>
+            <h4 class="ui dividing header" style="margin-top: 0px;">
+                {{this.title}}
+            </h4>
+            <p>{{this.content}}</p>
+            <p style="font-size: 11; color: #00000099; text-align: right;">{{this.date}}</p>
+        </div>
+        {{/each}}
+
         {{else}}
 
         <!-- Logged Out Version -->
@@ -39,7 +50,7 @@
                 <a class="ui large blue button" href="/signup">Sign Up</a>
             </div>
 
-            <img class="ui fluid image" src="{{witkc_logo}}" alt="Club Logo">
+            <img class="ui fluid image" src="{{witkcLogo}}" alt="Club Logo">
         </div>
 
         <div class="ui bottom attached segment" style="border: 0px;">
@@ -53,18 +64,12 @@
                         <div class="description">
                             <p>
                                 Any active students at WIT are welcome to join us at our weekly pool meetings. We have
-                                several
-                                initiatives
-                                for new members who might want to chat to members of the club about different aspects of
-                                kayaking
-                                and
-                                get to
-                                know the ins and outs of the sport.
+                                several initiatives for new members who might want to chat to members of the club about
+                                different aspects of kayaking and get to know the ins and outs of the sport.
                             </p>
                             <p>
                                 To join, just come to a pool sessions Tuesdays and Thursdays at 9:30pm, or contact the
-                                club for more
-                                information!
+                                club for more information!
                             </p>
                             <p>
                                 Once you've joined the club you can sign up to the online portal here, and get your

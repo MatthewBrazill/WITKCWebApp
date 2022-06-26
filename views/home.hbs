@@ -1,13 +1,19 @@
 <div class="twelve wide column">
     <div class="ui segment" style="height: 100%">
         <div class="ui grid">
+            {{#each articles}}
+            <div class="ui sixteen wide column">
+                <h4 class="ui dividing header">{{this.title}}</h4>
+                {{{this.article}}}
+            </div>
+            {{/each}}
             <div class="ui sixteen wide column">
                 <h4 class="ui dividing header">Whitewater</h4>
                 <img class="ui medium rounded right floated image" src="/img/ww.jpg" alt="Whitewater Image">
                 <p>
                     The majority of our members that join the club are mostly focused on whitewater. The skills we teach
                     you on day one will be of use to you in all disciplines of kayaking, but more often than not we are
-                    preparing you for river trips. From fresher trips at Clashganny to travelling abroad, whitewater
+                    preparing you for river trips. From fresher trips at Clashganny to traveling abroad, whitewater
                     gets your adrenaline pumping seriously. It is also a great way of learning new skills such as safety
                     and risk management.
                 </p>
@@ -18,10 +24,10 @@
                 <img class="ui medium rounded right floated image" src="/img/polo.jpg" alt="Polo Image">
                 <p>
                     The Club will usually play polo in the pool once a week and will hold outdoor training days on the
-                    lead up to competitions such as ICUPS. What is Polo? Polo is a team of players where they throw the
+                    lead up to competitions such as ICUP. What is Polo? Polo is a team of players where they throw the
                     ball between them, aiming to score goals by throwing the ball into a 2m x 1m rectangular goal
                     suspended 2m above water level. While in possession teams will pass the ball around and try to
-                    create enough space near the opposition goal to take a shot. The defending team will set up a ‘zone’
+                    create enough space near the opposition goal to take a shot. The defending team will set up a 'zone'
                     around their own goal which they will try to keep all of the attackers out of. All of this involves
                     a lot of crashing into each other, pushing boats around and you are allowed to capsize people by
                     pushing them on the shoulder when they have the ball!
@@ -34,7 +40,7 @@
                 <p>
                     The Club will usually spend our time in the pool training in freestyle, when we get the opportunity
                     some members will travel to Tuam or if the water is high to Scum Hole in Kilkenny. During the summer
-                    months the club will spend most of their weekends camping in clifden and surfing the local playspot
+                    months the club will spend most of their weekends camping in Clifden and surfing the local play-spot
                     under the bridge.
                 </p>
             </div>

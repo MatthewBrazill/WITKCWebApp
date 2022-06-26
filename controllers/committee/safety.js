@@ -3,10 +3,10 @@
 // Imports
 const AWS = require('aws-sdk')
 const s3 = new AWS.S3()
-const logger = require('../log.js')
-const viewData = require('../view_data.js')
-const members = require('../data_managers/witkc_members')
-const trips = require('../data_managers/trips.js')
+const logger = require('../../log.js')
+const viewData = require('../../view_data.js')
+const members = require('../../data_managers/witkc_members')
+const trips = require('../../data_managers/trips.js')
 
 const safety = {
     async award(req, res) {
@@ -14,7 +14,7 @@ const safety = {
             var data = await viewData.get(req, 'API')
             var valid = true
 
-            if (data.logged_in) if (data.committee == 'safety' || data.admin) {
+            if (data.loggedIn) if (data.committee == 'safety' || data.admin) {
                 // Server-Side Validation
                 if (!req.body.memberIds.match(/^([a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}){1}(,[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12})*$/i)) valid = false
                 if (!req.body.certId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) valid = false
@@ -26,9 +26,7 @@ const safety = {
                 } else res.sendStatus(400)
             } else res.sendStatus(403)
             else res.sendStatus(403)
-        } catch (err) {
-            res.status(500).json(err)
-        }
+        } catch (err) { res.status(500).json(err) }
     },
 
     async revoke(req, res) {
@@ -36,7 +34,7 @@ const safety = {
             var data = await viewData.get(req, 'API')
             var valid = true
 
-            if (data.logged_in) {
+            if (data.loggedIn) {
                 if (data.committee == 'safety' || data.admin) {
 
                     // Server-Side Validation
@@ -49,16 +47,14 @@ const safety = {
                     } else res.sendStatus(400)
                 } else res.sendStatus(403)
             } else res.sendStatus(403)
-        } catch (err) {
-            res.status(500).json(err)
-        }
+        } catch (err) { res.status(500).json(err) }
     },
 
     async accept(req, res) {
         try {
             var data = await viewData.get(req, 'API')
 
-            if (data.logged_in) {
+            if (data.loggedIn) {
                 if (data.committee == 'safety' || data.admin) {
                     if (req.body.tripId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
                         trips.update({
@@ -76,7 +72,7 @@ const safety = {
         try {
             var data = await viewData.get(req, 'API')
 
-            if (data.logged_in) {
+            if (data.loggedIn) {
                 if (data.committee == 'safety' || data.admin) {
                     if (req.body.tripId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
                         await s3.putObject({

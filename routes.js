@@ -4,24 +4,25 @@
 const router = require('express').Router()
 
 // Import the necessary controllers:
-const home = require('./controllers/home.js')
-const login = require('./controllers/login.js')
-const logout = require('./controllers/logout.js')
-const signup = require('./controllers/signup.js')
-const contact = require('./controllers/contact.js')
-const about = require('./controllers/about.js')
-const committee = require('./controllers/committee.js')
-const events = require('./controllers/events.js')
-const constitution = require('./controllers/constitution.js')
-const profile = require('./controllers/profile.js')
-const privacy = require('./controllers/privacy.js')
-const terms = require('./controllers/terms.js')
+const home = require('./controllers/pages/home.js')
+const login = require('./controllers/app/login.js')
+const logout = require('./controllers/app/logout.js')
+const signup = require('./controllers/app/signup.js')
+const contact = require('./controllers/pages/contact.js')
+const about = require('./controllers/pages/about.js')
+const committee = require('./controllers/committee/committee.js')
+const events = require('./controllers/pages/events.js')
+const profile = require('./controllers/app/profile.js')
+const terms = require('./controllers/pages/terms.js')
 const api = require('./api.js')
-const safety = require('./controllers/safety.js')
-const trip = require('./controllers/trip.js')
-const expenses = require('./controllers/expenses.js')
-const captain = require('./controllers/captain.js')
-const gear = require('./controllers/gear.js')
+const safety = require('./controllers/committee/safety.js')
+const trip = require('./controllers/app/trip.js')
+const expenses = require('./controllers/app/expenses.js')
+const captain = require('./controllers/committee/captain.js')
+const gear = require('./controllers/app/gear.js')
+const pro = require('./controllers/committee/pro.js')
+
+
 
 // Home
 router.get('/', home.get)
@@ -65,12 +66,19 @@ router.get('/api/settings/delete', profile.delete) // Delete account *requires l
 
 
 // Committee Dashboard APIs
-router.post('/api/safety/award', safety.award) // Award certificate to member *requires safety*
-router.post('/api/safety/revoke', safety.revoke) // Remove certificate from member *requires safety*
-router.post('/api/safety/accept', safety.accept) // Accept trip too allow it to happen *requires safety*
-router.post('/api/safety/reject', safety.delete) // Reject trip due to safety concerns *requires safety*
+router.post('/api/committee/announcement/create', committee.createAnnouncement) // Create a announcement *requires committee*
+router.post('/api/committee/announcement/mark_as_read', committee.markAnnouncementRead) // Mark an announcement as read *requires login*
 router.post('/api/captain/verify', captain.verify) // Set member to verified *requires captain*
 router.get('/api/captain/stats', captain.stats) // Get club statistics *requires captain*
+router.post('/api/safety/certificate/award', safety.award) // Award certificate to member *requires safety*
+router.post('/api/safety/certificate/revoke', safety.revoke) // Remove certificate from member *requires safety*
+router.post('/api/safety/trip/accept', safety.accept) // Accept trip too allow it to happen *requires safety*
+router.post('/api/safety/trip/reject', safety.delete) // Reject trip due to safety concerns *requires safety*
+router.post('/api/pro/article/create', pro.create)
+router.post('/api/pro/article/get', pro.get)
+router.get('/api/pro/article/list', pro.list)
+router.post('/api/pro/article/update', pro.update)
+router.post('/api/pro/article/delete', pro.delete)
 
 
 
@@ -113,15 +121,15 @@ router.post('/api/events/month', events.month) // Get events for the passed mont
 
 
 // About
-router.get('/about', about.get)
-router.get('/committee', committee.get)
-router.get('/constitution', constitution.get)
+router.get('/about/history', about.history)
+router.get('/about/committee', about.committee)
+router.get('/about/constitution', about.constitution)
 
 
 
 // Privacy and TOS
-router.get('/privacy', privacy.get)
-router.get('/terms', terms.get)
+router.get('/privacy', terms.privacy)
+router.get('/terms', terms.terms)
 
 
 

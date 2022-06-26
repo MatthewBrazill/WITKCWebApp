@@ -71,9 +71,9 @@
                         <input type="text" id="phone" placeholder="Phone Number" value="{{member.phone}}">
                     </div>
 
-                    <!-- Verification status (Doesn't update here) -->
+                    <!-- Verification status -->
                     <div class="field">
-                        {{#if member.verified}}Yes!{{else}}No! <a href="/verify">Verify Now!</a>{{/if}}
+                        {{#if member.verified}}Verified!{{else}}Unverified, <a id="verify_link">Verify Now!</a>{{/if}}
                     </div>
 
                     <!-- ===Address=== -->
@@ -210,7 +210,8 @@
                 <form class="ui form" id="customize_form" autocomplete="off">
 
                     <div class="field">
-                        <textarea style="resize: none" rows="5" id="bio" placeholder="Biography..." maxlength="500">{{member.bio}}</textarea>
+                        <textarea style="resize: none" rows="5" id="bio" placeholder="Biography..."
+                            maxlength="500">{{member.bio}}</textarea>
                     </div>
 
                     <!-- User image -->
@@ -261,7 +262,8 @@
                     <!-- Old password -->
                     <div class="field">
                         <div class="ui action input">
-                            <input type="password" placeholder="Password" id="old_password" autocomplete="current-password">
+                            <input type="password" placeholder="Password" id="old_password"
+                                autocomplete="current-password">
                             <button class="ui icon button" type="button" id="hide_old_password">
                                 <i class="eye slash icon"></i>
                             </button>
@@ -272,7 +274,8 @@
                     <!-- New password -->
                     <div class="field">
                         <div class="ui action input">
-                            <input type="password" placeholder="New Password" id="new_password" autocomplete="new-password">
+                            <input type="password" placeholder="New Password" id="new_password"
+                                autocomplete="new-password">
                             <button class="ui icon button" type="button" id="hide_new_password">
                                 <i class="eye slash icon"></i>
                             </button>
@@ -298,7 +301,8 @@
 
                     <!-- Confirm new password -->
                     <div class="field">
-                        <input type="password" placeholder="Confirm Password" id="confirm_password" autocomplete="new-password">
+                        <input type="password" placeholder="Confirm Password" id="confirm_password"
+                            autocomplete="new-password">
                     </div>
                     <br>
 
