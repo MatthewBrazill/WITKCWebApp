@@ -44,15 +44,9 @@ const committee = {
                     img: 'img/placeholder_avatar.webp'
                 }
                 else role.member = await members.get(data.Item['memberId'].S)
-                if (role.roleId == 'captain') {
-                    role.verificationRequests = []
-                    for (var verificationRequest of data.Item['verificationRequest'].L) {
-                        role.verificationRequests.push({
-                            requestId: verificationRequest.M['requestId'].S,
-                            member: await members.get(verificationRequest.M['memberId'].S),
-                        })
-                    }
-                }
+
+                if (role.roleId == 'captain') if (data.Item['verificationRequests'] != undefined) role.verificationRequests = data.Item['verificationRequests'].SS
+                else role.verificationRequests = []
                 if (role.roleId == 'treasurer') {
                     role.expenseRequests = []
                     for (var expenseRequest of data.Item['expenseRequests'].L) {
@@ -193,59 +187,40 @@ const committee = {
         })
     },
 
-    requestVerification(verificationRequest) {
-        if (verificationRequest === null || verificationRequest === undefined) return false
+    requestVerification(memberId) {
+        if (memberId === null || memberId === undefined) return false
         return dynamo.updateItem({
-            Key: { 'roleId': { S: 'treasurer' } },
-            ExpressionAttributeValues: {
-                ':verificationRequest': {
-                    L: [{
-                        M: {
-                            'expenseId': { S: verificationRequest.requestId },
-                            'memberId': { S: verificationRequest.memberId }
-                        }
-                    }]
-                }
-            },
-            UpdateExpression: 'SET verificationRequests = list_append(verificationRequests, :verificationRequest)',
+            Key: { 'roleId': { S: 'captain' } },
+            ExpressionAttributeValues: { ':memberId': { SS: [memberId] } },
+            UpdateExpression: 'ADD verificationRequests :memberId',
             TableName: 'witkc-committee'
         }).promise().then((data) => {
             if (data) return true
             else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Could not submit verification request '${verificationRequest.requestId}'! ${err}`)
+            logger.warn(`Could not submit verification request for '${memberId}'! ${err}`)
             return false
         })
     },
 
-    resolveVerification(requestId, decision) {
-        if (requestId === null || requestId === undefined || decision === null || decision === undefined) return false
-        return dynamo.getItem({
-            ExpressionAttributeNames: { '#REQ': 'verificationRequests' },
+    resolveVerification(memberId, decision) {
+        if (memberId === null || memberId === undefined || decision === null || decision === undefined) return false
+        if (decision) dynamo.updateItem({
+            Key: { 'memberId': { S: memberId } },
+            ExpressionAttributeValues: { ':bool': { BOOL: true } },
+            UpdateExpression: 'SET verified = :bool',
+            TableName: 'witkc-members'
+        })
+        return dynamo.updateItem({
             Key: { 'roleId': { S: 'captain' } },
-            ProjectionExpression: '#REQ',
+            ExpressionAttributeValues: { ':memberId': { SS: [memberId] } },
+            UpdateExpression: 'DELETE verificationRequests :memberId',
             TableName: 'witkc-committee'
         }).promise().then((data) => {
-            if (data.Item != undefined) {
-                for (var i in data.Item['verificationRequests'].L) if (data.Item['verificationRequests'].L[i].M['requestId'].S == requestId) return [i, data.Item['verificationRequests'].L[i].M['memberId'].S]
-                return -1
-            }
+            if (data) return true
             else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
-        }).then((result) => {
-            if (result[0] != -1) {
-                if (decision) members.verify(result[1])
-                dynamo.updateItem({
-                    Key: { 'roleId': { S: 'captain' } },
-                    UpdateExpression: `REMOVE verificationRequests[${result[0]}]`,
-                    TableName: 'witkc-committee'
-                }).promise().then((data) => {
-                    if (data) return true
-                    else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
-                }).catch((err) => { throw err })
-            }
-            else return false
         }).catch((err) => {
-            logger.warn(`Could not resolve verification request '${requestId}'! ${err}`)
+            logger.warn(`Could not resolve verification request for '${memberId}'! ${err}`)
             return false
         })
     }
