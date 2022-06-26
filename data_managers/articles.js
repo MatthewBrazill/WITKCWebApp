@@ -74,7 +74,7 @@ const articles = {
                 ':title': { S: article.title },
                 ':article': { S: article.article }
             },
-            UpdateExpression: 'SET title = :title, article = :article, date = :date',
+            UpdateExpression: 'SET title = :title, article = :article',
             TableName: 'witkc-articles'
         }).promise().then(() => {
             logger.info(`Article '${article.articleId}': Updated`)
