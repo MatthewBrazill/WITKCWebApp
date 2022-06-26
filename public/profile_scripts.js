@@ -113,10 +113,10 @@ $(document).ready(() => {
 
     $('#verify_link').on('click', () => {
         const text = $('#verify_link').parent()
-        text.append('<div class="ui active inline loader"></div>')
+        text.append('<div class="ui active inline tiny loader"></div>')
         $.ajax({
-            url: '/api/verify',
-            method: 'POST',
+            url: '/api/settings/verify',
+            method: 'GET',
             success: () => {
                 text.html()
                 text.text('Verification Requested!')

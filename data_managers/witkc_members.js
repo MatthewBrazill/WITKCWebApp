@@ -82,6 +82,7 @@ const members = {
                         }
                     }
                 }
+                for (var i in member.certs) member.certs[i] = await certificates.get(member.certs[i])
                 return member
             }
             else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`

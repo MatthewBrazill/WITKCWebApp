@@ -6,25 +6,22 @@ const viewData = require('../../view_data.js')
 const members = require('../../data_managers/witkc_members')
 const trips = require('../../data_managers/trips.js')
 const equipment = require('../../data_managers/equipment.js')
+const committee = require('../../data_managers/committee.js')
 
 const captain = {
     async verify(req, res) {
         try {
             var data = await viewData.get(req, 'API')
 
-            if (data.loggedIn) {
-                if (data.committee == 'captain' || data.admin) {
-                    if (req.body.memberId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
-                        members.update({
-                            memberId: req.body.memberId,
-                            verified: true
-                        }).then((success) => {
-                            if (success) res.sendStatus(200)
-                            else res.sendStatus(400)
-                        }).catch((err) => res.status(500).json(err))
-                    } else res.sendStatus(400)
-                } else res.sendStatus(403)
+            if (data.loggedIn) if (data.committee == 'captain' || data.admin) {
+                if (req.body.memberId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
+                    committee.resolveVerification(req.body.memberId, (req.body.decision == 'true')).then((success) => {
+                        if (success) res.sendStatus(200)
+                        else res.sendStatus(400)
+                    }).catch((err) => { res.status(500).json(err) })
+                } else res.sendStatus(400)
             } else res.sendStatus(403)
+            else res.sendStatus(403)
         } catch (err) { res.status(500).json(err) }
     },
 
