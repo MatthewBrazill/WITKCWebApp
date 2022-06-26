@@ -2,73 +2,102 @@
 
 // Imports
 const logger = require('../log.js')
-const fs = require('fs')
+const AWS = require('aws-sdk')
+const dynamo = new AWS.DynamoDB()
 
 const articles = {
     async create(article) {
-        try {
-            if (article == null || article == undefined) throw `Received invalid article!`
-            const articles = JSON.parse(fs.readFileSync('./data_managers/articles.json'))
-            articles.push(article)
-            fs.writeFileSync('./data_managers/articles.json', JSON.stringify(articles))
+        if (article == undefined || article == null) return false
+        return dynamo.putItem({
+            Item: {
+                'articleId': { S: article.articleId },
+                'title': { S: article.title },
+                'article': { S: article.article },
+                'date': { S: article.date }
+            },
+            TableName: 'witkc-articles'
+        }).promise().then(() => {
+            logger.info(`Article '${article.articleId}': Created`)
             return true
-        } catch (err) {
-            logger.warn(`Failed to create article! ${err}`)
+        }).catch((err) => {
+            logger.warn(`Failed to create article '${article.articleId}'! ${err}`)
             return false
-        }
+        })
     },
 
     async get(articleId) {
-        try {
-            if (articleId == null || articleId == undefined) throw `Received invalid memberId!`
-            const articles = JSON.parse(fs.readFileSync('./data_managers/articles.json'))
-            for (var article of articles) if (article.articleId == articleId) return article
-            throw 'Failed to find article.'
-        } catch (err) {
-            logger.warn(`Failed to get article! ${err}`)
+        if (articleId === null || articleId === undefined) return null
+        return dynamo.getItem({
+            Key: { 'articleId': { S: articleId } },
+            TableName: 'witkc-articles'
+        }).promise().then(async (data) => {
+            if (data.Item != undefined) return article = {
+                articleId: data.Item['articleId'],
+                title: data.Item['title'],
+                article: data.Item['article'],
+                date: data.Item['date']
+            }
+            else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
+        }).catch((err) => {
+            logger.warn(`Failed to get article ${articleId}! ${err}`)
             return null
-        }
+        })
     },
 
     async getAll() {
-        try {
-            return JSON.parse(fs.readFileSync('./data_managers/articles.json'))
-        } catch (err) {
-            logger.warn(`Failed to get article! ${err}`)
+        return dynamo.scan({
+            TableName: 'witkc-articles'
+        }).promise().then(async (data) => {
+            if (data.Items != undefined) {
+                var articles = []
+                for (var item of data.Items) {
+                    articles.push({
+                        articleId: item['articleId'],
+                        title: item['title'],
+                        article: item['article'],
+                        date: item['date']
+                    })
+                }
+                return articles
+            } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
+        }).catch((err) => {
+            logger.warn(`Failed to get all articles! ${err}`)
             return null
-        }
+        })
     },
 
     async update(article) {
-        try {
-            if (article == null || article == undefined) throw `Received invalid article!`
-            const articles = JSON.parse(fs.readFileSync('./data_managers/articles.json'))
-            for (var i in articles) if (articles[i].articleId == article.articleId) {
-                for (var attr in article) articles[i][attr] = article[attr]
-                fs.writeFileSync('./data_managers/articles.json', JSON.stringify(articles))
-                return true
-            }
-            throw 'Failed to find article.'
-        } catch (err) {
-            logger.warn(`Failed to update article! ${err}`)
+        if (article == undefined || article == null) return false
+        return dynamo.updateItem({
+            Key: { 'articleId': { S: article.articleId } },
+            ExpressionAttributeValues: {
+                ':title': { S: article.title },
+                ':article': { S: article.article },
+                ':date': { S: article.date }
+            },
+            UpdateExpression: 'SET title = :title, SET article = :article, SET date = :date',
+            TableName: 'witkc-articles'
+        }).promise().then(() => {
+            logger.info(`Article '${article.articleId}': Updated`)
+            return true
+        }).catch((err) => {
+            logger.warn(`Failed to update article '${article.articleId}'! ${err}`)
             return false
-        }
+        })
     },
 
     async delete(articleId) {
-        try {
-            if (articleId == null || articleId == undefined) throw `Received invalid article!`
-            const articles = JSON.parse(fs.readFileSync('./data_managers/articles.json'))
-            for (var i in articles) if (articles[i].articleId == articleId) {
-                articles.splice(i, 1)
-                fs.writeFileSync('./data_managers/articles.json', JSON.stringify(articles))
-                return true
-            }
-            throw 'Failed to find article.'
-        } catch (err) {
-            logger.warn(`Failed to delete article! ${err}`)
+        if (articleId == undefined || articleId == null) return false
+        return dynamo.deleteItem({
+            Key: { 'articleId': { S: articleId } },
+            TableName: 'witkc-articles'
+        }).promise().then(() => {
+            logger.info(`Article '${articleId}': Deleted`)
+            return true
+        }).catch((err) => {
+            logger.warn(`Failed to delete article '${articleId}'! ${err}`)
             return false
-        }
+        })
     }
 }
 
