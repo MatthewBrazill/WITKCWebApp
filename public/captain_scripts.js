@@ -1,5 +1,25 @@
 $(document).ready(() => {
     updateStats()
+
+    $('.accept-verification').click(function () {
+        var card = $(this).parent().parent().parent()
+        $.ajax({
+            url: '/api/captain/verify',
+            method: 'POST',
+            data: { 'memberId': card.attr('id'), 'decision': true },
+            success: () => card.remove()
+        })
+    })
+
+    $('.deny-verification').click(function () {
+        var card = $(this).parent().parent().parent()
+        $.ajax({
+            url: '/api/captain/verify',
+            method: 'POST',
+            data: { 'memberId': card.attr('id'), 'decision': false },
+            success: () => card.remove()
+        })
+    })
 })
 
 function updateStats() {

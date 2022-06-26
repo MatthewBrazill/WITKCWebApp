@@ -61,6 +61,7 @@ router.get('/profile/:userId', profile.user)
 router.post('/api/settings/personal', profile.personal) // Update personal settings *requires login*
 router.post('/api/settings/customize', profile.customize) // Update customization settings *requires login*
 router.post('/api/settings/password', profile.password) // Update password *requires login*
+router.get('/api/settings/verify', profile.verify) // Request to be verified *requires login*
 router.get('/api/settings/delete', profile.delete) // Delete account *requires login*
 
 
@@ -68,7 +69,7 @@ router.get('/api/settings/delete', profile.delete) // Delete account *requires l
 // Committee Dashboard APIs
 router.post('/api/committee/announcement/create', committee.createAnnouncement) // Create a announcement *requires committee*
 router.post('/api/committee/announcement/mark_as_read', committee.markAnnouncementRead) // Mark an announcement as read *requires login*
-router.post('/api/captain/verify', captain.verify) // Set member to verified *requires captain*
+router.post('/api/captain/verify', captain.verify) // Handle member verification *requires captain*
 router.get('/api/captain/stats', captain.stats) // Get club statistics *requires captain*
 router.post('/api/safety/certificate/award', safety.award) // Award certificate to member *requires safety*
 router.post('/api/safety/certificate/revoke', safety.revoke) // Remove certificate from member *requires safety*

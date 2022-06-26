@@ -45,7 +45,10 @@ const committee = {
                 }
                 else role.member = await members.get(data.Item['memberId'].S)
 
-                if (role.roleId == 'captain') if (data.Item['verificationRequests'] != undefined) role.verificationRequests = data.Item['verificationRequests'].SS
+                if (role.roleId == 'captain') if (data.Item['verificationRequests'] != undefined) {
+                    role.verificationRequests = []
+                    for (var verificationRequest of data.Item['verificationRequests'].SS) role.verificationRequests.push(await members.get(verificationRequest))
+                }
                 else role.verificationRequests = []
                 if (role.roleId == 'treasurer') {
                     role.expenseRequests = []
@@ -210,7 +213,10 @@ const committee = {
             ExpressionAttributeValues: { ':bool': { BOOL: true } },
             UpdateExpression: 'SET verified = :bool',
             TableName: 'witkc-members'
-        })
+        }).promise().then((data) => {
+            if (data) return
+            else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
+        }).catch((err) => logger.warn(`Could not verify member '${memberId}'! ${err}`))
         return dynamo.updateItem({
             Key: { 'roleId': { S: 'captain' } },
             ExpressionAttributeValues: { ':memberId': { SS: [memberId] } },

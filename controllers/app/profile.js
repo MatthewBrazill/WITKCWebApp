@@ -35,6 +35,8 @@ const profile = {
                     data[role] = await committee.getRole(role)
                     data.scripts[role] = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: `js/${role}_scripts.js` })
                 }
+                for (var attr in data.equipments.equipment) for (var gear of data.equipments.equipment[attr]) for (var a in gear)
+                    if (!['equipmentId', 'img'].includes(a)) gear[a] = viewData.capitalize(gear[a].toString())
             }
 
             logger.info(`Session '${req.sessionID}': Getting Profile`)
@@ -47,6 +49,10 @@ const profile = {
         data.scripts.profile = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/profile_scripts.js' })
 
         if (data.loggedIn) {
+            var captain = await committee.getRole('captain')
+            captain.verificationRequests.forEach(element => {
+                if (element.memberId == data.member.memberId) data.verificationRequested = true
+            })
             if (data.member.committeeRole == 'admin') data.admin = true
             logger.info(`Session '${req.sessionID}': Getting Settings`)
             res.render('settings', data)
@@ -153,6 +159,19 @@ const profile = {
                         }).catch(() => res.status(500).json(err))
                     } else res.sendStatus(400)
                 } else res.sendStatus(403)
+            } else res.sendStatus(403)
+        } catch (err) { res.status(500).json(err) }
+    },
+
+    async verify(req, res) {
+        try {
+            var data = await viewData.get(req, 'Delete')
+
+            if (data.loggedIn) {
+                committee.requestVerification(data.member.memberId).then((success) => {
+                    if (success) res.sendStatus(200)
+                    else res.status(500).json({ err: 'Could not make request for verification!' })
+                })
             } else res.sendStatus(403)
         } catch (err) { res.status(500).json(err) }
     },

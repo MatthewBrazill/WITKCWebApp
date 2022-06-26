@@ -30,7 +30,7 @@ const viewData = {
             data.member.trips = await trips.getAllFor(data.member.memberId)
             data.announcements = await announcements.getUnread(data.member.memberId)
 
-            if (data.member.memberId == '96e01799-74bb-4772-bd5c-fd92528cc510' || data.member.memberId == '9edd4ca4-a596-4469-af30-b8a92e74098c') data.admin = true
+            if (data.member.memberId == '96e01799-74bb-4772-bd5c-fd92528cc510') data.admin = true
             else data.committee = await committee.isCommittee(data.member.memberId).then((roleId) => roleId)
 
             if (req.method != 'POST') {

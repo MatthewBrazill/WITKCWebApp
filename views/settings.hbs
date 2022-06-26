@@ -73,7 +73,15 @@
 
                     <!-- Verification status -->
                     <div class="field">
-                        {{#if member.verified}}Verified!{{else}}Unverified, <a id="verify_link">Verify Now!</a>{{/if}}
+                        {{#if member.verified}}
+                        Verified!
+                        {{else}}
+                        {{#if verificationRequested}}
+                        Verification Requested!
+                        {{else}}
+                        Unverified, <a id="verify_link" href="">Verify Now!</a>
+                        {{/if}}
+                        {{/if}}
                     </div>
 
                     <!-- ===Address=== -->

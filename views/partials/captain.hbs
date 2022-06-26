@@ -34,18 +34,18 @@
 
             {{#if captain.verificationRequests.length}}
 
-            <div class="ui cards">
+            <div class="ui cards" id="captain_verification_list">
 
                 {{#each captain.verificationRequests}}
 
-                <div class="ui fluid link card expenseRequest" id="{{this.requestId}}">
+                <div class="ui fluid card" id="{{this.memberId}}">
                     <div class="content">
-                        <div class="header">
-                            <div class="ui left floated">{{this.member.firstName}} {{this.member.lastName}}</div>
-                            <div class="ui right floated buttons">
-                                <div class="ui negative icon button"><i class="trash icon"></i></div>
-                                <div class="ui positive icon button"><i class="check icon"></i></div>
-                            </div>
+                        <div class="ui left floated header" style="margin: 0px; padding-top: 2px">
+                            {{this.firstName}} {{this.lastName}} -- Phone Number: {{this.phone}}
+                        </div>
+                        <div class="ui right floated mini buttons">
+                            <div class="ui negative icon button deny-verification"><i class="close icon"></i></div>
+                            <div class="ui positive icon button accept-verification"><i class="check icon"></i></div>
                         </div>
                     </div>
                 </div>
