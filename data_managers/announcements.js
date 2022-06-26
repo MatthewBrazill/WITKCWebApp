@@ -3,9 +3,6 @@
 // Imports
 const logger = require('../log.js')
 const AWS = require('aws-sdk')
-const members = require('./witkc_members.js')
-const equipment = require('./equipment.js')
-const trips = require('./trips.js')
 const dynamo = new AWS.DynamoDB()
 
 const announcements = {
