@@ -273,11 +273,11 @@ const trips = {
     async update(trip) {
         if (trip === null || trip === undefined) return false
         var attributes = {}
-        var expression = ''
+        var expression = 'SET '
         for (var attr in trip) {
             if (attr == 'tripId' || attr == 'attendees') { }
             else if (attr == 'location') {
-                expression += `SET ${attr} = :${attr}, `
+                expression += `${attr} = :${attr}, `
                 attributes[`:${attr}`] = {
                     L: [
                         { S: trip.location.lineOne },
@@ -289,15 +289,15 @@ const trips = {
                 }
             }
             else if (typeof trip[attr] == 'boolean') {
-                expression += `SET ${attr} = :${attr}, `
+                expression += `${attr} = :${attr}, `
                 attributes[`:${attr}`] = { BOOL: trip[attr] }
             }
             else if (attr == 'hazards' || attr == 'safety') {
-                expression += `SET ${attr} = :${attr}, `
+                expression += `${attr} = :${attr}, `
                 attributes[`:${attr}`] = { SS: trip[attr] }
             }
             else {
-                expression += `SET ${attr} = :${attr}, `
+                expression += `${attr} = :${attr}, `
                 attributes[`:${attr}`] = { S: trip[attr] }
             }
         }

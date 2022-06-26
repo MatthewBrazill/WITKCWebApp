@@ -139,12 +139,12 @@ const members = {
     async update(member) {
         if (member === null || member === undefined) return false
         var attributes = {}
-        var expression = ''
+        var expression = 'SET '
         for (var attr in member) {
             if (attr == 'memberId') { }
             else if (typeof member[attr] == 'boolean') {
                 attributes[`:${attr}`] = { BOOL: member[attr] }
-                expression += `SET ${attr} = :${attr}, `
+                expression += `${attr} = :${attr}, `
             } else if (attr == 'address') {
                 attributes[':address'] = {
                     L: [
@@ -155,10 +155,10 @@ const members = {
                         { S: member.address.code }
                     ]
                 }
-                expression += `SET ${attr} = :${attr}, `
+                expression += `${attr} = :${attr}, `
             } else {
                 attributes[`:${attr}`] = { S: member[attr] }
-                expression += `SET ${attr} = :${attr}, `
+                expression += `${attr} = :${attr}, `
             }
         }
         if (expression.slice(-2) == ', ') expression = expression.slice(0, -2)
@@ -182,7 +182,7 @@ const members = {
         return dynamo.updateItem({
             Key: { 'memberId': { S: memberId } },
             ExpressionAttributeValues: { ':cert': { SS: [certId] } },
-            UpdateExpression: 'ADD certs :cert)',
+            UpdateExpression: 'ADD certs :cert',
             TableName: 'witkc-members'
         }).promise().then((data) => {
             if (data) return true

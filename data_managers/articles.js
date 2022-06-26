@@ -31,11 +31,11 @@ const articles = {
             Key: { 'articleId': { S: articleId } },
             TableName: 'witkc-articles'
         }).promise().then(async (data) => {
-            if (data.Item != undefined) return article = {
-                articleId: data.Item['articleId'],
-                title: data.Item['title'],
-                article: data.Item['article'],
-                date: data.Item['date']
+            if (data.Item != undefined) return {
+                articleId: data.Item['articleId'].S,
+                title: data.Item['title'].S,
+                article: data.Item['article'].S,
+                date: data.Item['date'].S
             }
             else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
@@ -52,10 +52,10 @@ const articles = {
                 var articles = []
                 for (var item of data.Items) {
                     articles.push({
-                        articleId: item['articleId'],
-                        title: item['title'],
-                        article: item['article'],
-                        date: item['date']
+                        articleId: item['articleId'].S,
+                        title: item['title'].S,
+                        article: item['article'].S,
+                        date: item['date'].S
                     })
                 }
                 return articles
@@ -72,10 +72,9 @@ const articles = {
             Key: { 'articleId': { S: article.articleId } },
             ExpressionAttributeValues: {
                 ':title': { S: article.title },
-                ':article': { S: article.article },
-                ':date': { S: article.date }
+                ':article': { S: article.article }
             },
-            UpdateExpression: 'SET title = :title, SET article = :article, SET date = :date',
+            UpdateExpression: 'SET title = :title, article = :article, date = :date',
             TableName: 'witkc-articles'
         }).promise().then(() => {
             logger.info(`Article '${article.articleId}': Updated`)
