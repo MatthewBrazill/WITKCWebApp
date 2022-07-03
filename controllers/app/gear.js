@@ -8,7 +8,7 @@ const formidable = require('formidable')
 const uuid = require('uuid')
 
 const gear = {
-    async book(req, res) {
+    async bookPage(req, res) {
         var data = await viewData.get(req, 'Book Equipment')
         data.scripts.gear = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/gear_scripts.js' })
 
@@ -67,7 +67,7 @@ const gear = {
                         name: viewData.capitalize(values[0].name),
                         type: values[0].type,
                         brand: viewData.capitalize(values[0].brand),
-                        dateAdded: new Date().toUTCString().substring(5, 16),
+                        dateAdded: new Date().toUTCString(),
                         img: 'img/placeholder_equipment.webp'
                     }
 
@@ -125,7 +125,7 @@ const gear = {
         } catch (err) { res.status(500).json(err) }
     },
 
-    async getAll(req, res) {
+    async list(req, res) {
         try {
             var data = await viewData.get(req, 'API')
 
@@ -144,6 +144,10 @@ const gear = {
             } else res.sendStatus(403)
             else res.sendStatus(401)
         } catch (err) { res.status(500).json(err) }
+    },
+
+    async update() {
+
     },
 
     async delete(req, res) {

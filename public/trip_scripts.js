@@ -1,7 +1,7 @@
 $(document).ready(() => {
 
     $.ajax({
-        url: '/api/safety_boaters',
+        url: '/api/members/list',
         method: 'GET',
         success: (members) => {
 
@@ -79,7 +79,7 @@ $(document).ready(() => {
                     start.prop('valid', false)
                 } else {
                     field.attr('class', 'inline field success')
-                    start.prop('date', date.toISOString().substring(0, 10))
+                    start.prop('date', date.toISOString())
                     start.prop('valid', true)
                 }
             })
@@ -94,7 +94,7 @@ $(document).ready(() => {
                     end.prop('valid', false)
                 } else {
                     field.attr('class', 'inline field success')
-                    end.prop('date', date.toISOString().substring(0, 10))
+                    end.prop('date', date.toISOString())
                     end.prop('valid', true)
                 }
             })

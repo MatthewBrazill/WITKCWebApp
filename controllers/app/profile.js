@@ -14,7 +14,7 @@ const viewData = require('../../view_data.js')
 const committee = require('../../data_managers/committee.js')
 
 const profile = {
-    async me(req, res) {
+    async profilePage(req, res) {
         var data = await viewData.get(req, 'My Profile')
         data.scripts.profile = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/profile_scripts.js' })
 
@@ -44,7 +44,7 @@ const profile = {
         } else res.redirect('/')
     },
 
-    async settings(req, res) {
+    async settingsPage(req, res) {
         var data = await viewData.get(req, 'Settings')
         data.scripts.profile = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/profile_scripts.js' })
 
@@ -59,7 +59,7 @@ const profile = {
         } else res.redirect('/')
     },
 
-    async personal(req, res) {
+    async updatePersonal(req, res) {
         try {
             var data = await viewData.get(req, 'Personal')
 
@@ -107,7 +107,7 @@ const profile = {
         } catch (err) { res.status(500).json(err) }
     },
 
-    async customize(req, res) {
+    async updateSettings(req, res) {
         try {
             var data = await viewData.get(req, 'Customize')
 
@@ -141,7 +141,7 @@ const profile = {
         } catch (err) { res.status(500).json(err) }
     },
 
-    async password(req, res) {
+    async updatePassword(req, res) {
         try {
             var data = await viewData.get(req, 'Password')
 
@@ -190,7 +190,7 @@ const profile = {
         } catch (err) { res.status(500).json(err) }
     },
 
-    async user(req, res) {
+    async userPage(req, res) {
         var data = await viewData.get(req, 'View Profile')
         data.scripts.profile = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/profile_scripts.js' })
 
@@ -198,7 +198,7 @@ const profile = {
             if (req.params.userId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
 
                 data.user = await members.get(req.params.userId)
-                data.user.dateJoined = new Date(data.user.dateJoined).toUTCString().substring(5, 16)
+                data.user.dateJoined = new Date(data.user.dateJoined).toUTCString()
                 data.user.img = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: data.user.img })
 
                 logger.info(`Session '${req.sessionID}': Getting View Profile`)

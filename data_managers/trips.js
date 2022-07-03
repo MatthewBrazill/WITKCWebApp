@@ -205,13 +205,13 @@ const trips = {
     },
 
     async since(date) {
-        if (date === null || date === undefined) return null
+        if (!date instanceof Date) return null
         return dynamo.scan({
             TableName: 'witkc-trips'
         }).promise().then((data) => {
             if (data.Items != undefined) {
                 var trips = []
-                for (var item of data.Items) if (new Date(date) <= new Date(item['startDate'].S) && new Date(item['startDate'].S) <= new Date()) {
+                for (var item of data.Items) if (date <= new Date(item['startDate'].S) && new Date(item['startDate'].S) <= new Date()) {
                     var trip = {}
                     for (var attr in item) {
                         if ('S' in item[attr]) trip[attr] = item[attr].S
@@ -232,19 +232,19 @@ const trips = {
                 return trips
             } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Failed to list trips since ${date}! ${err}`)
+            logger.warn(`Failed to list trips since ${date.toUTCString()}! ${err}`)
             return null
         })
     },
 
     async from(date) {
-        if (date === null || date === undefined) return null
+        if (!date instanceof Date) return null
         return dynamo.scan({
             TableName: 'witkc-trips'
         }).promise().then((data) => {
             if (data.Items != undefined) {
                 var trips = []
-                for (var item of data.Items) if (new Date(item['startDate'].S) >= new Date(date)) {
+                for (var item of data.Items) if (new Date(item['startDate'].S) >= date) {
                     var trip = {}
                     for (var attr in item) {
                         if ('S' in item[attr]) trip[attr] = item[attr].S
@@ -265,7 +265,7 @@ const trips = {
                 return trips
             } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Failed to list trips from ${date}! ${err}`)
+            logger.warn(`Failed to list trips from ${date.toUTCString()}! ${err}`)
             return null
         })
     },
@@ -276,6 +276,12 @@ const trips = {
         var expression = 'SET '
         for (var attr in trip) {
             if (attr == 'tripId' || attr == 'attendees') { }
+            /*
+            else if (attr == 'startDate || endDate') {
+                expression += `${attr} = :${attr}, `
+                attributes[`:${attr}`] = { S: new Date(item[attr].S).toUTCString()}
+            }
+            //*/
             else if (attr == 'location') {
                 expression += `${attr} = :${attr}, `
                 attributes[`:${attr}`] = {

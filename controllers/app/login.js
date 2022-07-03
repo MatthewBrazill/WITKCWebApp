@@ -10,7 +10,7 @@ const bcrypt = require('bcrypt')
 const viewData = require('../../view_data.js')
 
 const login = {
-    async get(req, res) {
+    async loginPage(req, res) {
         var data = await viewData.get(req, 'Login')
         data.scripts.login = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/login_scripts.js' })
 
@@ -19,7 +19,7 @@ const login = {
         res.render('login', data)
     },
 
-    async post(req, res) {
+    async login(req, res) {
         // Force all attempts to take 1s to prevent remote brute force attacks
         var minTime = new Promise(resolve => setTimeout(resolve, 1000))
         logger.info(`Session '${req.sessionID}': Posting Login Form`)
@@ -35,7 +35,7 @@ const login = {
         }
 
         await minTime
-        if (await success) {
+        if (success) {
             logger.info(`Session '${req.sessionID}': Login Succeeded`)
             req.session.userID = memberId
             req.session.allow_cookies = true

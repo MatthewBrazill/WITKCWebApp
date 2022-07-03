@@ -8,14 +8,14 @@ const viewData = require('../../view_data.js')
 const committeeData = require('../../data_managers/committee.js')
 
 const about = {
-    async history(req, res) {
+    async historyPage(req, res) {
         var data = await viewData.get(req, 'About Us')
-        
+
         logger.info(`Session '${req.sessionID}': Getting About`)
         res.render('about', data)
     },
 
-    async committee(req, res) {
+    async committeePage(req, res) {
         var data = await viewData.get(req, 'Committee')
         data.committee = await committeeData.getAll()
 
@@ -25,7 +25,7 @@ const about = {
         res.render('committee', data)
     },
 
-    async constitution(req, res) {
+    async constitutionPage(req, res) {
         var data = await viewData.get(req, 'Constitution')
 
         logger.info(`Session '${req.sessionID}': Getting Constitution`)

@@ -36,7 +36,7 @@ $(document).ready(() => {
             })
 
             $.ajax({
-                url: '/api/equipment/add',
+                url: '/api/equipment/create',
                 method: 'POST',
                 contentType: false,
                 processData: false,

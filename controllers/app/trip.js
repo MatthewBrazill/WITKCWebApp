@@ -10,7 +10,7 @@ const trips = require('../../data_managers/trips.js')
 const members = require('../../data_managers/witkc_members.js')
 
 const trip = {
-    async create(req, res) {
+    async createPage(req, res) {
         var data = await viewData.get(req, 'Create Trip')
         data.scripts.trip = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/trip_scripts.js' })
 
@@ -22,7 +22,7 @@ const trip = {
 
     },
 
-    async view(req, res) {
+    async viewPage(req, res) {
         var data = await viewData.get(req, 'View Trip')
 
         if (req.params.tripId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
@@ -73,7 +73,7 @@ const trip = {
         } else res.redirect('/404')
     },
 
-    async apiCreate(req, res) {
+    async create(req, res) {
         try {
             var data = await viewData.get(req, 'View Trip')
 
@@ -94,8 +94,8 @@ const trip = {
 
                 // Server-Side Validation
                 if (!req.body.name.match(/^[\p{L}\d!?&() ]{1,64}$/u)) valid = false
-                if (!req.body.start_date.match(/^20\d\d-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/)) valid = false
-                if (!req.body.end_date.match(/^20\d\d-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/)) valid = false
+                if (!req.body.start_date.match(/^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)$/)) valid = false
+                if (!req.body.end_date.match(/^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)$/)) valid = false
                 if (!req.body.description.match(/^[^<>]{1,500}$/u)) valid = false
                 if (!req.body.line_one.match(/^[\w- ]{1,32}$/)) valid = false
                 if (!req.body.line_two.match(/^[\w- ]{1,32}$/) && req.body.line_two != '') valid = false
@@ -143,8 +143,8 @@ const trip = {
                     var trip = {
                         tripId: uuid.v4(),
                         name: viewData.capitalize(req.body.name),
-                        startDate: new Date(req.body.start_date).toUTCString().substring(5, 16),
-                        endDate: new Date(req.body.end_date).toUTCString().substring(5, 16),
+                        startDate: new Date(req.body.start_date).toUTCString(),
+                        endDate: new Date(req.body.end_date).toUTCString(),
                         description: req.body.description,
                         location: {
                             lineOne: viewData.capitalize(req.body.line_one),

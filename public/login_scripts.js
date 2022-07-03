@@ -22,7 +22,7 @@ $(document).ready(() => {
                 data[input.attr('id')] = input.val()
             })
             $.ajax({
-                url: '/login',
+                url: '/api/login',
                 method: 'POST',
                 data: data,
                 success: (res) => window.location = res.url,

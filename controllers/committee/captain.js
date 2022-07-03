@@ -32,8 +32,8 @@ const captain = {
             if (data.loggedIn) {
                 if (data.committee == 'captain' || data.admin) {
                     var today = new Date()
-                    if (today.getMonth() < 9) var lastSeptember = new Date(new Date('2020-09-01').setFullYear(today.getFullYear() - 1)).toUTCString().substring(5, 16)
-                    else var lastSeptember = new Date(new Date('2020-09-01').setFullYear(today.getFullYear())).toUTCString().substring(5, 16)
+                    if (today.getMonth() < 9) var lastSeptember = new Date(new Date('2020-09-01').setFullYear(today.getFullYear() - 1))
+                    else var lastSeptember = new Date(new Date('2020-09-01').setFullYear(today.getFullYear()))
 
                     var m = await members.list()
                     var t = await trips.since(lastSeptember)

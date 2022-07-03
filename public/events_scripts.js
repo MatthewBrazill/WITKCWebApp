@@ -1,16 +1,26 @@
 $(document).ready(() => {
 
-    $('#event_calendar').calendar({
-        selectAdjacentDays: true,
-        initialDate: new Date(),
-        type: 'date',
-        today: true,
-        constantHeight: true,
-        firstDayOfWeek: 1,
-        onChange: () => $('#event_calendar').trigger('change')
+    $.ajax({
+        url: '/api/events/dates',
+        method: 'GET',
+        success: (dates) => {
+            for (var i in dates) dates[i].date = new Date(dates[i].date)
+            console.log(dates)
+            $('#event_calendar').attr('class', 'ui calendar')
+            $('#event_calendar').calendar({
+                selectAdjacentDays: true,
+                initialDate: new Date(),
+                type: 'date',
+                today: true,
+                constantHeight: true,
+                firstDayOfWeek: 1,
+                eventDates: dates,
+                onChange: () => $('#event_calendar').trigger('change')
+            })
+            $('#event_calendar').ready(() => $('#event_calendar').trigger('change'))
+        }
     })
 
-    $('#event_calendar').ready(() => $('#event_calendar').trigger('change'))
     $('#event_calendar').on('change', () => {
         const calendar = $('#event_calendar')
         const list = $('#event_list')
@@ -19,7 +29,7 @@ $(document).ready(() => {
         $.ajax({
             url: '/api/events/day',
             method: 'POST',
-            data: { date: calendar.calendar('get date').toISOString().substring(0, 10) },
+            data: { date: calendar.calendar('get date').toISOString() },
             success: (events) => {
                 if (events.length == 0) {
                     list.attr('class', 'ui placeholder segment')
@@ -32,7 +42,7 @@ $(document).ready(() => {
                         <a class="ui fluid link card" href="/trip/${event.tripId}" target="_blank">
                             <div class="content">
                                 <div class="header">
-                                    <div class="ui left floated">${event.name}:</div>
+                                    <div class="ui left floated">${event.name}</div>
                                     <div class="ui right floated">Level: ${event.level}</div>
                                 </div>
                             </div>

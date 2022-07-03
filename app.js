@@ -9,8 +9,9 @@ const session = require('express-session')
 const sessionStore = require('connect-dynamodb')({ session: session })
 const handlebars = require('express-handlebars')
 const logger = require('./log.js')
-const api = require('./api.js')
 const viewData = require('./view_data.js')
+const members = require('./controllers/app/members.js')
+const datadogRum = require('@datadog/browser-rum').datadogRum
 
 async function start() {
     // Create the app
@@ -18,7 +19,7 @@ async function start() {
 
     // Create API routes that have no cookies
     app.route('/api/healthy').get((req, res) => res.sendStatus(200))
-    app.route('/api/username/exists/:username').get(api.existsUsername)
+    app.route('/api/members/username/resolve/:username').get(members.reslove)
 
     // Get Parameters from AWS
     const sessionKey = ssm.getParameter({
@@ -72,10 +73,10 @@ async function start() {
     // Add 404 Page
     app.use((req, res, next) => {
         res.status(404)
-        // Respond with json
-        if (req.accepts('json')) res.json({ err: 'Not found' })
         // Respond with HTML page
-        else if (req.accepts('html')) viewData.get(req, '404 - Page not found').then((data) => res.render('404', data))
+        if (req.accepts('html')) viewData.get(req, '404 - Page not found').then((data) => res.render('404', data))
+        // Respond with json
+        else if (req.accepts('json')) res.json({ err: 'Not found' })
         // Default: Plain-Text
         else res.type('text').send('404 - Page Not Found')
         next
@@ -86,6 +87,19 @@ async function start() {
         console.log(`Listening on port 8000  ->  https://witkc.brazill.net`)
     })
 }
+
+// Initialize Datadog RUM
+datadogRum.init({
+    applicationId: 'd8892f0f-d31f-4804-b21e-c630a433a383',
+    clientToken: 'pub86493d96655e179161fb37ff340b7255',
+    site: 'datadoghq.com',
+    service: 'witkc-web-app',
+    sampleRate: 100,
+    premiumSampleRate: 100,
+    trackInteractions: true,
+    defaultPrivacyLevel: 'mask-user-input'
+});
+datadogRum.startSessionReplayRecording();
 
 // Create Server
 start().catch((err) => {

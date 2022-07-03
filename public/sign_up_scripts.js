@@ -23,7 +23,7 @@ $(document).ready(() => {
                 data[input.attr('id')] = input.val()
             })
             $.ajax({
-                url: '/signup',
+                url: '/api/account/create',
                 method: 'POST',
                 data: data,
                 success: (res) => window.location = res.url,
@@ -65,7 +65,7 @@ $(document).ready(() => {
         } else {
             field.attr('class', 'loading field')
             $.ajax({
-                url: `/api/username/exists/${name.val()}`,
+                url: `/api/members/username/resolve/${name.val()}`,
                 method: 'GET',
                 success: (res) => {
                     if (!res) {
