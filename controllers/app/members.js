@@ -1,9 +1,9 @@
 'use strict'
 
 // Imports
-const logger = require('./log.js')
-const members = require('./data_managers/witkc_members.js')
-const viewData = require('./view_data.js')
+const logger = require('../../log.js')
+const members = require('../../data_managers/witkc_members.js')
+const viewData = require('../../view_data.js')
 
 
 const api = {
