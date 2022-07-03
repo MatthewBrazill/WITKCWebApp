@@ -110,7 +110,7 @@ router.post('/api/trip/list', trip.list) // List all trips
 
 
 // Equipment
-router.get('/equipment/book', gear.book)
+router.get('/equipment/book', gear.bookPage)
 // Equipment APIs
 router.post('/api/equipment/create', gear.create) // Add trip to the club *requires equipments*
 router.post('/api/equipment/get', gear.get) // Get a specific pice of equipment *requires verified*
