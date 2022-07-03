@@ -117,7 +117,7 @@ router.post('/api/expenses/get', expenses.get) // Get a expense request *require
 router.get('/events', events.get)
 // Event APIs
 router.post('/api/events/day', events.day) // Get events for the passed date as array
-router.post('/api/events/month', events.month) // Get events for the passed month as array
+router.get('/api/events/dates', events.dates) // Get an array of all the dates on which there are events, as well as their names
 
 
 
@@ -134,13 +134,17 @@ router.get('/terms', terms.terms)
 
 
 
-// General API
+// Cookie API
 router.get('/api/cookie_choice', api.getCookie) // Get cookie choice as boolean (true = allow)
+router.post('/api/cookie_choice', api.postCookie) // Set cookie choice to preference
+
+
+
+// Other API
 router.get('/api/certs', api.getCerts) // Get all certs as array *requires committee*
 router.get('/api/members', api.getMembers) // Get all members as array (Name and ID only) *requires committee*
 router.get('/api/safety_boaters', api.getSafetyBoaters) // Get all members as array (Name and ID only) *requires login*
 router.post('/api/member', api.getMember) // Get member with memberId *requires login*
-router.post('/api/cookie_choice', api.postCookie) // Set cookie choice to preference
 
 
 // Export:
