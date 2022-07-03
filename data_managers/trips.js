@@ -47,8 +47,7 @@ const trips = {
             if (data.Item != undefined) {
                 var trip = {}
                 for (var attr in data.Item) {
-                    if (attr == 'startDate' || attr == 'endDate') trip[attr] = new Date(data.Item[attr].S).toUTCString().substring(5, 16)
-                    else if ('S' in data.Item[attr]) trip[attr] = data.Item[attr].S
+                    if ('S' in data.Item[attr]) trip[attr] = data.Item[attr].S
                     else if ('SS' in data.Item[attr]) trip[attr] = data.Item[attr].SS
                     else if ('BOOL' in data.Item[attr]) trip[attr] = data.Item[attr].BOOL
                     else if (attr == 'location') {
@@ -81,8 +80,7 @@ const trips = {
                 for (var item of data.Items) {
                     var trip = {}
                     for (var attr in item) {
-                        if (attr == 'startDate' || attr == 'endDate') trip[attr] = new Date(item[attr].S).toUTCString().substring(5, 16)
-                        else if ('S' in item[attr]) trip[attr] = item[attr].S
+                        if ('S' in item[attr]) trip[attr] = item[attr].S
                         else if ('SS' in item[attr]) trip[attr] = item[attr].SS
                         else if ('BOOL' in item[attr]) trip[attr] = item[attr].BOOL
                         else if (attr == 'location') {
@@ -116,8 +114,7 @@ const trips = {
                     if (new Date(item['startDate'].S) <= new Date(date) && new Date(date) <= new Date(item['endDate'].S)) {
                         var trip = {}
                         for (var attr in item) {
-                            if (attr == 'startDate' || attr == 'endDate') trip[attr] = new Date(item[attr].S).toUTCString().substring(5, 16)
-                            else if ('S' in item[attr]) trip[attr] = item[attr].S
+                            if ('S' in item[attr]) trip[attr] = item[attr].S
                             else if ('SS' in item[attr]) trip[attr] = item[attr].SS
                             else if ('BOOL' in item[attr]) trip[attr] = item[attr].BOOL
                             else if (attr == 'location') {
@@ -150,8 +147,7 @@ const trips = {
                 for (var item of data.Items) {
                     var trip = {}
                     for (var attr in item) {
-                        if (attr == 'startDate' || attr == 'endDate') trip[attr] = new Date(item[attr].S).toUTCString().substring(5, 16)
-                        else if ('S' in item[attr]) trip[attr] = item[attr].S
+                        if ('S' in item[attr]) trip[attr] = item[attr].S
                         else if ('SS' in item[attr]) trip[attr] = item[attr].SS
                         else if ('BOOL' in item[attr]) trip[attr] = item[attr].BOOL
                         else if (attr == 'location') {
@@ -185,8 +181,7 @@ const trips = {
                 for (var item of data.Items) {
                     var trip = {}
                     for (var attr in item) {
-                        if (attr == 'startDate' || attr == 'endDate') trip[attr] = new Date(item[attr].S).toUTCString().substring(5, 16)
-                        else if ('S' in item[attr]) trip[attr] = item[attr].S
+                        if ('S' in item[attr]) trip[attr] = item[attr].S
                         else if ('SS' in item[attr]) trip[attr] = item[attr].SS
                         else if ('BOOL' in item[attr]) trip[attr] = item[attr].BOOL
                         else if (attr == 'location') {
@@ -219,8 +214,7 @@ const trips = {
                 for (var item of data.Items) if (date <= new Date(item['startDate'].S) && new Date(item['startDate'].S) <= new Date()) {
                     var trip = {}
                     for (var attr in item) {
-                        if (attr == 'startDate' || attr == 'endDate') trip[attr] = new Date(item[attr].S).toUTCString().substring(5, 16)
-                        else if ('S' in item[attr]) trip[attr] = item[attr].S
+                        if ('S' in item[attr]) trip[attr] = item[attr].S
                         else if ('SS' in item[attr]) trip[attr] = item[attr].SS
                         else if ('BOOL' in item[attr]) trip[attr] = item[attr].BOOL
                         else if (attr == 'location') {
@@ -253,8 +247,7 @@ const trips = {
                 for (var item of data.Items) if (new Date(item['startDate'].S) >= date) {
                     var trip = {}
                     for (var attr in item) {
-                        if (attr == 'startDate' || attr == 'endDate') trip[attr] = new Date(item[attr].S).toUTCString().substring(5, 16)
-                        else if ('S' in item[attr]) trip[attr] = item[attr].S
+                        if ('S' in item[attr]) trip[attr] = item[attr].S
                         else if ('SS' in item[attr]) trip[attr] = item[attr].SS
                         else if ('BOOL' in item[attr]) trip[attr] = item[attr].BOOL
                         else if (attr == 'location') {
