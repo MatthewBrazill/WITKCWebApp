@@ -73,10 +73,10 @@ async function start() {
     // Add 404 Page
     app.use((req, res, next) => {
         res.status(404)
-        // Respond with json
-        if (req.accepts('json')) res.json({ err: 'Not found' })
         // Respond with HTML page
-        else if (req.accepts('html')) viewData.get(req, '404 - Page not found').then((data) => res.render('404', data))
+        if (req.accepts('html')) viewData.get(req, '404 - Page not found').then((data) => res.render('404', data))
+        // Respond with json
+        else if (req.accepts('json')) res.json({ err: 'Not found' })
         // Default: Plain-Text
         else res.type('text').send('404 - Page Not Found')
         next
