@@ -88,14 +88,12 @@ async function start() {
     })
 }
 
+// Initialize Datadog RUM
 datadogRum.init({
     applicationId: 'd8892f0f-d31f-4804-b21e-c630a433a383',
     clientToken: 'pub86493d96655e179161fb37ff340b7255',
     site: 'datadoghq.com',
     service: 'witkc-web-app',
-
-    // Specify a version number to identify the deployed version of your application in Datadog 
-    // version: '1.0.0',
     sampleRate: 100,
     premiumSampleRate: 100,
     trackInteractions: true,
