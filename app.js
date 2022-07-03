@@ -11,6 +11,7 @@ const handlebars = require('express-handlebars')
 const logger = require('./log.js')
 const api = require('./api.js')
 const viewData = require('./view_data.js')
+const members = require('./controllers/app/members.js')
 const datadogRum = require('@datadog/browser-rum').datadogRum
 
 async function start() {
@@ -19,7 +20,7 @@ async function start() {
 
     // Create API routes that have no cookies
     app.route('/api/healthy').get((req, res) => res.sendStatus(200))
-    app.route('/api/username/exists/:username').get(api.existsUsername)
+    app.route('/api/members/username/resolve/:username').get(members.reslove)
 
     // Get Parameters from AWS
     const sessionKey = ssm.getParameter({

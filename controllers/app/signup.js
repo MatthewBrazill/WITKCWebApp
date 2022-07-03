@@ -11,7 +11,7 @@ const uuid = require('uuid')
 const viewData = require('../../view_data.js')
 
 const signup = {
-    async get(req, res) {
+    async signupPage(req, res) {
         var data = await viewData.get(req, 'Sign Up')
         data.scripts.signUp = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/sign_up_scripts.js' })
 
@@ -20,7 +20,7 @@ const signup = {
         res.render('signup', data)
     },
 
-    async post(req, res) {
+    async createAccount(req, res) {
         logger.info(`Session '${req.sessionID}': Posting Sign Up Form`)
         var valid = true
         var counties = [

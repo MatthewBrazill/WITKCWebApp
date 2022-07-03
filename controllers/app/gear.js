@@ -125,7 +125,7 @@ const gear = {
         } catch (err) { res.status(500).json(err) }
     },
 
-    async getAll(req, res) {
+    async list(req, res) {
         try {
             var data = await viewData.get(req, 'API')
 

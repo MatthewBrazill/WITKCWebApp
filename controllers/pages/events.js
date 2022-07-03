@@ -8,7 +8,7 @@ const logger = require('../../log.js')
 const viewData = require('../../view_data.js')
 
 const events = {
-    async get(req, res) {
+    async eventsPage(req, res) {
         var data = await viewData.get(req, 'Events')
         data.scripts.events = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/events_scripts.js' })
         data.events = await trips.from(new Date()).then((result) => {

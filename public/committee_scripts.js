@@ -28,7 +28,7 @@ $(document).ready(() => {
             })
 
             $.ajax({
-                url: '/api/committee/announcement/create',
+                url: '/api/announcement/create',
                 method: 'POST',
                 data: data,
                 success: () => $('#announcement_modal').modal('hide'),

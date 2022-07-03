@@ -9,7 +9,7 @@ const members = require('../../data_managers/witkc_members')
 const trips = require('../../data_managers/trips.js')
 
 const safety = {
-    async award(req, res) {
+    async awardCertificate(req, res) {
         try {
             var data = await viewData.get(req, 'API')
             var valid = true
@@ -29,7 +29,7 @@ const safety = {
         } catch (err) { res.status(500).json(err) }
     },
 
-    async revoke(req, res) {
+    async revokeCertificate(req, res) {
         try {
             var data = await viewData.get(req, 'API')
             var valid = true
@@ -50,7 +50,7 @@ const safety = {
         } catch (err) { res.status(500).json(err) }
     },
 
-    async accept(req, res) {
+    async acceptTrip(req, res) {
         try {
             var data = await viewData.get(req, 'API')
 
@@ -68,7 +68,7 @@ const safety = {
         } catch (err) { res.status(500).json(err) }
     },
 
-    async delete(req, res) {
+    async rejectTrip(req, res) {
         try {
             var data = await viewData.get(req, 'API')
 

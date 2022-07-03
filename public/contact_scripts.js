@@ -22,7 +22,7 @@ $(document).ready(() => {
                 data[input.attr('id')] = input.val()
             })
             $.ajax({
-                url: '/api/contact',
+                url: '/api/message/send',
                 method: 'POST',
                 data: data,
                 success: () => {

@@ -12,7 +12,7 @@ const fs = require('fs')
 const committee = require('../../data_managers/committee.js')
 
 const expenses = {
-    async create(req, res) {
+    async expensesPage(req, res) {
         var data = await viewData.get(req, 'Submit Expense')
         data.scripts.expense = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/expense_scripts.js' })
 

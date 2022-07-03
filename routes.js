@@ -21,73 +21,88 @@ const expenses = require('./controllers/app/expenses.js')
 const captain = require('./controllers/committee/captain.js')
 const gear = require('./controllers/app/gear.js')
 const pro = require('./controllers/committee/pro.js')
+const members = require('./controllers/app/members.js')
+const cookies = require('./controllers/app/cookies.js')
+const certificates = require('./controllers/app/certificates.js')
 
 
 
 // Home
-router.get('/', home.get)
+router.get('/', home.homePage)
 
 
 
 // Signup
-router.get('/signup', signup.get)
-router.post('/signup', signup.post)
+router.get('/signup', signup.signupPage)
+router.post('/api/account/create', signup.createAccount)
 
 
 
 // Login
-router.get('/login', login.get)
-router.post('/login', login.post)
+router.get('/login', login.loginPage)
+router.post('/api/login', login.login)
 
 
 
 // Logout
-router.get('/logout', logout.get)
+router.get('/logout', logout.logout)
 
 
 
 // Contact
-router.get('/contact', contact.get)
+router.get('/contact', contact.contactPage)
 // Contact APIs
-router.post('/api/contact', contact.post) // Send a contact form message
+router.post('/api/message/send', contact.sendMessage) // Send a contact form message
 
 
 
 // Profiles
-router.get('/profile/me', profile.me)
-router.get('/profile/me/settings', profile.settings)
-router.get('/profile/:userId', profile.user)
+router.get('/profile/me', profile.profilePage)
+router.get('/profile/me/settings', profile.settingsPage)
+router.get('/profile/:userId', profile.userPage)
 // Profile APIs
-router.post('/api/settings/personal', profile.personal) // Update personal settings *requires login*
-router.post('/api/settings/customize', profile.customize) // Update customization settings *requires login*
-router.post('/api/settings/password', profile.password) // Update password *requires login*
-router.get('/api/settings/verify', profile.verify) // Request to be verified *requires login*
-router.get('/api/settings/delete', profile.delete) // Delete account *requires login*
+router.post('/api/profile/pesonal/update', profile.updatePersonal) // Update personal settings *requires login*
+router.post('/api/profile/settings/update', profile.updateSettings) // Update customization settings *requires login*
+router.post('/api/profile/password/update', profile.updatePassword) // Update password *requires login*
+router.get('/api/profile/verify', profile.verify) // Request to be verified *requires login*
+router.get('/api/profile/delete', profile.delete) // Delete account *requires login*
 
 
 
 // Committee Dashboard APIs
-router.post('/api/committee/announcement/create', committee.createAnnouncement) // Create a announcement *requires committee*
-router.post('/api/committee/announcement/mark_as_read', committee.markAnnouncementRead) // Mark an announcement as read *requires login*
+router.post('/api/announcement/create', committee.createAnnouncement) // Create a announcement *requires committee*
+router.post('/api/announcement/read', committee.readAnnouncement) // Mark an announcement as read *requires login*
+
+
+
+// Captain Dashboard APIs
 router.post('/api/captain/verify', captain.verify) // Handle member verification *requires captain*
 router.get('/api/captain/stats', captain.stats) // Get club statistics *requires captain*
-router.post('/api/safety/certificate/award', safety.award) // Award certificate to member *requires safety*
-router.post('/api/safety/certificate/revoke', safety.revoke) // Remove certificate from member *requires safety*
-router.post('/api/safety/trip/accept', safety.accept) // Accept trip too allow it to happen *requires safety*
-router.post('/api/safety/trip/reject', safety.delete) // Reject trip due to safety concerns *requires safety*
-router.post('/api/pro/article/create', pro.create)
-router.post('/api/pro/article/get', pro.get)
-router.get('/api/pro/article/list', pro.list)
-router.post('/api/pro/article/update', pro.update)
-router.post('/api/pro/article/delete', pro.delete)
+
+
+
+// Safety Dashboard APIs
+router.post('/api/safety/certificate/award', safety.awardCertificate) // Award certificate to member *requires safety*
+router.post('/api/safety/certificate/revoke', safety.revokeCertificate) // Remove certificate from member *requires safety*
+router.post('/api/safety/trip/accept', safety.acceptTrip) // Accept trip too allow it to happen *requires safety*
+router.post('/api/safety/trip/reject', safety.rejectTrip) // Reject trip due to safety concerns *requires safety*
+
+
+
+// PRO Dashboard APIs
+router.post('/api/pro/article/create', pro.createArticle)
+router.post('/api/pro/article/get', pro.getArticle)
+router.get('/api/pro/article/list', pro.listArticles)
+router.post('/api/pro/article/update', pro.updateArticle)
+router.post('/api/pro/article/delete', pro.deleteArticle)
 
 
 
 // Trips
-router.get('/trip/create', trip.create)
-router.get('/trip/:tripId', trip.view)
-// Trips API
-router.post('/api/trip/create', trip.apiCreate) // Create a trip request *requires verified*
+router.get('/trip/create', trip.createPage)
+router.get('/trip/:tripId', trip.viewPage)
+// Trips APIs
+router.post('/api/trip/create', trip.create) // Create a trip request *requires verified*
 router.post('/api/trip/join', trip.join) // Join a trip *requires verified*
 router.post('/api/trip/leave', trip.leave) // Leave a trip *requires verified*
 router.post('/api/trip/list', trip.list) // List all trips
@@ -96,25 +111,26 @@ router.post('/api/trip/list', trip.list) // List all trips
 
 // Equipment
 router.get('/equipment/book', gear.book)
-// Equipment API
-router.post('/api/equipment/add', gear.create) // Add trip to the club *requires equipments*
+// Equipment APIs
+router.post('/api/equipment/create', gear.create) // Add trip to the club *requires equipments*
 router.post('/api/equipment/get', gear.get) // Get a specific pice of equipment *requires verified*
-router.post('/api/equipment/get_all', gear.getAll) // Get all equipment; may be filtered to catagories *requires verified*
+router.get('/api/equipment/list', gear.list) // Get all equipment; may be filtered to catagories *requires verified*
+router.post('/api/equipment/update', gear.update) // Update a pice of eqipment *requires equipments*
 router.post('/api/equipment/delete', gear.delete) // Delete a pice of equipment *requires equipments*
 
 
 
 // Expenses
-router.get('/expenses', expenses.create)
-// Expenses API
+router.get('/expenses', expenses.expensesPage)
+// Expenses APIs
 router.post('/api/expenses/submit', expenses.submit) // Submit a expense request *requires verified*
-router.post('/api/expenses/resolve', expenses.resolve) // Resolve a expense request *requires treasurer*
 router.post('/api/expenses/get', expenses.get) // Get a expense request *requires treasurer*
+router.post('/api/expenses/resolve', expenses.resolve) // Resolve a expense request *requires treasurer*
 
 
 
 // Events
-router.get('/events', events.get)
+router.get('/events', events.eventsPage)
 // Event APIs
 router.post('/api/events/day', events.day) // Get events for the passed date as array
 router.get('/api/events/dates', events.dates) // Get an array of all the dates on which there are events, as well as their names
@@ -122,29 +138,32 @@ router.get('/api/events/dates', events.dates) // Get an array of all the dates o
 
 
 // About
-router.get('/about/history', about.history)
-router.get('/about/committee', about.committee)
-router.get('/about/constitution', about.constitution)
+router.get('/about/history', about.historyPage)
+router.get('/about/committee', about.committeePage)
+router.get('/about/constitution', about.constitutionPage)
 
 
 
 // Privacy and TOS
-router.get('/privacy', terms.privacy)
-router.get('/terms', terms.terms)
+router.get('/privacy', terms.privacyPage)
+router.get('/terms', terms.termsPage)
 
 
 
-// Cookie API
-router.get('/api/cookie_choice', api.getCookie) // Get cookie choice as boolean (true = allow)
-router.post('/api/cookie_choice', api.postCookie) // Set cookie choice to preference
+// Cookie APIs
+router.get('/api/cookie/check', cookies.check) // Get cookie choice as boolean (true = allow)
+router.post('/api/cookie/allow', cookies.allow) // Set cookie choice to preference
 
 
 
-// Other API
-router.get('/api/certs', api.getCerts) // Get all certs as array *requires committee*
-router.get('/api/members', api.getMembers) // Get all members as array (Name and ID only) *requires committee*
-router.get('/api/safety_boaters', api.getSafetyBoaters) // Get all members as array (Name and ID only) *requires login*
-router.post('/api/member', api.getMember) // Get member with memberId *requires login*
+// Cert APIs
+router.get('/api/certs/list', certificates.list) // Get all certs as array *requires committee*
+
+
+
+// Members APIs
+router.get('/api/members/list', members.list) // Get all members as array (Name and ID only) *requires verification*
+router.post('/api/members/get', members.get) // Get member with memberId *requires committee*
 
 
 // Export:

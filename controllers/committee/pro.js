@@ -7,7 +7,7 @@ const viewData = require('../../view_data.js')
 const articles = require('../../data_managers/articles.js')
 
 const pro = {
-    async create(req, res) {
+    async createArticle(req, res) {
         try {
             var data = await viewData.get(req, 'API')
             var valid = true
@@ -33,7 +33,7 @@ const pro = {
         } catch (err) { res.status(500).json(err) }
     },
 
-    async get(req, res) {
+    async getArticle(req, res) {
         try {
             var data = await viewData.get(req, 'API')
 
@@ -50,7 +50,7 @@ const pro = {
         } catch (err) { res.status(500).json(err) }
     },
 
-    async list(req, res) {
+    async listArticles(req, res) {
         try {
             var data = await viewData.get(req, 'API')
 
@@ -63,7 +63,7 @@ const pro = {
         } catch (err) { res.status(500).json(err) }
     },
 
-    async update(req, res) {
+    async updateArticle(req, res) {
         try {
             var data = await viewData.get(req, 'API')
             var valid = true
@@ -88,7 +88,7 @@ const pro = {
         } catch (err) { res.status(500).json(err) }
     },
 
-    async delete(req, res) {
+    async deleteArticle(req, res) {
         try {
             var data = await viewData.get(req, 'API')
 

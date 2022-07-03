@@ -1,7 +1,7 @@
 $(document).ready(() => {
 
     $.ajax({
-        url: '/api/safety_boaters',
+        url: '/api/members/list',
         method: 'GET',
         success: (members) => {
 

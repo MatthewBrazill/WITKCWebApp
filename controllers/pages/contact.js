@@ -9,15 +9,15 @@ const logger = require('../../log.js')
 const viewData = require('../../view_data.js')
 
 const contact = {
-    async get(req, res) {
+    async contactPage(req, res) {
         var data = await viewData.get(req, 'Contact Us')
         data.scripts.contact = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/contact_scripts.js' })
-        
+
         logger.info(`Session '${req.sessionID}': Getting Contact`)
         res.render('contact', data)
     },
 
-    async post(req, res) {
+    async sendMessage(req, res) {
         try {
             var ticket = uuid.v4()
             var valid = true
@@ -32,13 +32,17 @@ const contact = {
                 ses.sendEmail({
                     Content: {
                         Simple: {
-                            Body: { Text: { Data: 
-                                `From: ${req.body.first_name} ${req.body.last_name}\n
+                            Body: {
+                                Text: {
+                                    Data:
+                                        `From: ${req.body.first_name} ${req.body.last_name}\n
                                 E-Mail: ${req.body.email}\n
                                 Time: ${new Date()}\n
                                 Ticket: ${ticket}\n
                                 \n
-                                \n${req.body.message}` } },
+                                \n${req.body.message}`
+                                }
+                            },
                             Subject: { Data: `Contact Form Message: ${ticket}` }
                         }
                     },

@@ -8,7 +8,7 @@ $(document).ready(() => {
         form.attr('class', 'ui loading form')
 
         $.ajax({
-            url: '/api/certs',
+            url: '/api/certs/list',
             method: 'GET',
             success: (certs) => {
                 if (form.prop('loaded') == true) form.removeClass('loading')
@@ -30,7 +30,7 @@ $(document).ready(() => {
         })
 
         $.ajax({
-            url: '/api/members',
+            url: '/api/members/list',
             method: 'GET',
             success: (members) => {
                 if (form.prop('loaded') == true) form.removeClass('loading')
@@ -76,7 +76,7 @@ $(document).ready(() => {
         $('#revoke_cert_modal').modal('show')
 
         $.ajax({
-            url: '/api/members',
+            url: '/api/members/list',
             method: 'GET',
             success: (members) => {
                 var values = []
@@ -105,7 +105,7 @@ $(document).ready(() => {
         const cards = $('#revoke_cert_modal_cards')
 
         $.ajax({
-            url: '/api/member',
+            url: '/api/members/get',
             method: 'POST',
             data: { memberId: $('#revoke_cert_modal_member_dropdown_input').val() },
             success: (member) => {

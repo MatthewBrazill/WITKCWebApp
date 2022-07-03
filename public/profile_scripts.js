@@ -51,7 +51,7 @@ $(document).ready(() => {
                 data[input.attr('id')] = input.val()
             })
             $.ajax({
-                url: '/api/settings/personal',
+                url: '/api/profile/pesonal/update',
                 method: 'POST',
                 data: data,
                 success: () => form.attr('class', 'ui success form'),
@@ -115,7 +115,7 @@ $(document).ready(() => {
         const text = $('#verify_link').parent()
         text.append('<div class="ui active inline tiny loader"></div>')
         $.ajax({
-            url: '/api/settings/verify',
+            url: '/api/profile/verify',
             method: 'GET',
             success: () => {
                 text.html()
@@ -218,7 +218,7 @@ $(document).ready(() => {
         $('#modal').modal('hide')
         $('#personal_form').attr('class', 'ui loading form')
         $.ajax({
-            url: '/api/settings/delete',
+            url: '/api/profile/delete',
             method: 'GET',
             success: () => window.location = '/',
             error: () => {
@@ -257,7 +257,7 @@ $(document).ready(() => {
             data.append('bio', $('#bio').val())
 
             $.ajax({
-                url: '/api/settings/customize',
+                url: '/api/profile/settings/update',
                 method: 'POST',
                 contentType: false,
                 processData: false,
@@ -330,7 +330,7 @@ $(document).ready(() => {
                 data[input.attr('id')] = input.val()
             })
             $.ajax({
-                url: '/api/settings/password',
+                url: '/api/profile/password/update',
                 method: 'POST',
                 data: data,
                 success: () => {

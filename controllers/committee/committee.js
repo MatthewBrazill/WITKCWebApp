@@ -33,7 +33,7 @@ const committee = {
         } catch (err) { res.status(500).json(err) }
     },
 
-    async markAnnouncementRead(req, res) {
+    async readAnnouncement(req, res) {
         try {
             var data = await viewData.get(req, 'API')
 

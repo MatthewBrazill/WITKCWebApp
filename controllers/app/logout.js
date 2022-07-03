@@ -4,7 +4,7 @@
 const logger = require('../../log.js')
 
 const logout = {
-    async get(req, res) {
+    async logout(req, res) {
         req.session.destroy()
 
         logger.info(`Session '${req.sessionID}': Logging Out`)
