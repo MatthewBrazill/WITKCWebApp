@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/MatthewBrazill/WITKCWebApp#readme",
   "dependencies": {
+    "@datadog/browser-rum": "^4.14.0",
     "aws-sdk": "^2.1092.0",
     "bcrypt": "^5.0.1",
     "connect-dynamodb": "^2.0.4",
