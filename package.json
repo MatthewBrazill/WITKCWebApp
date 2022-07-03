@@ -4,19 +4,19 @@
   "description": "A WebApp for the WIT Kayaking Club.",
   "main": "app.js",
   "scripts": {
-    "prestart": "cd /home/ec2-user/WITKCWebApp",
+    "prestart": "cd /home/ec2-user/witkc-webapp",
     "start": "node app.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MatthewBrazill/WITKCWebApp.git"
+    "url": "git+https://github.com/MatthewBrazill/witkc-webapp.git"
   },
   "author": "Matthew Brazill",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/MatthewBrazill/WITKCWebApp/issues"
+    "url": "https://github.com/MatthewBrazill/witkc-webapp/issues"
   },
-  "homepage": "https://github.com/MatthewBrazill/WITKCWebApp#readme",
+  "homepage": "https://github.com/MatthewBrazill/witkc-webapp#readme",
   "dependencies": {
     "@datadog/browser-rum": "^4.14.0",
     "aws-sdk": "^2.1092.0",
