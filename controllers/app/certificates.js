@@ -1,8 +1,8 @@
 'use strict'
 
 // Imports
-const viewData = require('./view_data.js')
-const certificates = require('./data_managers/certificates.js')
+const viewData = require('../../view_data.js')
+const certificates = require('../../data_managers/certificates.js')
 
 
 const api = {
