@@ -67,7 +67,7 @@ const gear = {
                         name: viewData.capitalize(values[0].name),
                         type: values[0].type,
                         brand: viewData.capitalize(values[0].brand),
-                        dateAdded: new Date().toUTCString().substring(5, 16),
+                        dateAdded: new Date().toUTCString(),
                         img: 'img/placeholder_equipment.webp'
                     }
 

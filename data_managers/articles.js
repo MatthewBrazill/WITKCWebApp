@@ -35,7 +35,7 @@ const articles = {
                 articleId: data.Item['articleId'].S,
                 title: data.Item['title'].S,
                 article: data.Item['article'].S,
-                date: data.Item['date'].S
+                date: new Date(data.Item['date'].S).toUTCString().substring(5, 16)
             }
             else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
@@ -55,7 +55,7 @@ const articles = {
                         articleId: item['articleId'].S,
                         title: item['title'].S,
                         article: item['article'].S,
-                        date: item['date'].S
+                        date: new Date(item['date'].S).toUTCString().substring(5, 16)
                     })
                 }
                 return articles

@@ -58,7 +58,7 @@ $(document).ready(() => {
             calendar.prop('valid', false)
         } else {
             field.attr('class', 'field success')
-            calendar.prop('date', date.toISOString().substring(0, 10))
+            calendar.prop('date', date.toISOString())
             calendar.prop('valid', true)
         }
     })

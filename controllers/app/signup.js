@@ -63,7 +63,7 @@ const signup = {
                     code: req.body.code.toUpperCase().replace(/\s/g, ''),
                 },
                 img: 'img/placeholder_avatar.webp',
-                dateJoined: new Date().toUTCString().substring(5, 16)
+                dateJoined: new Date().toUTCString()
             }
 
             members.create(member)

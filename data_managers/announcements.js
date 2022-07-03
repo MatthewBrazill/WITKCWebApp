@@ -40,7 +40,7 @@ const announcements = {
                         announcementId: item['announcementId'].S,
                         title: item['title'].S,
                         content: item['content'].S,
-                        date: item['date'].S,
+                        date: new Date(item['date'].S).toUTCString().substring(5, 16),
                         author: item['author'].S
                     })
                 }

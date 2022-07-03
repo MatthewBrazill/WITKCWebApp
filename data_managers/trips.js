@@ -47,7 +47,8 @@ const trips = {
             if (data.Item != undefined) {
                 var trip = {}
                 for (var attr in data.Item) {
-                    if ('S' in data.Item[attr]) trip[attr] = data.Item[attr].S
+                    if (attr == 'startDate' || attr == 'endDate') member[attr] = new Date(data.Item[attr].S).toUTCString().substring(5, 16)
+                    else if ('S' in data.Item[attr]) trip[attr] = data.Item[attr].S
                     else if ('SS' in data.Item[attr]) trip[attr] = data.Item[attr].SS
                     else if ('BOOL' in data.Item[attr]) trip[attr] = data.Item[attr].BOOL
                     else if (attr == 'location') {
@@ -205,13 +206,13 @@ const trips = {
     },
 
     async since(date) {
-        if (date === null || date === undefined) return null
+        if (!date instanceof Date) return null
         return dynamo.scan({
             TableName: 'witkc-trips'
         }).promise().then((data) => {
             if (data.Items != undefined) {
                 var trips = []
-                for (var item of data.Items) if (new Date(date) <= new Date(item['startDate'].S) && new Date(item['startDate'].S) <= new Date()) {
+                for (var item of data.Items) if (date <= new Date(item['startDate'].S) && new Date(item['startDate'].S) <= new Date()) {
                     var trip = {}
                     for (var attr in item) {
                         if ('S' in item[attr]) trip[attr] = item[attr].S
@@ -232,19 +233,19 @@ const trips = {
                 return trips
             } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Failed to list trips since ${date}! ${err}`)
+            logger.warn(`Failed to list trips since ${date.toUTCString()}! ${err}`)
             return null
         })
     },
 
     async from(date) {
-        if (date === null || date === undefined) return null
+        if (!date instanceof Date) return null
         return dynamo.scan({
             TableName: 'witkc-trips'
         }).promise().then((data) => {
             if (data.Items != undefined) {
                 var trips = []
-                for (var item of data.Items) if (new Date(item['startDate'].S) >= new Date(date)) {
+                for (var item of data.Items) if (new Date(item['startDate'].S) >= date) {
                     var trip = {}
                     for (var attr in item) {
                         if ('S' in item[attr]) trip[attr] = item[attr].S
@@ -265,7 +266,7 @@ const trips = {
                 return trips
             } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Failed to list trips from ${date}! ${err}`)
+            logger.warn(`Failed to list trips from ${date.toUTCString()}! ${err}`)
             return null
         })
     },

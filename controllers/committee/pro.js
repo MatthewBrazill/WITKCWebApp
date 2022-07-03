@@ -24,7 +24,7 @@ const pro = {
                         title: viewData.capitalize(req.body.title),
                         article: req.body.article,
                         files: [],
-                        date: new Date().toUTCString().substring(5, 16)
+                        date: new Date().toUTCString()
                     })) res.sendStatus(200)
                     else throw 'Could not create article.'
                 } else res.sendStatus(400)

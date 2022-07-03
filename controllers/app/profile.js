@@ -198,7 +198,7 @@ const profile = {
             if (req.params.userId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
 
                 data.user = await members.get(req.params.userId)
-                data.user.dateJoined = new Date(data.user.dateJoined).toUTCString().substring(5, 16)
+                data.user.dateJoined = new Date(data.user.dateJoined).toUTCString()
                 data.user.img = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: data.user.img })
 
                 logger.info(`Session '${req.sessionID}': Getting View Profile`)

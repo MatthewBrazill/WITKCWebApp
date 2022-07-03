@@ -69,7 +69,8 @@ const members = {
             if (data.Item != undefined) {
                 var member = { certs: [] }
                 for (var attr in data.Item) {
-                    if ('S' in data.Item[attr]) member[attr] = data.Item[attr].S
+                    if (attr == 'dateJoined') member[attr] = new Date(data.Item[attr].S).toUTCString().substring(5, 16)
+                    else if ('S' in data.Item[attr]) member[attr] = data.Item[attr].S
                     else if ('SS' in data.Item[attr]) member[attr] = data.Item[attr].SS
                     else if ('BOOL' in data.Item[attr]) member[attr] = data.Item[attr].BOOL
                     else if (attr == 'address') {

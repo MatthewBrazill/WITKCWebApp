@@ -23,7 +23,7 @@ const committee = {
                         title: viewData.capitalize(req.body.title),
                         content: req.body.content,
                         readBy: [],
-                        date: new Date().toISOString().substring(0, 10).split('-').reverse().join('/'),
+                        date: new Date().toUTCString(),
                         author: data.member.memberId
                     })
                     res.sendStatus(200)
