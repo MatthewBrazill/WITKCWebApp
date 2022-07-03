@@ -11,6 +11,7 @@ const handlebars = require('express-handlebars')
 const logger = require('./log.js')
 const api = require('./api.js')
 const viewData = require('./view_data.js')
+const datadogRum = require('@datadog/browser-rum').datadogRum
 
 async function start() {
     // Create the app
@@ -86,6 +87,21 @@ async function start() {
         console.log(`Listening on port 8000  ->  https://witkc.brazill.net`)
     })
 }
+
+datadogRum.init({
+    applicationId: 'd8892f0f-d31f-4804-b21e-c630a433a383',
+    clientToken: 'pub86493d96655e179161fb37ff340b7255',
+    site: 'datadoghq.com',
+    service: 'witkc-web-app',
+
+    // Specify a version number to identify the deployed version of your application in Datadog 
+    // version: '1.0.0',
+    sampleRate: 100,
+    premiumSampleRate: 100,
+    trackInteractions: true,
+    defaultPrivacyLevel: 'mask-user-input'
+});
+datadogRum.startSessionReplayRecording();
 
 // Create Server
 start().catch((err) => {
