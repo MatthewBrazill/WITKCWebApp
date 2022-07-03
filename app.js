@@ -9,7 +9,6 @@ const session = require('express-session')
 const sessionStore = require('connect-dynamodb')({ session: session })
 const handlebars = require('express-handlebars')
 const logger = require('./log.js')
-const api = require('./api.js')
 const viewData = require('./view_data.js')
 const members = require('./controllers/app/members.js')
 const datadogRum = require('@datadog/browser-rum').datadogRum
