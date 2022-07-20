@@ -30,10 +30,24 @@ const trips = {
             Item: tripItem,
             TableName: 'witkc-trips'
         }).promise().then(() => {
-            logger.info(`Trip '${trip.tripId}': Created`)
-            return true
+            if (data) {
+                logger.info({
+                    trip: trip,
+                    objectType: 'trip',
+                    storageType: 'dynamo',
+                    message: `Created Trip`
+                })
+                return true
+            } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Failed to create trip '${trip.tripId}'! ${err}`)
+            logger.warn({
+                trip: trip,
+                objectType: 'trip',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Create Trip`
+            })
             return false
         })
     },
@@ -60,10 +74,23 @@ const trips = {
                         }
                     }
                 }
+                logger.info({
+                    tripId: tripId,
+                    objectType: 'tirp',
+                    storageType: 'dynamo',
+                    message: `Got Trip`
+                })
                 return trip
             } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Failed to retrieve trip '${tripId}'! ${err}`)
+            logger.warn({
+                tripId: tripId,
+                objectType: 'trip',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Get Trip`
+            })
             return null
         })
     },
@@ -95,10 +122,23 @@ const trips = {
                     }
                     trips.push(trip)
                 }
+                logger.info({
+                    memberId: memberId,
+                    objectType: 'tirp',
+                    storageType: 'dynamo',
+                    message: `Got Trips For Member`
+                })
                 return trips
             } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Failed to list trips for member '${memberId}'! ${err}`)
+            logger.warn({
+                memberId: memberId,
+                objectType: 'trip',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Get Trips For Member`
+            })
             return null
         })
     },
@@ -130,10 +170,23 @@ const trips = {
                         trips.push(trip)
                     }
                 }
+                logger.info({
+                    date: date,
+                    objectType: 'tirp',
+                    storageType: 'dynamo',
+                    message: `Got Trips On Date`
+                })
                 return trips
             } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Failed to list trips since ${date}! ${err}`)
+            logger.warn({
+                date: date,
+                objectType: 'trip',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Get Trips On Date`
+            })
             return null
         })
     },
@@ -162,10 +215,21 @@ const trips = {
                     }
                     trips.push(trip)
                 }
+                logger.info({
+                    objectType: 'tirp',
+                    storageType: 'dynamo',
+                    message: `Listed Trips`
+                })
                 return trips
             } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Failed to list all trips! ${err}`)
+            logger.warn({
+                objectType: 'trip',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To List Trips`
+            })
             return null
         })
     },
@@ -196,10 +260,21 @@ const trips = {
                     }
                     trips.push(trip)
                 }
+                logger.info({
+                    objectType: 'tirp',
+                    storageType: 'dynamo',
+                    message: `Got Pending Trips`
+                })
                 return trips
             } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Failed to list pending trips! ${err.stack}`)
+            logger.warn({
+                objectType: 'trip',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Get Pending Trips`
+            })
             return null
         })
     },
@@ -229,10 +304,23 @@ const trips = {
                     }
                     trips.push(trip)
                 }
+                logger.info({
+                    date: date,
+                    objectType: 'tirp',
+                    storageType: 'dynamo',
+                    message: `Got Trips Since Date`
+                })
                 return trips
             } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Failed to list trips since ${date.toUTCString()}! ${err}`)
+            logger.warn({
+                date: date,
+                objectType: 'trip',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Get Trips Since Date`
+            })
             return null
         })
     },
@@ -262,10 +350,23 @@ const trips = {
                     }
                     trips.push(trip)
                 }
+                logger.info({
+                    date: date,
+                    objectType: 'tirp',
+                    storageType: 'dynamo',
+                    message: `Got Trips From Date`
+                })
                 return trips
             } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Failed to list trips from ${date.toUTCString()}! ${err}`)
+            logger.warn({
+                date: date,
+                objectType: 'trip',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Get Trips From Date`
+            })
             return null
         })
     },
@@ -293,16 +394,13 @@ const trips = {
                         { S: trip.location.code }
                     ]
                 }
-            }
-            else if (typeof trip[attr] == 'boolean') {
+            } else if (typeof trip[attr] == 'boolean') {
                 expression += `${attr} = :${attr}, `
                 attributes[`:${attr}`] = { BOOL: trip[attr] }
-            }
-            else if (attr == 'hazards' || attr == 'safety') {
+            } else if (attr == 'hazards' || attr == 'safety') {
                 expression += `${attr} = :${attr}, `
                 attributes[`:${attr}`] = { SS: trip[attr] }
-            }
-            else {
+            } else {
                 expression += `${attr} = :${attr}, `
                 attributes[`:${attr}`] = { S: trip[attr] }
             }
@@ -314,10 +412,24 @@ const trips = {
             UpdateExpression: expression,
             TableName: 'witkc-trips'
         }).promise().then(() => {
-            logger.info(`Trip '${trip.tripId}': Updated`)
-            return true
+            if (data) {
+                logger.info({
+                    trip: trip,
+                    objectType: 'trip',
+                    storageType: 'dynamo',
+                    message: `Updated Trip`
+                })
+                return true
+            } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Failed to update trip '${trip.tripId}'! ${err}`)
+            logger.warn({
+                tirp: trip,
+                objectType: 'trip',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Update Trip`
+            })
             return false
         })
     },
@@ -328,10 +440,24 @@ const trips = {
             Key: { 'tripId': { S: tripId } },
             TableName: 'witkc-trips'
         }).promise().then(() => {
-            logger.info(`Trip '${tripId}': Deleted`)
-            return true
+            if (data) {
+                logger.info({
+                    tripId: tripId,
+                    objectType: 'trip',
+                    storageType: 'dynamo',
+                    message: `Deleted Trip`
+                })
+                return true
+            } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Failed to delete trip '${tripId}'! ${err}`)
+            logger.warn({
+                tripId: tripId,
+                objectType: 'trip',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Delete Trip`
+            })
             return false
         })
     }

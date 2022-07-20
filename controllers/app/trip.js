@@ -5,78 +5,112 @@ const AWS = require('aws-sdk')
 const s3 = new AWS.S3()
 const logger = require('../../log.js')
 const uuid = require('uuid')
-const viewData = require('../../view_data.js')
+const helper = require('../helper.js')
 const trips = require('../../data_managers/trips.js')
-const members = require('../../data_managers/witkc_members.js')
+const members = require('../../data_managers/members.js')
 
 const trip = {
     async createPage(req, res) {
-        var data = await viewData.get(req, 'Create Trip')
+        var data = await helper.viewData(req, 'Create Trip')
         data.scripts.trip = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/trip_scripts.js' })
 
+        // Authenticate user
         if (data.loggedIn) if (data.member.verified) {
-            logger.info(`Session '${req.sessionID}': Getting Create Trip`)
             res.render('trip', data)
-        } else res.redirect('/')
-        else res.redirect('/')
-
+        } else res.redirect('/profile/me')
+        else res.redirect('/login')
     },
 
     async viewPage(req, res) {
-        var data = await viewData.get(req, 'View Trip')
+        var data = await helper.viewData(req, 'View Trip')
 
+        // Validate input
         if (req.params.tripId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
-            trips.get(req.params.tripId).then(async (trip) => {
-                if (trip !== null) {
-                    data.trip = trip
-                    data.trip.location.county = viewData.capitalize(data.trip.location.county)
+            data.trip = await trips.get(req.params.tripId)
+            if (data.trip !== null) {
+                data.trip.location.county = helper.capitalize(data.trip.location.county)
 
-                    if (data.loggedIn) {
-                        if (data.admin || !data.member.verified) data.trip.joinable = false
+                // Authenticate if they are logged in
+                if (data.loggedIn) {
+                    if (data.admin || !data.member.verified) data.trip.joinable = false
 
-                        if (data.trip.attendees.includes(data.member.memberId)) data.joined = true
-                        else data.joined = false
-                    } else data.trip.joinable = false
+                    if (data.trip.attendees.includes(data.member.memberId)) data.joined = true
+                    else data.joined = false
+                    logger.debug({
+                        sessionId: req.sessionID,
+                        loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                        memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                        method: req.method,
+                        urlPath: req.url,
+                        message: `User Joined => ${data.joined}`
+                    })
 
-                    for (var i in data.trip.safety) {
-                        var member = await members.get(data.trip.safety[i])
-                        if (member.certs.length > 0) {
-                            var best = member.certs[0]
-                            for (var cert of member.certs) {
-                                if (cert.level > best.level && cert.category == 'Rescue') best = cert
-                            }
-                            if (best.category != 'Rescue') best = { name: '' }
-                        } else best = { name: '' }
-                        data.trip.safety[i] = {
-                            memberId: member.memberId,
-                            firstName: member.firstName,
-                            lastName: member.lastName,
-                            img: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: member.img }),
-                            cert: best.name
+                } else data.trip.joinable = false
+                logger.debug({
+                    sessionId: req.sessionID,
+                    loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                    memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                    method: req.method,
+                    urlPath: req.url,
+                    message: `Trip Joinable => ${data.joinable}`
+                })
+
+                // Get the safety boaters
+                for (var i in data.trip.safety) {
+                    var member = await members.get(data.trip.safety[i])
+                    if (member.certs.length > 0) {
+                        var best = member.certs[0]
+                        for (var cert of member.certs) {
+                            if (cert.level > best.level && cert.category == 'Rescue') best = cert
                         }
+                        if (best.category != 'Rescue') best = { name: '' }
+                    } else best = { name: '' }
+                    data.trip.safety[i] = {
+                        memberId: member.memberId,
+                        firstName: member.firstName,
+                        lastName: member.lastName,
+                        img: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: member.img }),
+                        cert: best.name
                     }
+                }
+                logger.debug({
+                    sessionId: req.sessionID,
+                    loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                    memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                    method: req.method,
+                    urlPath: req.url,
+                    message: `Trip Safety Count => ${data.trip.safety.length}`
+                })
 
-                    for (var i in data.trip.attendees) {
-                        var member = await members.get(data.trip.attendees[i])
-                        data.trip.attendees[i] = {
-                            memberId: member.memberId,
-                            firstName: member.firstName,
-                            lastName: member.lastName,
-                            img: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: member.img })
-                        }
+                // Get the nececary parts of members
+                for (var i in data.trip.attendees) {
+                    var member = await members.get(data.trip.attendees[i])
+                    data.trip.attendees[i] = {
+                        memberId: member.memberId,
+                        firstName: member.firstName,
+                        lastName: member.lastName,
+                        img: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: member.img })
                     }
+                }
+                logger.debug({
+                    sessionId: req.sessionID,
+                    loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                    memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                    method: req.method,
+                    urlPath: req.url,
+                    message: `Trip Member Count => ${data.trip.attendees.length}`
+                })
 
-                    logger.info(`Session '${req.sessionID}': Getting View Trip`)
-                    res.render('view_trip', data)
-                } else res.redirect('/404')
-            }).catch((err) => { res.redirect('/404') })
+                res.render('view_trip', data)
+            } else res.redirect('/404')
         } else res.redirect('/404')
     },
 
     async create(req, res) {
         try {
-            var data = await viewData.get(req, 'View Trip')
+            var data = await helper.viewData(req, 'View Trip')
 
+            // Authenticate user
             if (data.loggedIn) if (data.member.verified) {
                 var valid = true
                 var memberIds = await members.list().then((members) => {
@@ -92,7 +126,7 @@ const trip = {
                     'sligo', 'tipperary', 'tyrone', 'waterford', 'westmeath', 'wexford', 'wicklow'
                 ]
 
-                // Server-Side Validation
+                // Validate input
                 if (!req.body.name.match(/^[\p{L}\d!?&() ]{1,64}$/u)) valid = false
                 if (!req.body.start_date.match(/^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)$/)) valid = false
                 if (!req.body.end_date.match(/^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)$/)) valid = false
@@ -139,17 +173,17 @@ const trip = {
                             break;
                     }
 
-                    // Create trip object
-                    var trip = {
+                    // Create trip
+                    if (trips.create({
                         tripId: uuid.v4(),
-                        name: viewData.capitalize(req.body.name),
+                        name: helper.capitalize(req.body.name),
                         startDate: new Date(req.body.start_date).toUTCString(),
                         endDate: new Date(req.body.end_date).toUTCString(),
                         description: req.body.description,
                         location: {
-                            lineOne: viewData.capitalize(req.body.line_one),
-                            lineTwo: viewData.capitalize(req.body.line_two),
-                            city: viewData.capitalize(req.body.city),
+                            lineOne: helper.capitalize(req.body.line_one),
+                            lineTwo: helper.capitalize(req.body.line_two),
+                            city: helper.capitalize(req.body.city),
                             county: req.body.county,
                             code: req.body.code.toUpperCase().replace(/\s/g, ''),
                         },
@@ -159,53 +193,102 @@ const trip = {
                         approved: (data.committee == 'safety'),
                         hazards: hazards,
                         attendees: req.body.safety.split(',')
-                    }
-
-                    trips.create(trip).then((success) => {
-                        if (success) res.status(200).json({ url: `/trip/${trip.tripId}` })
-                        else res.status(500).json({ err: 'The creation of the trip was unsuccessful!' })
-                    }).catch((err) => { res.status(500).json(err) })
+                    })) res.status(200).json({ url: `/trip/${trip.tripId}` })
+                    else res.status(503)
                 } else res.sendStatus(400)
             } else res.sendStatus(403)
-            else res.sendStatus(403)
-        } catch (err) { res.status(500).json(err) }
+            else res.sendStatus(401)
+        } catch (err) {
+            logger.error({
+                sessionId: req.sessionID,
+                loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                method: req.method,
+                urlPath: req.url,
+                error: err,
+                stack: err.stack,
+                message: `${req.method} ${req.url} Failed => ${err}`
+            })
+            res.status(500).json(err)
+        }
     },
 
     async list(req, res) {
         try {
-            trips.list().then((trips) => {
-                if (trips !== null) res.status(200).json(trips)
-                else res.sendStatus(404)
-            }).catch((err) => { res.status(400).json(err) })
-        } catch (err) { res.status(500).json(err) }
+            var result = trips.list()
+            if (result !== null) res.status(200).json(result)
+            else res.sendStatus(404)
+        } catch (err) {
+            logger.error({
+                sessionId: req.sessionID,
+                loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                method: req.method,
+                urlPath: req.url,
+                error: err,
+                stack: err.stack,
+                message: `${req.method} ${req.url} Failed => ${err}`
+            })
+            res.status(500).json(err)
+        }
     },
 
     async join(req, res) {
         try {
-            var data = await viewData.get(req, 'View Trip')
+            var data = await helper.viewData(req, 'View Trip')
 
+            // Authneticate user
             if (data.loggedIn) if (data.member.verified) {
+
+                // Validate input
                 if (req.body.tripId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
-                    members.joinTrip(data.member.memberId, req.body.tripId)
-                    res.sendStatus(200)
+                    if (members.joinTrip(data.member.memberId, req.body.tripId)) res.sendStatus(200)
+                    else res.sendStatus(503)
                 } else res.sendStatus(400)
             } else res.sendStatus(403)
-            else res.sendStatus(403)
-        } catch (err) { res.status(500).json(err) }
+            else res.sendStatus(401)
+        } catch (err) {
+            logger.error({
+                sessionId: req.sessionID,
+                loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                method: req.method,
+                urlPath: req.url,
+                error: err,
+                stack: err.stack,
+                message: `${req.method} ${req.url} Failed => ${err}`
+            })
+            res.status(500).json(err)
+        }
     },
 
     async leave(req, res) {
         try {
-            var data = await viewData.get(req, 'View Trip')
+            var data = await helper.viewData(req, 'View Trip')
 
+            // Authenticate user
             if (data.loggedIn) if (data.member.verified) {
+
+                // Validate input
                 if (req.body.tripId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
-                    members.leaveTrip(data.member.memberId, req.body.tripId)
-                    res.sendStatus(200)
+                    if (members.leaveTrip(data.member.memberId, req.body.tripId)) res.sendStatus(200)
+                    else res.sendStatus(503)
                 } else res.sendStatus(400)
             } else res.sendStatus(403)
-            else res.sendStatus(403)
-        } catch (err) { res.status(500).json(err) }
+            else res.sendStatus(401)
+        } catch (err) {
+            logger.error({
+                sessionId: req.sessionID,
+                loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                method: req.method,
+                urlPath: req.url,
+                error: err,
+                stack: err.stack,
+                message: `${req.method} ${req.url} Failed => ${err}`
+            })
+            res.status(500).json(err)
+        }
     }
 }
 

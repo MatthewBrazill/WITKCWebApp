@@ -4,31 +4,26 @@
 const AWS = require('aws-sdk')
 const s3 = new AWS.S3()
 const logger = require('../../log.js')
-const viewData = require('../../view_data.js')
+const helper = require('../helper.js')
 const committeeData = require('../../data_managers/committee.js')
 
 const about = {
     async historyPage(req, res) {
-        var data = await viewData.get(req, 'About Us')
-
-        logger.info(`Session '${req.sessionID}': Getting About`)
+        var data = await helper.viewData(req, 'About Us')
         res.render('about', data)
     },
 
     async committeePage(req, res) {
-        var data = await viewData.get(req, 'Committee')
+        var data = await helper.viewData(req, 'Committee')
         data.committee = await committeeData.getAll()
 
+        // Since the images come from the committee call and not view data, the images still need to be resolved
         for (var role of data.committee) role.member.img = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: role.member.img })
-
-        logger.info(`Session '${req.sessionID}': Getting Committee`)
         res.render('committee', data)
     },
 
     async constitutionPage(req, res) {
-        var data = await viewData.get(req, 'Constitution')
-
-        logger.info(`Session '${req.sessionID}': Getting Constitution`)
+        var data = await helper.viewData(req, 'Constitution')
         res.render('constitution', data)
     }
 }

@@ -18,10 +18,26 @@ const equipment = {
             Item: attributes,
             TableName: 'witkc-equipment'
         }).promise().then(() => {
-            logger.info(`Equipment '${equipment.equipmentId}': Created`)
-            return true
+            if (data) {
+                logger.info({
+                    equipment: equipment,
+                    equipmentType: equipment.type,
+                    objectType: 'equipment',
+                    storageType: 'dynamo',
+                    message: `Created Equipment`
+                })
+                return true
+            } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Failed to create equipment '${equipment.equipmentId}'! ${err}`)
+            logger.warn({
+                equipment: equipment,
+                equipmentType: equipment.type,
+                objectType: 'equipment',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Create Equipment`
+            })
             return false
         })
     },
@@ -37,6 +53,7 @@ const equipment = {
                     equipmentId: data.Item['equipmentId'].S,
                     name: data.Item['name'].S,
                     brand: data.Item['brand'].S,
+                    type: data.Item['type'].S,
                     img: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: data.Item['img'].S })
                 }
                 if (data.Item['unavailableDates'] != undefined) gear.unavailableDates = data.Item['unavailableDates'].SS
@@ -44,31 +61,37 @@ const equipment = {
                     gear.boatType = data.Item['boatType'].S
                     gear.boatSize = data.Item['boatSize'].S
                     gear.boatCockpit = data.Item['boatCockpit'].S
-                    equipment.boats.push(gear)
                 } else if (data.Item['type'].S == 'paddle') {
                     gear.paddleType = data.Item['paddleType'].S
                     gear.paddleLength = data.Item['paddleLength'].S
-                    equipment.paddles.push(gear)
                 } else if (data.Item['type'].S == 'deck') {
                     gear.deckType = data.Item['deckType'].S
                     gear.deckSize = data.Item['deckSize'].S
-                    equipment.decks.push(gear)
                 } else if (data.Item['type'].S == 'ba') {
                     gear.baSize = item['baSize'].S
-                    equipment.bas.push(gear)
                 } else if (data.Item['type'].S == 'helmet') {
                     gear.helmetType = data.Item['helmetType'].S
                     gear.helmetSize = data.Item['helmetSize'].S
-                    equipment.helmets.push(gear)
                 } else if (data.Item['type'].S == 'wetsuit') {
                     gear.wetsuitSize = data.Item['wetsuitSize'].S
-                    equipment.wetsuits.push(gear)
                 }
+                logger.info({
+                    equipmentId: equipmentId,
+                    objectType: 'equipment',
+                    storageType: 'dynamo',
+                    message: `Got Equipment`
+                })
                 return gear
-            }
-            else return null
+            } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Failed to retrieve equipment '${equipmentId}'! ${err}`)
+            logger.warn({
+                equipmentId: equipmentId,
+                objectType: 'equipment',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Get Equipment`
+            })
             return null
         })
     },
@@ -120,10 +143,21 @@ const equipment = {
                         equipment.wetsuits.push(gear)
                     }
                 }
+                logger.info({
+                    objectType: 'equipment',
+                    storageType: 'dynamo',
+                    message: `Got All Equipment`
+                })
                 return equipment
-            } else return null
+            } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Failed to retrieve all equipment! ${err}`)
+            logger.warn({
+                objectType: 'equipment',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Get All Equipment`
+            })
             return null
         })
     },
@@ -138,10 +172,24 @@ const equipment = {
             Key: { 'equipmentId': { S: equipmentId } },
             TableName: 'witkc-equipment'
         }).promise().then(() => {
-            logger.info(`Equipment '${equipmentId}': Deleted`)
-            return true
+            if (data) {
+                logger.info({
+                    equipmentId: equipmentId,
+                    objectType: 'equipment',
+                    storageType: 'dynamo',
+                    message: `Deleted Equipment`
+                })
+                return true
+            } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Failed to delete equipment '${equipmentId}'! ${err}`)
+            logger.warn({
+                equipmentId: equipmentId,
+                objectType: 'equipment',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Delete Equipment`
+            })
             return false
         })
     }

@@ -16,11 +16,25 @@ const articles = {
                 'date': { S: article.date }
             },
             TableName: 'witkc-articles'
-        }).promise().then(() => {
-            logger.info(`Article '${article.articleId}': Created`)
-            return true
+        }).promise().then((data) => {
+            if (data) {
+                logger.info({
+                    article: article,
+                    objectType: 'article',
+                    storageType: 'dynamo',
+                    message: `Created Article`
+                })
+                return true
+            } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Failed to create article '${article.articleId}'! ${err}`)
+            logger.warn({
+                article: article,
+                objectType: 'article',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Create Article`
+            })
             return false
         })
     },
@@ -30,16 +44,30 @@ const articles = {
         return dynamo.getItem({
             Key: { 'articleId': { S: articleId } },
             TableName: 'witkc-articles'
-        }).promise().then(async (data) => {
-            if (data.Item != undefined) return {
-                articleId: data.Item['articleId'].S,
-                title: data.Item['title'].S,
-                article: data.Item['article'].S,
-                date: data.Item['date'].S
-            }
-            else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
+        }).promise().then((data) => {
+            if (data.Item != undefined) {
+                logger.info({
+                    articleId: articleId,
+                    objectType: 'article',
+                    storageType: 'dynamo',
+                    message: `Got Article`
+                })
+                return {
+                    articleId: data.Item['articleId'].S,
+                    title: data.Item['title'].S,
+                    article: data.Item['article'].S,
+                    date: data.Item['date'].S
+                }
+            } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Failed to get article ${articleId}! ${err}`)
+            logger.warn({
+                articleId: articleId,
+                objectType: 'article',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Get Article`
+            })
             return null
         })
     },
@@ -47,21 +75,30 @@ const articles = {
     async getAll() {
         return dynamo.scan({
             TableName: 'witkc-articles'
-        }).promise().then(async (data) => {
+        }).promise().then((data) => {
             if (data.Items != undefined) {
                 var articles = []
-                for (var item of data.Items) {
-                    articles.push({
-                        articleId: item['articleId'].S,
-                        title: item['title'].S,
-                        article: item['article'].S,
-                        date: item['date'].S
-                    })
-                }
+                for (var item of data.Items) articles.push({
+                    articleId: item['articleId'].S,
+                    title: item['title'].S,
+                    article: item['article'].S,
+                    date: item['date'].S
+                })
+                logger.info({
+                    objectType: 'article',
+                    storageType: 'dynamo',
+                    message: `Got All Articles`
+                })
                 return articles
             } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Failed to get all articles! ${err}`)
+            logger.warn({
+                objectType: 'article',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Get All Articles`
+            })
             return null
         })
     },
@@ -76,11 +113,25 @@ const articles = {
             },
             UpdateExpression: 'SET title = :title, article = :article',
             TableName: 'witkc-articles'
-        }).promise().then(() => {
-            logger.info(`Article '${article.articleId}': Updated`)
-            return true
+        }).promise().then((data) => {
+            if (data) {
+                logger.info({
+                    article: article,
+                    objectType: 'article',
+                    storageType: 'dynamo',
+                    message: `Updated Article`
+                })
+                return true
+            } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Failed to update article '${article.articleId}'! ${err}`)
+            logger.warn({
+                article: article,
+                objectType: 'article',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Update Article`
+            })
             return false
         })
     },
@@ -90,11 +141,25 @@ const articles = {
         return dynamo.deleteItem({
             Key: { 'articleId': { S: articleId } },
             TableName: 'witkc-articles'
-        }).promise().then(() => {
-            logger.info(`Article '${articleId}': Deleted`)
-            return true
+        }).promise().then((data) => {
+            if (data) {
+                logger.info({
+                    memberId: memberId,
+                    objectType: 'article',
+                    storageType: 'dynamo',
+                    message: `Deleted Article`
+                })
+                return true
+            } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Failed to delete article '${articleId}'! ${err}`)
+            logger.warn({
+                articleId: articleId,
+                objectType: 'article',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Delete Article`
+            })
             return false
         })
     }

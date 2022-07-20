@@ -5,7 +5,7 @@ const AWS = require('aws-sdk')
 const s3 = new AWS.S3()
 const formidable = require('formidable')
 const logger = require('../../log.js')
-const viewData = require('../../view_data.js')
+const helper = require('../helper.js')
 const uuid = require('uuid')
 const sharp = require('sharp')
 const fs = require('fs')
@@ -13,89 +13,139 @@ const committee = require('../../data_managers/committee.js')
 
 const expenses = {
     async expensesPage(req, res) {
-        var data = await viewData.get(req, 'Submit Expense')
+        var data = await helper.viewData(req, 'Submit Expense')
         data.scripts.expense = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/expense_scripts.js' })
 
+        // Autheticate user
         if (data.loggedIn) if (data.member.verified) {
-            logger.info(`Session '${req.sessionID}': Getting Expenses`)
+
             res.render('expense', data)
-        } else res.redirect('/')
-        else res.redirect('/')
+        } else res.status(403).redirect('/profile/me')
+        else res.status(401).redirect('/login')
     },
 
     async submit(req, res) {
         try {
-            var data = await viewData.get(req, 'API')
+            var data = await helper.viewData(req, 'API')
 
+            // Authenticate user
             if (data.loggedIn) if (data.member.verified) {
-                var form = new formidable.IncomingForm()
-                new Promise((resolve, reject) => {
-                    form.parse(req, (err, fields, files) => {
-                        var valid = true
+                var expenseId = uuid.v4()
+                var valid = true
+                var expenses = []
+                var receipts = []
 
-                        if (err) reject('Malformed Input')
-                        else {
-                            var expenses = []
-                            var receipts = []
+                // Use formidable for image transfer
+                var { fields, files } = new formidable.IncomingForm().parse(req, (err, fields, files) => {
+                    // Check for any errors
+                    if (err) throw err
+                    else return { fields, files }
+                })
 
-                            for (var field in fields) {
-                                var values = fields[field].split('%')
-                                if (field.split('%')[0] == 'expense') {
-                                    if (values[0].match(/^.{1,32}$/u) && values[1].match(/^\d+([,.]\d+)?$/)) expenses.push({
-                                        description: viewData.capitalize(values[0]),
-                                        price: values[1]
-                                    })
-                                    else valid = false
-                                }
-                            }
+                // Loop through fields and deconstruct transport string
+                logger.debug({
+                    sessionId: req.sessionID,
+                    loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                    memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                    method: req.method,
+                    urlPath: req.url,
+                    message: `Recieved Fields => ${fields}`
+                })
+                for (var field in fields) {
+                    var values = fields[field].split('%')
+                    if (field.split('%')[0] == 'expense') {
+                        if (values[0].match(/^.{1,32}$/u) && values[1].match(/^\d+([,.]\d+)?$/)) expenses.push({
+                            description: helper.capitalize(values[0]),
+                            price: values[1]
+                        })
+                        else valid = false
+                    }
+                }
 
-                            for (var file in files) if (files[file].mimetype.split('/')[0] == 'image') receipts.push(files[file].filepath)
+                // Loop through images
+                logger.debug({
+                    sessionId: req.sessionID,
+                    loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                    memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                    method: req.method,
+                    urlPath: req.url,
+                    message: `Recieved Files => ${files}`
+                })
+                for (var file in files) if (files[file].mimetype.split('/')[0] == 'image') receipts.push(files[file].filepath)
+                if (receipts.length == 0) valid = false
 
-                            if (!valid) reject('Malformed Input')
-                            if (receipts.length == 0) reject('Malformed Input')
-                            else resolve([expenses, receipts])
-                        }
-                    })
-                }).then(async (values) => {
-                    var expenseId = uuid.v4()
-                    for (var i in values[1]) {
+                if (valid) {
+
+                    // Upload all the receipts to S3
+                    for (var i in receipts) {
                         var newPath = `expenseRequests/${expenseId}/receipts/${uuid.v4()}.webp`
-                        await sharp(values[1][i]).webp().toFile(`${values[1][i]}.webp`).catch((err) => { throw err })
+                        await sharp(receipts[i]).webp().toFile(`${receipts[i]}.webp`).catch((err) => { throw err })
                         await s3.putObject({
                             Bucket: 'witkc',
                             Key: newPath,
-                            Body: fs.readFileSync(`${values[1][i]}.webp`)
+                            Body: fs.readFileSync(`${receipts[i]}.webp`)
                         }).promise().catch((err) => { throw err })
-                        values[1][i] = newPath
+                        receipts[i] = newPath
                     }
+                    logger.debug({
+                        sessionId: req.sessionID,
+                        loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                        memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                        method: req.method,
+                        urlPath: req.url,
+                        message: `Put ${receipts.length} Objects to S3`
+                    })
 
+                    // Calculate total
                     var total = parseFloat(0)
-                    for (var expense of values[0]) total = parseFloat(total) + parseFloat(expense.price)
+                    for (var expense of expenses) total = parseFloat(total) + parseFloat(expense.price)
+                    logger.debug({
+                        sessionId: req.sessionID,
+                        loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                        memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                        method: req.method,
+                        urlPath: req.url,
+                        message: `Expense Total => ${total}`
+                    })
 
-                    committee.submitExpense({
+                    if (committee.submitExpense({
                         expenseId: expenseId,
                         memberId: data.member.memberId,
                         total: total.toFixed(2),
-                        expenses: values[0],
-                        receipts: values[1]
-                    })
-
-                    logger.info(`Member ${data.member.memberId}: Successfully updated image!`)
-                    res.sendStatus(200)
-                }).catch((err) => { res.status(500).json(err) })
+                        expenses: expenses,
+                        receipts: receipts
+                    })) res.sendStatus(201)
+                    else res.sendStatus(503)
+                } else res.sendStatus(400)
             } else res.sendStatus(403)
-            else res.sendStatus(403)
-        } catch (err) { res.status(500).json(err) }
+            else res.sendStatus(401)
+        } catch (err) {
+            logger.error({
+                sessionId: req.sessionID,
+                loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                method: req.method,
+                urlPath: req.url,
+                error: err,
+                stack: err.stack,
+                message: `${req.method} ${req.url} Failed => ${err}`
+            })
+            res.status(500).json(err)
+        }
     },
 
     async get(req, res) {
         try {
-            var data = await viewData.get(req, 'API')
+            var data = await helper.viewData(req, 'API')
 
-            if (data.loggedIn) if (data.member.verified) if (data.committee == 'treasurer' || data.admin) {
+            // Autheticate user
+            if (data.loggedIn) if (data.committee == 'treasurer' || data.admin) {
+
+                // Validate input
                 if (req.body.expenseId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
                     var treasurer = await committee.getRole('treasurer')
 
+                    // Filter expense request out
                     for (var expenseRequest of treasurer.expenseRequests) {
                         if (expenseRequest.expenseId == req.body.expenseId) {
                             for (var i in expenseRequest.receipts) expenseRequest.receipts[i] = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: expenseRequest.receipts[i] })
@@ -103,21 +153,36 @@ const expenses = {
                             return
                         }
                     }
+
+                    // If not found
                     res.sendStatus(404)
                 } else res.sendStatus(400)
             } else res.sendStatus(403)
-            else res.sendStatus(403)
-            else res.sendStatus(403)
-        } catch (err) { res.status(500).json(err) }
+            else res.sendStatus(401)
+        } catch (err) {
+            logger.error({
+                sessionId: req.sessionID,
+                loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                method: req.method,
+                urlPath: req.url,
+                error: err,
+                stack: err.stack,
+                message: `${req.method} ${req.url} Failed => ${err}`
+            })
+            res.status(500).json(err)
+        }
     },
 
     async resolve(req, res) {
         try {
-            var data = await viewData.get(req, 'API')
+            var data = await helper.viewData(req, 'API')
 
-            if (data.loggedIn) if (data.member.verified) if (data.committee == 'treasurer' || data.admin) {
+            // Autheticate user
+            if (data.loggedIn) if (data.committee == 'treasurer' || data.admin) {
                 var valid = true
 
+                // Validate input
                 if (!req.body.expenseId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) valid = false
                 if (req.body.accepted != 'true' && req.body.accepted != 'false') valid = false
                 if (!(req.body.accepted == 'true')) if (!req.body.reason.match(/^[^<>]{1,200}$/u)) valid = false
@@ -131,33 +196,60 @@ const expenses = {
 
                     if (request) {
                         if (req.body.accepted == 'true') {
+                            logger.debug({
+                                sessionId: req.sessionID,
+                                loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                                memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                                method: req.method,
+                                urlPath: req.url,
+                                message: `Expense Report Accepted`
+                            })
                             await s3.putObject({
                                 Bucket: 'witkc',
-                                Key: `expenseRequests/${expenseRequest.expenseId}/request.json`,
+                                Key: `expenseRequests / ${expenseRequest.expenseId} /request.json`,
                                 Body: JSON.stringify(request)
                             }).promise().catch((err) => { throw err })
 
-                            // Tell Creator Accepted
+                            // TODO Tell Creator Accepted
 
                             committee.deleteExpense(req.body.expenseId)
                             res.sendStatus(200)
                         } else {
+                            logger.debug({
+                                sessionId: req.sessionID,
+                                loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                                memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                                method: req.method,
+                                urlPath: req.url,
+                                message: `Expense Report Rejected`
+                            })
                             for (var receipt of request.receipts) await s3.deleteObject({
                                 Bucket: 'witkc',
                                 Key: receipt,
                             }).promise().catch((err) => { throw err })
 
-                            // Tell Creator Denied
+                            // TODO Tell Creator Denied
 
-                            committee.deleteExpense(req.body.expenseId)
-                            res.sendStatus(200)
+                            if (committee.deleteExpense(req.body.expenseId)) res.sendStatus(204)
+                            else res.sendStatus(503)
                         }
                     } else res.sendStatus(404)
                 } else res.sendStatus(400)
             } else res.sendStatus(403)
-            else res.sendStatus(403)
-            else res.sendStatus(403)
-        } catch (err) { res.status(500).json(err) }
+            else res.sendStatus(401)
+        } catch (err) {
+            logger.error({
+                sessionId: req.sessionID,
+                loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                method: req.method,
+                urlPath: req.url,
+                error: err,
+                stack: err.stack,
+                message: `${req.method} ${req.url} Failed => ${err}`
+            })
+            res.status(500).json(err)
+        }
     }
 }
 

@@ -2,20 +2,16 @@
 
 // Imports
 const logger = require('../../log.js')
-const viewData = require('../../view_data.js')
+const helper = require('../helper.js')
 
 const terms = {
     async termsPage(req, res) {
-        var data = await viewData.get(req, 'Terms and Services')
-
-        logger.info(`Session '${req.sessionID}': Getting Terms and Services`)
+        var data = await helper.viewData(req, 'Terms and Services')
         res.render('terms', data)
     },
 
     async privacyPage(req, res) {
-        var data = await viewData.get(req, 'Privacy Policy')
-
-        logger.info(`Session '${req.sessionID}': Getting Privacy Policy`)
+        var data = await helper.viewData(req, 'Privacy Policy')
         res.render('privacy', data)
     }
 }

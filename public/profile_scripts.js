@@ -220,7 +220,7 @@ $(document).ready(() => {
         $.ajax({
             url: '/api/profile/delete',
             method: 'GET',
-            success: () => window.location = '/',
+            success: () => window.location = '/home',
             error: () => {
                 $('#modal').modal('show')
                 $('#personal_form').attr('class', 'ui form')
