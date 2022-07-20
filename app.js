@@ -10,7 +10,6 @@ const sessionStore = require('connect-dynamodb')({ session: session })
 const handlebars = require('express-handlebars')
 const logger = require('./log.js')
 const helper = require('./controllers/helper.js')
-const members = require('./controllers/app/members.js')
 const datadogRum = require('@datadog/browser-rum').datadogRum
 
 async function start() {
