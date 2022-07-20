@@ -78,12 +78,14 @@ const profile = {
             // Validate input
             if (req.params.memberId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
                 var result = await members.get(req.params.memberId)
-                result.dateJoined = new Date(result.dateJoined).toUTCString()
-                result.img = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: result.img })
-                data.user = result
+                if (result != null) {
+                    result.dateJoined = new Date(result.dateJoined).toUTCString()
+                    result.img = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: result.img })
+                    data.user = result
 
-                res.render('view_profile', data)
-            } else res.redirect('/profile/me')
+                    res.render('view_profile', data)
+                } else res.render('404', data)
+            } else res.render('404', data)
         } else res.redirect('/login')
     },
 

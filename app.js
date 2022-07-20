@@ -59,7 +59,7 @@ async function start() {
         if (req.url == '/healthy') next()
         else return sessionHandler(req, res, next)
     })
-    logger.debug(`Session Key Loaded`)
+    logger.debug('Session Key Loaded')
 
     // Set up middleware logging
     app.use((req, res, next) => {
@@ -102,7 +102,7 @@ async function start() {
         // Default: Plain-Text
         else res.type('text').send('404 - Page Not Found')
     })
-    logger.debug('404 Handeling Loaded')
+    logger.debug('"Not Found" Handeling Loaded')
 
     app.listen(8000, () => {
         logger.info(`Started! => https://witkc.brazill.net`)
@@ -110,8 +110,7 @@ async function start() {
     })
 }
 
-logger.info('~~ WITKC Web App ~~ Created by Matthew Brazill (https://github.com/MatthewBrazill)')
-logger.info('Application Starting...')
+logger.info('WITKC Web App Starting... ~~ Created by Matthew Brazill (https://github.com/MatthewBrazill)')
 console.log(`
 __        __ ___  _____  _  __ ____  __        __     _          _                  
 \\ \\      / /|_ _||_   _|| |/ // ___| \\ \\      / /___ | |__      / \\    _ __   _ __  
@@ -129,7 +128,7 @@ datadogRum.init({
     applicationId: 'd8892f0f-d31f-4804-b21e-c630a433a383',
     clientToken: 'pub86493d96655e179161fb37ff340b7255',
     site: 'datadoghq.com',
-    service: 'witkc-web-app',
+    service: 'witkc',
     sampleRate: 100,
     premiumSampleRate: 100,
     trackInteractions: true,

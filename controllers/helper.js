@@ -32,94 +32,97 @@ const helper = {
         })
 
         // Autheticate user and collect data
-        if (req.session != undefined) if (await members.get(req.session.memberId) != null) {
-            logger.debug({
-                sessionId: req.sessionID,
-                loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
-                memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
-                method: req.method,
-                urlPath: req.url,
-                message: `Session Authenticated`
-            })
+        if (req.session != undefined) {
 
             // Retrieve member
             data.member = await members.get(req.session.memberId)
-            data.loggedIn = true
-            logger.debug({
-                sessionId: req.sessionID,
-                loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
-                memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
-                method: req.method,
-                urlPath: req.url,
-                message: `Member Retrieved`
-            })
-
-            // Retrieve trips for this member
-            data.member.trips = await trips.getAllFor(data.member.memberId)
-            logger.debug({
-                sessionId: req.sessionID,
-                loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
-                memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
-                method: req.method,
-                urlPath: req.url,
-                message: `Trips Retrieved`
-            })
-
-            // Retrieve unread announcements for this member
-            data.announcements = await announcements.getUnread(data.member.memberId)
-            logger.debug({
-                sessionId: req.sessionID,
-                loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
-                memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
-                method: req.method,
-                urlPath: req.url,
-                message: `Unread Announcements Retrieved`
-            })
-
-            /* Some places need the Profile image to not be resolved to a sgned
-            URL, as such any time the title is set to API, dont resolve the image. */
-            if (title != 'API') {
-                data.member.img = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: data.member.img })
+            if (data.member != null) {
                 logger.debug({
                     sessionId: req.sessionID,
                     loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
                     memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
                     method: req.method,
                     urlPath: req.url,
-                    message: `Profile Image Resolved`
+                    message: `Session Authenticated`
                 })
-            } else logger.debug({
-                sessionId: req.sessionID,
-                loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
-                memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
-                method: req.method,
-                urlPath: req.url,
-                message: `Profile Image NOT Resolved`
-            })
 
-            /* If the memberId matches this the user is admin => set admin flag
-            
-            If user is not admin, retrieve the committee status. Value is false
-            if user is not in commitee and equal to the committeeId if they are. */
-            if (data.member.memberId == '96e01799-74bb-4772-bd5c-fd92528cc510') {
-                data.admin = true
+                data.loggedIn = true
                 logger.debug({
                     sessionId: req.sessionID,
                     loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
                     memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
                     method: req.method,
                     urlPath: req.url,
-                    message: `Admin Session`
+                    message: `Member Retrieved`
                 })
-            } else data.committee = await committee.isCommittee(data.member.memberId).then((roleId) => roleId)
-            logger.debug({
-                sessionId: req.sessionID,
-                loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
-                memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
-                method: req.method,
-                urlPath: req.url,
-                message: `Committee Status => ${data.committee}`
-            })
+
+                // Retrieve trips for this member
+                data.member.trips = await trips.getAllFor(data.member.memberId)
+                logger.debug({
+                    sessionId: req.sessionID,
+                    loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                    memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                    method: req.method,
+                    urlPath: req.url,
+                    message: `Trips Retrieved`
+                })
+
+                // Retrieve unread announcements for this member
+                data.announcements = await announcements.getUnread(data.member.memberId)
+                logger.debug({
+                    sessionId: req.sessionID,
+                    loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                    memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                    method: req.method,
+                    urlPath: req.url,
+                    message: `Unread Announcements Retrieved`
+                })
+
+                /* Some places need the Profile image to not be resolved to a sgned
+                URL, as such any time the title is set to API, dont resolve the image. */
+                if (title != 'API') {
+                    data.member.img = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: data.member.img })
+                    logger.debug({
+                        sessionId: req.sessionID,
+                        loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                        memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                        method: req.method,
+                        urlPath: req.url,
+                        message: `Profile Image Resolved`
+                    })
+                } else logger.debug({
+                    sessionId: req.sessionID,
+                    loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                    memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                    method: req.method,
+                    urlPath: req.url,
+                    message: `Profile Image NOT Resolved`
+                })
+
+                /* If the memberId matches this the user is admin => set admin flag
+                
+                If user is not admin, retrieve the committee status. Value is false
+                if user is not in commitee and equal to the committeeId if they are. */
+                if (data.member.memberId == '96e01799-74bb-4772-bd5c-fd92528cc510') {
+                    data.admin = true
+                    logger.debug({
+                        sessionId: req.sessionID,
+                        loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                        memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                        method: req.method,
+                        urlPath: req.url,
+                        message: `Admin Session`
+                    })
+                } else data.committee = await committee.isCommittee(data.member.memberId).then((roleId) => roleId)
+                logger.debug({
+                    sessionId: req.sessionID,
+                    loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                    memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                    method: req.method,
+                    urlPath: req.url,
+                    message: `Committee Status => ${data.committee}`
+                })
+            }
         }
 
         return data

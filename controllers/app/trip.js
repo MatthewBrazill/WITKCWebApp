@@ -102,8 +102,8 @@ const trip = {
                 })
 
                 res.render('view_trip', data)
-            } else res.redirect('/404')
-        } else res.redirect('/404')
+            } else res.render('404', data)
+        } else res.render('404', data)
     },
 
     async create(req, res) {
