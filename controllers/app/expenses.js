@@ -80,11 +80,11 @@ const expenses = {
                     for (var i in receipts) {
                         var newPath = `expenseRequests/${expenseId}/receipts/${uuid.v4()}.webp`
                         await sharp(receipts[i]).webp().toFile(`${receipts[i]}.webp`).catch((err) => { throw err })
-                        await s3.putObject({
+                        s3.putObject({
                             Bucket: 'witkc',
                             Key: newPath,
                             Body: fs.readFileSync(`${receipts[i]}.webp`)
-                        }).promise().catch((err) => { throw err })
+                        })
                         receipts[i] = newPath
                     }
                     logger.debug({
@@ -108,7 +108,7 @@ const expenses = {
                         message: `Expense Total => ${total}`
                     })
 
-                    if (committee.submitExpense({
+                    if (await committee.submitExpense({
                         expenseId: expenseId,
                         memberId: data.member.memberId,
                         total: total.toFixed(2),
@@ -204,16 +204,16 @@ const expenses = {
                                 urlPath: req.url,
                                 message: `Expense Report Accepted`
                             })
-                            await s3.putObject({
+                            s3.putObject({
                                 Bucket: 'witkc',
                                 Key: `expenseRequests / ${expenseRequest.expenseId} /request.json`,
                                 Body: JSON.stringify(request)
-                            }).promise().catch((err) => { throw err })
+                            })
 
                             // TODO Tell Creator Accepted
 
-                            committee.deleteExpense(req.body.expenseId)
-                            res.sendStatus(200)
+                            if (await committee.deleteExpense(req.body.expenseId)) res.sendStatus(204)
+                            else res.sendStatus(503)
                         } else {
                             logger.debug({
                                 sessionId: req.sessionID,
@@ -230,7 +230,7 @@ const expenses = {
 
                             // TODO Tell Creator Denied
 
-                            if (committee.deleteExpense(req.body.expenseId)) res.sendStatus(204)
+                            if (await committee.deleteExpense(req.body.expenseId)) res.sendStatus(204)
                             else res.sendStatus(503)
                         }
                     } else res.sendStatus(404)

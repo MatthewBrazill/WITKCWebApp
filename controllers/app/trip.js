@@ -242,7 +242,7 @@ const trip = {
 
                 // Validate input
                 if (req.body.tripId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
-                    if (members.joinTrip(data.member.memberId, req.body.tripId)) res.sendStatus(200)
+                    if (await members.joinTrip(data.member.memberId, req.body.tripId)) res.sendStatus(200)
                     else res.sendStatus(503)
                 } else res.sendStatus(400)
             } else res.sendStatus(403)
@@ -271,7 +271,7 @@ const trip = {
 
                 // Validate input
                 if (req.body.tripId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
-                    if (members.leaveTrip(data.member.memberId, req.body.tripId)) res.sendStatus(200)
+                    if (await members.leaveTrip(data.member.memberId, req.body.tripId)) res.sendStatus(200)
                     else res.sendStatus(503)
                 } else res.sendStatus(400)
             } else res.sendStatus(403)

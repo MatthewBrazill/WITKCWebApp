@@ -18,7 +18,7 @@ const captain = {
 
                 // Validate input
                 if (req.body.memberId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
-                    if (committee.resolveVerification(req.body.memberId, (req.body.decision == 'true'))) res.sendStatus(200)
+                    if (await committee.resolveVerification(req.body.memberId, (req.body.decision == 'true'))) res.sendStatus(200)
                     else res.sendStatus(503)
                 } else res.sendStatus(400)
             } else res.sendStatus(403)

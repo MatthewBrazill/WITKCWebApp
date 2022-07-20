@@ -94,11 +94,11 @@ const safety = {
             if (data.loggedIn) {
                 if (data.committee == 'safety' || data.admin) {
                     if (req.body.tripId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
-                        await s3.putObject({
+                        s3.putObject({
                             Bucket: 'witkc',
                             Key: `deletedTrips/${req.body.tripId}.json`,
                             Body: JSON.stringify(await trips.get(req.body.tripId))
-                        }).promise().catch((err) => { throw err })
+                        })
                         trips.delete(req.body.tripId)
                         res.sendStatus(200)
                     } else res.sendStatus(400)

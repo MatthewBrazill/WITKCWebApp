@@ -114,11 +114,11 @@ const gear = {
                     // If file exists put to S3
                     if (files.file != undefined) {
                         await sharp(files.file.filepath).webp().toFile(`${files.file.filepath}.webp`).catch((err) => { throw err })
-                        await s3.putObject({
+                        s3.putObject({
                             Bucket: 'witkc',
                             Key: `img/equipment/${gear.equipmentId}.webp`,
                             Body: fs.readFileSync(`${files[i]}.webp`)
-                        }).promise().catch((err) => { throw err })
+                        })
                         logger.debug({
                             sessionId: req.sessionID,
                             loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
@@ -129,7 +129,7 @@ const gear = {
                         })
                     }
 
-                    if (equipment.create(gear)) res.sendStatus(201)
+                    if (await equipment.create(gear)) res.sendStatus(201)
                     else res.sendStatus(503)
                 } else res.sendStatus(400)
             } else res.sendStatus(403)
@@ -244,7 +244,7 @@ const gear = {
 
                 // Validate input
                 if (req.body.equipmentId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
-                    if (equipment.delete(req.body.equipmentId)) res.sendStatus(204)
+                    if (await equipment.delete(req.body.equipmentId)) res.sendStatus(204)
                     else res.sendStatus(503)
                 } else res.sendStatus(400)
             } else res.sendStatus(403)

@@ -67,13 +67,18 @@ const signup = {
                     dateJoined: new Date().toUTCString()
                 }
 
-                members.create(member)
-                passwords.create(member.memberId, await bcrypt.hash(req.body.password, 10))
+                var mSuccess = members.create(member)
+                var pSuccess = passwords.create(member.memberId, await bcrypt.hash(req.body.password, 10))
 
                 req.session.memberId = member.memberId
                 req.session.allow_cookies = true
 
-                res.status(200).json({ url: '/profile/me' })
+                if (await mSuccess && await pSuccess) res.status(200).json({ url: '/profile/me' })
+                else {
+                    if (await mSuccess) passwords.delete(member.memberId)
+                    if (await pSuccess) members.delete(member.memberId)
+                    res.sendStatus(503)
+                }
             } else res.sendStatus(400)
         } catch (err) {
             logger.error({

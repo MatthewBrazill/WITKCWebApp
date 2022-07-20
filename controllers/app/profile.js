@@ -131,7 +131,7 @@ const profile = {
                 if (!req.body.code.match(/^[a-z0-9]{3}[ ]?[a-z0-9]{4}$/i) && !req.body.code.match(/^[a-z0-9]{2,4}[ ]?[a-z0-9]{3}$/i)) valid = false
 
                 if (valid) {
-                    if (members.update({
+                    if (await members.update({
                         memberId: data.member.memberId,
                         firstName: helper.capitalize(req.body.first_name),
                         lastName: helper.capitalize(req.body.last_name),
@@ -177,11 +177,11 @@ const profile = {
                 // Validate file
                 if (files.file !== undefined) if (files.file.type.split('/')[0] == 'image') {
                     await sharp(files.file.filepath).resize({ width: 400 }).webp().toFile(`${files.file.filepath}-new`).catch((err) => { throw err })
-                    await s3.putObject({
+                    s3.putObject({
                         Bucket: 'witkc',
                         Key: data.member.img,
                         Body: fs.readFileSync(`${files.file.filepath}-new`)
-                    }).promise().catch((err) => { throw err })
+                    })
                 }
 
                 // Validate fields
@@ -248,7 +248,7 @@ const profile = {
 
             // Authenticate user
             if (data.loggedIn) {
-                if (committee.requestVerification(data.member.memberId)) res.sendStatus(200)
+                if (await committee.requestVerification(data.member.memberId)) res.sendStatus(200)
                 else res.sendStatus(503)
             } else res.sendStatus(401)
         } catch (err) {
@@ -272,7 +272,7 @@ const profile = {
 
             // Authenticate user
             if (data.loggedIn) {
-                if (members.delete(data.member.memberId)) {
+                if (await members.delete(data.member.memberId)) {
                     req.session.destroy()
                     res.sendStatus(200)
                 } else req.sendStatus(503)
