@@ -6,15 +6,16 @@ const winston = require('winston');
 const logger = winston.createLogger({
     transports: [
         new winston.transports.File({
-            filename: './logs/combined.log',
+            filename: './logs/info.log',
+            level: 'info',
             format: winston.format.combine(
                 winston.format.timestamp(),
                 winston.format.printf(({ level, message, timestamp }) => { return `[${timestamp}] ${level}: ${message}` })
             ),
         }),
         new winston.transports.File({
-            filename: './logs/error.log',
-            level: 'error',
+            filename: './logs/debug.log',
+            level: 'debug',
             format: winston.format.combine(
                 winston.format.timestamp(),
                 winston.format.printf(({ level, message, timestamp }) => { return `[${timestamp}] ${level}: ${message}` })

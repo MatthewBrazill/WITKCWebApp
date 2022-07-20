@@ -3,29 +3,12 @@
 // Imports
 const logger = require('../log.js')
 const AWS = require('aws-sdk')
-const members = require('./witkc_members.js')
+const members = require('./members.js')
 const equipment = require('./equipment.js')
 const trips = require('./trips.js')
 const dynamo = new AWS.DynamoDB()
 
 const committee = {
-
-    async setMemberForRole(roleId, memberId) {
-        if (roleId === null || roleId === undefined || memberId === null || memberId === undefined) return false
-        return dynamo.updateItem({
-            Key: { 'roleId': { S: roleId } },
-            ExpressionAttributeValues: { ':memberId': { S: memberId } },
-            UpdateExpression: 'SET memberId = :memberId',
-            TableName: 'witkc-committee'
-        }).promise().then((data) => {
-            if (data) return true
-            else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
-        }).catch((err) => {
-            logger.warn(`Could not change committee member for role '${role}'! ${err}`)
-            return false
-        })
-    },
-
     async getRole(roleId) {
         if (roleId === null || roleId === undefined) return null
         return dynamo.getItem({
@@ -48,8 +31,7 @@ const committee = {
                 if (role.roleId == 'captain') if (data.Item['verificationRequests'] != undefined) {
                     role.verificationRequests = []
                     for (var verificationRequest of data.Item['verificationRequests'].SS) role.verificationRequests.push(await members.get(verificationRequest))
-                }
-                else role.verificationRequests = []
+                } else role.verificationRequests = []
                 if (role.roleId == 'treasurer') {
                     role.expenseRequests = []
                     for (var expenseRequest of data.Item['expenseRequests'].L) {
@@ -74,10 +56,23 @@ const committee = {
                 }
                 if (role.roleId == 'safety') role.trips = await trips.pending()
                 if (role.roleId == 'equipments') role.equipment = await equipment.getAll()
+                logger.info({
+                    roleId: roleId,
+                    objectType: 'committee',
+                    storageType: 'dynamo',
+                    message: `Got Member For Role`
+                })
                 return role
             } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Could not get committee member for role '${roleId}'! ${err}`)
+            logger.warn({
+                roleId: roleId,
+                objectType: 'committee',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Get Member For Role`
+            })
             return null
         })
     },
@@ -102,10 +97,21 @@ const committee = {
                     else role.member = await members.get(item['memberId'].S)
                     committee.push(role)
                 }
+                logger.info({
+                    objectType: 'committee',
+                    storageType: 'dynamo',
+                    message: `Got All Roles`
+                })
                 return committee
             } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Could not get all members of the committee! ${err}`)
+            logger.warn({
+                objectType: 'committee',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Get All Roles`
+            })
             return null
         })
     },
@@ -124,6 +130,38 @@ const committee = {
         }).catch((err) => {
             logger.warn(`Could not determine committee membership of member '${memberId}'! ${err}`)
             return null
+        })
+    },
+
+    async setMemberForRole(roleId, memberId) {
+        if (roleId === null || roleId === undefined || memberId === null || memberId === undefined) return false
+        return dynamo.updateItem({
+            Key: { 'roleId': { S: roleId } },
+            ExpressionAttributeValues: { ':memberId': { S: memberId } },
+            UpdateExpression: 'SET memberId = :memberId',
+            TableName: 'witkc-committee'
+        }).promise().then((data) => {
+            if (data) {
+                logger.info({
+                    roleId: roleId,
+                    memberId: memberId,
+                    objectType: 'committee',
+                    storageType: 'dynamo',
+                    message: `Set Member For Role`
+                })
+                return true
+            } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
+        }).catch((err) => {
+            logger.warn({
+                roleId: roleId,
+                memberId: memberId,
+                objectType: 'committee',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Set Member For Role`
+            })
+            return false
         })
     },
 
@@ -153,10 +191,24 @@ const committee = {
             UpdateExpression: 'SET expenseRequests = list_append(expenseRequests, :expenseRequest)',
             TableName: 'witkc-committee'
         }).promise().then((data) => {
-            if (data) return true
-            else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
+            if (data) {
+                logger.info({
+                    expenseRequeset: expenseRequest,
+                    objectType: 'committee',
+                    storageType: 'dynamo',
+                    message: `Submit Expense`
+                })
+                return true
+            } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Could not submit expense request '${expenseRequest.expenseId}'! ${err}`)
+            logger.warn({
+                expenseRequeset: expenseRequest,
+                objectType: 'committee',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Submit Expense`
+            })
             return false
         })
     },
@@ -172,20 +224,33 @@ const committee = {
             if (data.Item != undefined) {
                 for (var i in data.Item['expenseRequests'].L) if (data.Item['expenseRequests'].L[i].M['expenseId'].S == expenseId) return i
                 return -1
-            }
-            else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
+            } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).then((index) => {
             if (index != -1) return dynamo.updateItem({
                 Key: { 'roleId': { S: 'treasurer' } },
                 UpdateExpression: `REMOVE expenseRequests[${index}]`,
                 TableName: 'witkc-committee'
             }).promise().then((data) => {
-                if (data) return true
-                else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
+                if (data) {
+                    logger.info({
+                        expenseRequeset: expenseRequest,
+                        objectType: 'committee',
+                        storageType: 'dynamo',
+                        message: `Deleted Expense`
+                    })
+                    return true
+                } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
             }).catch((err) => { throw err })
-            else return false
+            else throw `Could not find expense.`
         }).catch((err) => {
-            logger.warn(`Could not delete expense request '${expenseId}'! ${err}`)
+            logger.warn({
+                expenseId: expenseId,
+                objectType: 'committee',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Delete Expense`
+            })
             return false
         })
     },
@@ -198,10 +263,24 @@ const committee = {
             UpdateExpression: 'ADD verificationRequests :memberId',
             TableName: 'witkc-committee'
         }).promise().then((data) => {
-            if (data) return true
-            else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
+            if (data) {
+                logger.info({
+                    memberId: memberId,
+                    objectType: 'committee',
+                    storageType: 'dynamo',
+                    message: `Submit Verification Request`
+                })
+                return true
+            } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Could not submit verification request for '${memberId}'! ${err}`)
+            logger.warn({
+                memberId: memberId,
+                objectType: 'committee',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Submit Verification Request`
+            })
             return false
         })
     },
@@ -214,19 +293,49 @@ const committee = {
             UpdateExpression: 'SET verified = :bool',
             TableName: 'witkc-members'
         }).promise().then((data) => {
-            if (data) return
+            if (data) logger.info({
+                memberId: memberId,
+                decision: decision,
+                objectType: 'committee',
+                storageType: 'dynamo',
+                message: `Verified Member`
+            })
             else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
-        }).catch((err) => logger.warn(`Could not verify member '${memberId}'! ${err}`))
+        }).catch((err) => logger.warn({
+            memberId: memberId,
+            decision: decision,
+            objectType: 'committee',
+            storageType: 'dynamo',
+            error: err,
+            stack: err.stack,
+            message: `Failed To Verify Member`
+        }))
         return dynamo.updateItem({
             Key: { 'roleId': { S: 'captain' } },
             ExpressionAttributeValues: { ':memberId': { SS: [memberId] } },
             UpdateExpression: 'DELETE verificationRequests :memberId',
             TableName: 'witkc-committee'
         }).promise().then((data) => {
-            if (data) return true
-            else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
+            if (data) {
+                logger.info({
+                    memberId: memberId,
+                    decision: decision,
+                    objectType: 'committee',
+                    storageType: 'dynamo',
+                    message: `Removed Verification Request`
+                })
+                return true
+            } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Could not resolve verification request for '${memberId}'! ${err}`)
+            logger.warn({
+                memberId: memberId,
+                decision: decision,
+                objectType: 'committee',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Remove Verification Request`
+            })
             return false
         })
     }

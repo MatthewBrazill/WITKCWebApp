@@ -17,11 +17,25 @@ const announcements = {
                 'author': { S: announcement.author }
             },
             TableName: 'witkc-announcements'
-        }).promise().then(() => {
-            logger.info(`Announcement '${announcement.announcementId}': Created`)
-            return true
+        }).promise().then((data) => {
+            if (data) {
+                logger.info({
+                    announcement: announcement,
+                    objectType: 'announcement',
+                    storageType: 'dynamo',
+                    message: `Created Announcement`
+                })
+                return true
+            } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Failed to create announcement '${announcement.announcementId}'! ${err}`)
+            logger.warn({
+                announcement: announcement,
+                objectType: 'announcement',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Create Announcement`
+            })
             return false
         })
     },
@@ -44,10 +58,23 @@ const announcements = {
                         author: item['author'].S
                     })
                 }
+                logger.info({
+                    memberId: memberId,
+                    objectType: 'announcement',
+                    storageType: 'dynamo',
+                    message: `Got Unread Announcements`
+                })
                 return unreads
             } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Failed to get unread announcements! ${err}`)
+            logger.warn({
+                memberId: memberId,
+                objectType: 'announcement',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Get Unread Announcements`
+            })
             return null
         })
     },
@@ -60,10 +87,26 @@ const announcements = {
             UpdateExpression: 'ADD readBy :memberId',
             TableName: 'witkc-announcements'
         }).promise().then((data) => {
-            if (data) return true
-            else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
+            if (data) {
+                logger.info({
+                    announcementId: announcementId,
+                    memberId: memberId,
+                    objectType: 'announcement',
+                    storageType: 'dynamo',
+                    message: `Marked Announcement As Read`
+                })
+                return true
+            } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Could not mark announcement '${announcementId}' as read by '${memberId}'! ${err}`)
+            logger.warn({
+                announcementId: announcementId,
+                memberId: memberId,
+                objectType: 'announcement',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Mark Announcement As Read`
+            })
             return false
         })
     }

@@ -6,63 +6,110 @@ const s3 = new AWS.S3()
 const fs = require('fs')
 const formidable = require('formidable')
 const logger = require('../../log.js')
-const members = require('../../data_managers/witkc_members')
+const members = require('../../data_managers/members')
 const passwords = require("../../data_managers/passwords.js")
 const bcrypt = require('bcrypt')
 const sharp = require('sharp')
-const viewData = require('../../view_data.js')
+const helper = require('../helper.js')
 const committee = require('../../data_managers/committee.js')
 
 const profile = {
     async profilePage(req, res) {
-        var data = await viewData.get(req, 'My Profile')
+        var data = await helper.viewData(req, 'My Profile')
         data.scripts.profile = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/profile_scripts.js' })
 
+        // Authenticate user
         if (data.loggedIn) {
+
+            // Authenticate is the user is on the committee
             if (data.committee) {
+                logger.debug({
+                    sessionId: req.sessionID,
+                    loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                    memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                    method: req.method,
+                    urlPath: req.url,
+                    message: `Committee User`
+                })
                 data.scripts.committee = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/committee_scripts.js' })
                 data[data.committee] = await committee.getRole(data.committee)
-                data.scripts[data.committee] = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: `js/${data.committee}_scripts.js` })
+                data.scripts[data.committee] = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: `js / ${data.committee} _scripts.js` })
 
                 if (data.committee == 'equipments') {
+                    // Capitalize all of the Gear Data
                     for (var attr in data.equipments.equipment) for (var gear of data.equipments.equipment[attr]) for (var a in gear)
-                        if (!['equipmentId', 'img'].includes(a)) gear[a] = viewData.capitalize(gear[a].toString())
+                        if (!['equipmentId', 'img'].includes(a)) gear[a] = helper.capitalize(gear[a].toString())
                 }
-            } else if (data.admin) {
+            }
+
+            // Authenticate if the user is admin
+            else if (data.admin) {
+                logger.debug({
+                    sessionId: req.sessionID,
+                    loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                    memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                    method: req.method,
+                    urlPath: req.url,
+                    message: `Admin User`
+                })
                 data.committee = true
                 data.scripts.committee = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/committee_scripts.js' })
                 for (var role of ['captain', 'vice', 'safety', 'treasurer', 'equipments', 'pro', 'freshers']) {
                     data[role] = await committee.getRole(role)
                     data.scripts[role] = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: `js/${role}_scripts.js` })
                 }
+
+                // Capitalize all of the Gear Data
                 for (var attr in data.equipments.equipment) for (var gear of data.equipments.equipment[attr]) for (var a in gear)
-                    if (!['equipmentId', 'img'].includes(a)) gear[a] = viewData.capitalize(gear[a].toString())
+                    if (!['equipmentId', 'img'].includes(a)) gear[a] = helper.capitalize(gear[a].toString())
             }
 
-            logger.info(`Session '${req.sessionID}': Getting Profile`)
             res.render('profile', data)
-        } else res.redirect('/')
+        } else res.redirect('/login')
+    },
+
+    async userPage(req, res) {
+        var data = await helper.viewData(req, 'View Profile')
+        data.scripts.profile = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/profile_scripts.js' })
+
+        // Authenticate user
+        if (data.loggedIn) {
+
+            // Validate input
+            if (req.params.memberId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
+                var result = await members.get(req.params.memberId)
+                if (result != null) {
+                    result.dateJoined = new Date(result.dateJoined).toUTCString()
+                    result.img = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: result.img })
+                    data.user = result
+
+                    res.render('view_profile', data)
+                } else res.render('404', data)
+            } else res.render('404', data)
+        } else res.redirect('/login')
     },
 
     async settingsPage(req, res) {
-        var data = await viewData.get(req, 'Settings')
+        var data = await helper.viewData(req, 'Settings')
         data.scripts.profile = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/profile_scripts.js' })
 
+        // Authenticate user
         if (data.loggedIn) {
             var captain = await committee.getRole('captain')
             captain.verificationRequests.forEach(element => {
                 if (element.memberId == data.member.memberId) data.verificationRequested = true
             })
             if (data.member.committeeRole == 'admin') data.admin = true
-            logger.info(`Session '${req.sessionID}': Getting Settings`)
+
             res.render('settings', data)
-        } else res.redirect('/')
+        } else res.redirect('/login')
     },
 
     async updatePersonal(req, res) {
         try {
-            var data = await viewData.get(req, 'Personal')
+            var data = await helper.viewData(req, 'API')
 
+            // Authenticate user
             if (data.loggedIn) {
                 var valid = true
                 var counties = [
@@ -72,7 +119,7 @@ const profile = {
                     'sligo', 'tipperary', 'tyrone', 'waterford', 'westmeath', 'wexford', 'wicklow'
                 ]
 
-                // Server-Side Validation
+                // Validate input
                 if (!req.body.first_name.match(/^\p{L}{1,16}$/u)) valid = false
                 if (!req.body.last_name.match(/^\p{L}{1,16}$/u)) valid = false
                 if (!req.body.email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.[a-z]{2,})$/i)) valid = false
@@ -84,127 +131,165 @@ const profile = {
                 if (!req.body.code.match(/^[a-z0-9]{3}[ ]?[a-z0-9]{4}$/i) && !req.body.code.match(/^[a-z0-9]{2,4}[ ]?[a-z0-9]{3}$/i)) valid = false
 
                 if (valid) {
-                    members.update({
+                    if (await members.update({
                         memberId: data.member.memberId,
-                        firstName: viewData.capitalize(req.body.first_name),
-                        lastName: viewData.capitalize(req.body.last_name),
+                        firstName: helper.capitalize(req.body.first_name),
+                        lastName: helper.capitalize(req.body.last_name),
                         email: req.body.email.toLowerCase(),
-                        phone: viewData.internationalize(req.body.phone),
+                        phone: helper.internationalize(req.body.phone),
                         address: {
-                            lineOne: viewData.capitalize(req.body.line_one),
-                            lineTwo: viewData.capitalize(req.body.line_two),
-                            city: viewData.capitalize(req.body.city),
+                            lineOne: helper.capitalize(req.body.line_one),
+                            lineTwo: helper.capitalize(req.body.line_two),
+                            city: helper.capitalize(req.body.city),
                             county: req.body.county,
                             code: req.body.code.toUpperCase().replace(/\s/g, '')
                         },
                         promotion: (req.body.promotion === 'true')
-                    }).then(() => {
-                        logger.info(`Member ${data.member.memberId}: Successfully changed personal data!`)
-                        res.sendStatus(200)
-                    }).catch(() => res.status(500).json(err))
+                    })) res.sendStatus(200)
+                    else res.sendStatus(503)
                 } else res.sendStatus(400)
-            } else res.sendStatus(403)
-        } catch (err) { res.status(500).json(err) }
+            } else res.sendStatus(401)
+        } catch (err) {
+            logger.error({
+                sessionId: req.sessionID,
+                loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                method: req.method,
+                urlPath: req.url,
+                error: err,
+                stack: err.stack,
+                message: `${req.method} ${req.url} Failed => ${err}`
+            })
+            res.status(500).json(err)
+        }
     },
 
     async updateSettings(req, res) {
         try {
-            var data = await viewData.get(req, 'Customize')
+            var data = await helper.viewData(req, 'API')
 
             if (data.loggedIn) {
-                var form = new formidable.IncomingForm()
-                new Promise((resolve, reject) => {
-                    form.parse(req, (err, fields, files) => {
-                        if (err) reject(err)
-                        else resolve([fields, files])
-                    })
-                }).then(async (values) => {
-                    if (values[1].file !== undefined) if (values[1].file.type.split('/')[0] == 'image') {
-                        await sharp(values[1].file.filepath).resize({ width: 400 }).webp().toFile(`${values[1].file.filepath}-new`).catch((err) => { res.status(500).json(err) })
-                        await s3.putObject({
-                            Bucket: 'witkc',
-                            Key: data.member.img,
-                            Body: fs.readFileSync(`${values[1].file.filepath}-new`)
-                        }).promise().catch((err) => { res.status(500).json(err) })
-                    }
+                var { fields, files } = new formidable.IncomingForm().parse(req, (err, fields, files) => {
+                    if (err) throw err
+                    else return { fields, files }
+                })
 
-                    if (values[0].bio.match(/^[^<>]{1,500}$/u)) {
-                        members.update({
-                            memberId: data.member.memberId,
-                            bio: values[0].bio
-                        })
-                    }
-                    logger.info(`Member ${data.member.memberId}: Successfully updated customizations!`)
-                    res.status(200).json({ url: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: data.member.img }) })
-                }).catch((err) => { res.status(500).json(err) })
-            } else res.sendStatus(403)
-        } catch (err) { res.status(500).json(err) }
+                // Validate file
+                if (files.file !== undefined) if (files.file.type.split('/')[0] == 'image') {
+                    await sharp(files.file.filepath).resize({ width: 400 }).webp().toFile(`${files.file.filepath}-new`).catch((err) => { throw err })
+                    s3.putObject({
+                        Bucket: 'witkc',
+                        Key: data.member.img,
+                        Body: fs.readFileSync(`${files.file.filepath}-new`)
+                    })
+                }
+
+                // Validate fields
+                if (fields.bio.match(/^[^<>]{1,500}$/u)) {
+                    members.update({
+                        memberId: data.member.memberId,
+                        bio: fields.bio
+                    })
+                }
+
+                res.sendStatus(200)
+            } else res.sendStatus(401)
+        } catch (err) {
+            logger.error({
+                sessionId: req.sessionID,
+                loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                method: req.method,
+                urlPath: req.url,
+                error: err,
+                stack: err.stack,
+                message: `${req.method} ${req.url} Failed => ${err}`
+            })
+            res.status(500).json(err)
+        }
     },
 
     async updatePassword(req, res) {
         try {
-            var data = await viewData.get(req, 'Password')
+            var data = await helper.viewData(req, 'API')
 
-            if (data.loggedIn) {
-                if (await bcrypt.compare(req.body.old_password, await passwords.get(data.member.memberId))) {
-                    var valid = true
-                    // Server-Side Validation
-                    if (req.body.new_password.length < 8) valid = false
-                    if (req.body.confirm_password != req.body.new_password) valid = false
+            // Authenticate user (from scratch since PW change)
+            if (data.loggedIn) if (await bcrypt.compare(req.body.old_password, await passwords.get(data.member.memberId))) {
+                var valid = true
 
-                    if (valid) {
-                        passwords.update(data.member.memberId, await bcrypt.hash(req.body.new_password, 10)).then(() => {
-                            logger.info(`Member ${data.member.memberId}: Successfully changed password!`)
-                            res.sendStatus(200)
-                        }).catch(() => res.status(500).json(err))
-                    } else res.sendStatus(400)
-                } else res.sendStatus(403)
+                // Validate input
+                if (req.body.new_password.length < 8) valid = false
+                if (req.body.confirm_password != req.body.new_password) valid = false
+
+                if (valid) {
+                    if (await passwords.update(data.member.memberId, await bcrypt.hash(req.body.new_password, 10))) res.sendStatus(200)
+                    else res.status(503).json(err)
+                } else res.sendStatus(400)
             } else res.sendStatus(403)
-        } catch (err) { res.status(500).json(err) }
+            else res.sendStatus(401)
+        } catch (err) {
+            logger.error({
+                sessionId: req.sessionID,
+                loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                method: req.method,
+                urlPath: req.url,
+                error: err,
+                stack: err.stack,
+                message: `${req.method} ${req.url} Failed => ${err}`
+            })
+            res.status(500).json(err)
+        }
     },
 
     async verify(req, res) {
         try {
-            var data = await viewData.get(req, 'Delete')
+            var data = await helper.viewData(req, 'API')
 
+            // Authenticate user
             if (data.loggedIn) {
-                committee.requestVerification(data.member.memberId).then((success) => {
-                    if (success) res.sendStatus(200)
-                    else res.status(500).json({ err: 'Could not make request for verification!' })
-                })
-            } else res.sendStatus(403)
-        } catch (err) { res.status(500).json(err) }
+                if (await committee.requestVerification(data.member.memberId)) res.sendStatus(200)
+                else res.sendStatus(503)
+            } else res.sendStatus(401)
+        } catch (err) {
+            logger.error({
+                sessionId: req.sessionID,
+                loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                method: req.method,
+                urlPath: req.url,
+                error: err,
+                stack: err.stack,
+                message: `${req.method} ${req.url} Failed => ${err}`
+            })
+            res.status(500).json(err)
+        }
     },
 
     async delete(req, res) {
         try {
-            var data = await viewData.get(req, 'Delete')
+            var data = await helper.viewData(req, 'API')
 
+            // Authenticate user
             if (data.loggedIn) {
-                members.delete(data.member.memberId).then(() => {
-                    logger.info(`Member ${data.member.memberId}: Successfully deleted account!`)
+                if (await members.delete(data.member.memberId)) {
                     req.session.destroy()
                     res.sendStatus(200)
-                }).catch(() => res.status(500).json(err))
+                } else req.sendStatus(503)
             } else res.sendStatus(401)
-        } catch (err) { res.status(500).json(err) }
-    },
-
-    async userPage(req, res) {
-        var data = await viewData.get(req, 'View Profile')
-        data.scripts.profile = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/profile_scripts.js' })
-
-        if (data.loggedIn) {
-            if (req.params.userId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
-
-                data.user = await members.get(req.params.userId)
-                data.user.dateJoined = new Date(data.user.dateJoined).toUTCString()
-                data.user.img = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: data.user.img })
-
-                logger.info(`Session '${req.sessionID}': Getting View Profile`)
-                res.render('view_profile', data)
-            } else res.redirect('/404')
-        } else res.redirect('/')
+        } catch (err) {
+            logger.error({
+                sessionId: req.sessionID,
+                loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                method: req.method,
+                urlPath: req.url,
+                error: err,
+                stack: err.stack,
+                message: `${req.method} ${req.url} Failed => ${err}`
+            })
+            res.status(500).json(err)
+        }
     },
 }
 

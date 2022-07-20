@@ -4,25 +4,23 @@
 const AWS = require('aws-sdk')
 const s3 = new AWS.S3()
 const logger = require('../../log.js')
-const members = require('../../data_managers/witkc_members.js')
+const members = require('../../data_managers/members.js')
 const passwords = require("../../data_managers/passwords.js")
 const bcrypt = require('bcrypt')
-const viewData = require('../../view_data.js')
+const helper = require('../helper.js')
 
 const login = {
     async loginPage(req, res) {
-        var data = await viewData.get(req, 'Login')
+        var data = await helper.viewData(req, 'Login')
         data.scripts.login = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/login_scripts.js' })
 
         if (data.loggedIn) req.session.destroy()
-        logger.info(`Session '${req.sessionID}': Getting Login`)
         res.render('login', data)
     },
 
     async login(req, res) {
         // Force all attempts to take 1s to prevent remote brute force attacks
         var minTime = new Promise(resolve => setTimeout(resolve, 1000))
-        logger.info(`Session '${req.sessionID}': Posting Login Form`)
         var valid = true
 
         // Server-Side Validation
@@ -34,15 +32,30 @@ const login = {
             var success = bcrypt.compare(req.body.password, await passwords.get(memberId))
         }
 
+        // Resolve the min of 1s AFTER authentication to remain as close as possible to the 1s response time
         await minTime
         if (success) {
-            logger.info(`Session '${req.sessionID}': Login Succeeded`)
-            req.session.userID = memberId
+            logger.debug({
+                sessionId: req.sessionID,
+                loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                method: req.method,
+                urlPath: req.url,
+                message: `Login Succeeded`
+            })
+            req.session.memberId = memberId
             req.session.allow_cookies = true
             res.status(200).json({ url: '/profile/me' })
         } else {
-            logger.info(`Session '${req.sessionID}': Login Failed`)
-            res.sendStatus(403)
+            logger.debug({
+                sessionId: req.sessionID,
+                loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                method: req.method,
+                urlPath: req.url,
+                message: `Login Failed`
+            })
+            res.sendStatus(404)
         }
     }
 }

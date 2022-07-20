@@ -1,7 +1,7 @@
 $(document).ready(() => {
 
     $.ajax({
-        url: '/api/events/dates',
+        url: '/api/events/all',
         method: 'GET',
         success: (dates) => {
             for (var i in dates) dates[i].date = new Date(dates[i].date)

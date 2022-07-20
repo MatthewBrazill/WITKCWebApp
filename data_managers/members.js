@@ -4,7 +4,6 @@
 const logger = require('../log.js')
 const AWS = require('aws-sdk')
 const certificates = require('./certificates.js')
-const trips = require('./trips.js')
 const dynamo = new AWS.DynamoDB()
 const s3 = new AWS.S3()
 
@@ -35,10 +34,24 @@ const members = {
             },
             TableName: 'witkc-members'
         }).promise().then(() => {
-            logger.info(`Member ${member.memberId}: Created`)
-            return true
+            if (data) {
+                logger.info({
+                    member: member,
+                    objectType: 'member',
+                    storageType: 'dynamo',
+                    message: `Created Member`
+                })
+                return true
+            } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Failed to create member ${member.memberId}! ${err}`)
+            logger.warn({
+                member: member,
+                objectType: 'member',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Create Member`
+            })
             return false
         })
     },
@@ -52,10 +65,24 @@ const members = {
             ProjectionExpression: '#ID',
             TableName: 'witkc-members'
         }).promise().then((data) => {
-            if (data.Items[0] != undefined) return data.Items[0]['memberId'].S
-            else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
+            if (data.Items[0] != undefined) {
+                logger.info({
+                    username: username,
+                    objectType: 'member',
+                    storageType: 'dynamo',
+                    message: `Resolved Username`
+                })
+                return data.Items[0]['memberId'].S
+            } else return null
         }).catch((err) => {
-            logger.warn(`Could not resolve username ${username}! ${err}`)
+            logger.warn({
+                username: username,
+                objectType: 'member',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Resolve Username`
+            })
             return null
         })
     },
@@ -83,11 +110,23 @@ const members = {
                     }
                 }
                 for (var i in member.certs) member.certs[i] = await certificates.get(member.certs[i])
+                logger.info({
+                    memberId: memberId,
+                    objectType: 'member',
+                    storageType: 'dynamo',
+                    message: `Got Member`
+                })
                 return member
-            }
-            else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
+            } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Failed to retrieve member ${memberId}! ${err}`)
+            logger.warn({
+                memberId: memberId,
+                objectType: 'member',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Get Member`
+            })
             return null
         })
     },
@@ -115,30 +154,28 @@ const members = {
                         img: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: item['img'].S })
                     })
                 }
+                logger.info({
+                    objectType: 'member',
+                    storageType: 'dynamo',
+                    message: `Listed Member`
+                })
                 return members
             } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Failed to retrieve members! ${err}`)
+            logger.warn({
+                objectType: 'member',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To List Members`
+            })
             return null
-        })
-    },
-
-    async exists(memberId) {
-        if (memberId === null || memberId === undefined) return false
-        return dynamo.getItem({
-            Key: { 'memberId': { S: memberId } },
-            TableName: 'witkc-members'
-        }).promise().then((data) => {
-            if (data.Item != undefined) return true
-            else return false
-        }).catch((err) => {
-            logger.warn(`Failed to verify existence of member ${memberId}! ${err}`)
-            return false
         })
     },
 
     async update(member) {
         if (member === null || member === undefined) return false
+        if (member.memberId === null || member.memberId === undefined) return false
         var attributes = {}
         var expression = 'SET '
         for (var attr in member) {
@@ -169,11 +206,24 @@ const members = {
             UpdateExpression: expression,
             TableName: 'witkc-members'
         }).promise().then((data) => {
-            if (data) return true
-            else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
+            if (data) {
+                logger.info({
+                    member: member,
+                    objectType: 'member',
+                    storageType: 'dynamo',
+                    message: `Updated Member`
+                })
+                return true
+            } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            if (member.memberId === undefined) err = `'member.memberId' was not supplied!`
-            logger.warn(`Failed to update member ${member.memberId}! ${err}`)
+            logger.warn({
+                member: member,
+                objectType: 'member',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Update Members`
+            })
             return false
         })
     },
@@ -186,10 +236,26 @@ const members = {
             UpdateExpression: 'ADD certs :cert',
             TableName: 'witkc-members'
         }).promise().then((data) => {
-            if (data) return true
-            else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
+            if (data) {
+                logger.info({
+                    memberId: memberId,
+                    certId: certId,
+                    objectType: 'member',
+                    storageType: 'dynamo',
+                    message: `Awarded Certificate`
+                })
+                return true
+            } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Could not award certificate '${certId}' to member '${memberId}'! ${err}`)
+            logger.warn({
+                memberId: memberId,
+                certId: certId,
+                objectType: 'member',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Award Certificate`
+            })
             return false
         })
     },
@@ -199,13 +265,29 @@ const members = {
         return dynamo.updateItem({
             Key: { 'memberId': { S: memberId } },
             ExpressionAttributeValues: { ':cert': { SS: [certId] } },
-            UpdateExpression: 'DELETE certs :cert)',
+            UpdateExpression: 'DELETE certs :cert',
             TableName: 'witkc-members'
         }).promise().then((data) => {
-            if (data) return true
-            else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
+            if (data) {
+                logger.info({
+                    memberId: memberId,
+                    certId: certId,
+                    objectType: 'member',
+                    storageType: 'dynamo',
+                    message: `Revoked Certificate`
+                })
+                return true
+            } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Could not revoke certificate '${certId}' from member '${memberId}'! ${err}`)
+            logger.warn({
+                memberId: memberId,
+                certId: certId,
+                objectType: 'member',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Revoke Certificate`
+            })
             return false
         })
     },
@@ -218,10 +300,26 @@ const members = {
             UpdateExpression: 'ADD attendees :attendee',
             TableName: 'witkc-trips'
         }).promise().then((data) => {
-            if (data) return true
-            else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
+            if (data) {
+                logger.info({
+                    memberId: memberId,
+                    tripId: tripId,
+                    objectType: 'member',
+                    storageType: 'dynamo',
+                    message: `Joined Trip`
+                })
+                return true
+            } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Could not add member '${memberId}' to trip '${tripId}'! ${err}`)
+            logger.warn({
+                memberId: memberId,
+                tripId: tripId,
+                objectType: 'member',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Join Trip`
+            })
             return false
         })
     },
@@ -234,10 +332,26 @@ const members = {
             UpdateExpression: 'DELETE attendees :attendee',
             TableName: 'witkc-trips'
         }).promise().then((data) => {
-            if (data) return true
-            else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
+            if (data) {
+                logger.info({
+                    memberId: memberId,
+                    tripId: tripId,
+                    objectType: 'member',
+                    storageType: 'dynamo',
+                    message: `Left Trip`
+                })
+                return true
+            } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Could not remove member '${memberId}' from trip '${tripId}'! ${err}`)
+            logger.warn({
+                memberId: memberId,
+                tripId: tripId,
+                objectType: 'member',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Leave Trip`
+            })
             return false
         })
     },
@@ -247,11 +361,25 @@ const members = {
         return dynamo.deleteItem({
             Key: { 'memberId': { S: memberId } },
             TableName: 'witkc-members'
-        }).promise().then(() => {
-            logger.info(`Member ${memberId}: Deleted`)
-            return true
+        }).promise().then((data) => {
+            if (data) {
+                logger.info({
+                    memberId: memberId,
+                    objectType: 'member',
+                    storageType: 'dynamo',
+                    message: `Deleted Member`
+                })
+                return true
+            } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Failed to delete member ${memberId}! ${err}`)
+            logger.warn({
+                memberId: memberId,
+                objectType: 'member',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Delete Member`
+            })
             return false
         })
     }

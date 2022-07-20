@@ -14,11 +14,25 @@ const passwords = {
                 'hash': { S: hash }
             },
             TableName: 'witkc-passwords'
-        }).promise().then(() => {
-            logger.info(`Password for user ${memberId}: Created`)
-            return true
+        }).promise().then((data) => {
+            if (data) {
+                logger.info({
+                    memberId: memberId,
+                    objectType: 'password',
+                    storageType: 'dynamo',
+                    message: `Created Password`
+                })
+                return true
+            } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Failed to create password for user ${memberId}! ${err}`)
+            logger.warn({
+                memberId: memberId,
+                objectType: 'password',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Create Password`
+            })
             return false
         })
     },
@@ -30,10 +44,24 @@ const passwords = {
             Key: { 'memberId': { S: memberId } },
             TableName: 'witkc-passwords'
         }).promise().then((data) => {
-            if (data.Item != undefined) return data.Item['hash'].S
-            else return 'null'
+            if (data.Item != undefined) {
+                logger.info({
+                    memberId: memberId,
+                    objectType: 'password',
+                    storageType: 'dynamo',
+                    message: `Got Password`
+                })
+                return data.Item['hash'].S
+            } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Failed to retrieve password for user ${memberId}! ${err}`)
+            logger.warn({
+                memberId: memberId,
+                objectType: 'password',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Get Password`
+            })
             return 'null'
         })
     },
@@ -47,10 +75,24 @@ const passwords = {
             },
             TableName: 'witkc-passwords'
         }).promise().then(() => {
-            logger.info(`Password for user ${memberId}: Updated`)
-            return true
+            if (data) {
+                logger.info({
+                    memberId: memberId,
+                    objectType: 'password',
+                    storageType: 'dynamo',
+                    message: `Updated Password`
+                })
+                return true
+            } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Failed to update password for user ${memberId}! ${err}`)
+            logger.warn({
+                memberId: memberId,
+                objectType: 'password',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Update Password`
+            })
             return false
         })
     },
@@ -61,10 +103,24 @@ const passwords = {
             Key: { 'memberId': { S: memberId } },
             TableName: 'witkc-passwords'
         }).promise().then(() => {
-            logger.info(`Password for user ${memberId}: Deleted`)
-            return true
+            if (data) {
+                logger.info({
+                    memberId: memberId,
+                    objectType: 'password',
+                    storageType: 'dynamo',
+                    message: `Deleted Password`
+                })
+                return true
+            } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
-            logger.warn(`Failed to delete password for user ${memberId}! ${err}`)
+            logger.warn({
+                memberId: memberId,
+                objectType: 'password',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Delete Password`
+            })
             return false
         })
     }

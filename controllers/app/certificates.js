@@ -1,25 +1,37 @@
 'use strict'
 
 // Imports
-const viewData = require('../../view_data.js')
-const certificates = require('../../data_managers/certificates.js')
+const helper = require('../helper.js')
+const certs = require('../../data_managers/certificates.js')
+const logger = require('../../log.js')
 
 
-const api = {
+const certificates = {
     async list(req, res) {
         try {
-            var data = await viewData.get(req, 'API')
+            var data = await helper.viewData(req, 'API')
 
-            if (data.loggedIn) {
-                if (data.committee || data.admin) {
-                    certificates.list().then((certs) => {
-                        if (certs !== null) res.status(200).json(certs)
-                        else throw 'Failed to get certificates!'
-                    }).catch((err) => res.status(500).json(err))
-                } else res.sendStatus(403)
+            // Autheticate safety officer
+            if (data.loggedIn) if (data.committee == 'safety' || data.admin) {
+                var result = await certs.list()
+                if (result !== null) res.status(200).json(result)
+                else res.sendStatus(404)
             } else res.sendStatus(403)
-        } catch (err) { res.status(500).json(err) }
+            else res.sendStatus(401)
+        } catch (err) {
+            logger.error({
+                sessionId: req.sessionID,
+                loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                method: req.method,
+                urlPath: req.url,
+                error: err,
+                stack: err.stack,
+                message: `${req.method} ${req.url} Failed => ${err}`
+            })
+            res.status(500).json(err)
+        }
     },
 }
 
-module.exports = api
+module.exports = certificates

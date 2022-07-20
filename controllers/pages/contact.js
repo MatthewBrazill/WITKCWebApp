@@ -6,14 +6,12 @@ const s3 = new AWS.S3()
 const ses = new AWS.SESV2()
 const uuid = require('uuid')
 const logger = require('../../log.js')
-const viewData = require('../../view_data.js')
+const helper = require('../helper.js')
 
 const contact = {
     async contactPage(req, res) {
-        var data = await viewData.get(req, 'Contact Us')
+        var data = await helper.viewData(req, 'Contact Us')
         data.scripts.contact = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/contact_scripts.js' })
-
-        logger.info(`Session '${req.sessionID}': Getting Contact`)
         res.render('contact', data)
     },
 
@@ -22,12 +20,12 @@ const contact = {
             var ticket = uuid.v4()
             var valid = true
 
-
             if (!req.body.first_name.match(/^\p{L}{1,16}$/u)) valid = false
             if (!req.body.last_name.match(/^\p{L}{1,16}$/u)) valid = false
             if (!req.body.email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.[a-z]{2,})$/i)) valid = false
             if (!req.body.message.match(/^[^<>]{1,500}$/u)) valid = false
 
+            // Validate input
             if (valid) {
                 ses.sendEmail({
                     Content: {
@@ -50,17 +48,42 @@ const contact = {
                     Destination: { ToAddresses: ['matthew.s.brazill@gmail.com'] },
                     ReplyToAddresses: [req.body.email]
                 }).promise().then(() => {
-                    logger.info(`Session '${req.sessionID}': Sent contact message!`)
+                    logger.debug({
+                        sessionId: req.sessionID,
+                        loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                        memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                        method: req.method,
+                        urlPath: req.url,
+                        message: `Sent Message`
+                    })
                     res.sendStatus(200)
                 }).catch((err) => {
-                    logger.info(`Session '${req.sessionID}': Failed to send message! ${err}`)
+                    logger.error({
+                        sessionId: req.sessionID,
+                        loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                        memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                        method: req.method,
+                        urlPath: req.url,
+                        error: err,
+                        stack: err.stack,
+                        message: `${req.method} ${req.url} Failed => ${err}`
+                    })
                     res.status(500).json(err)
                 })
-            } else {
-                logger.info(`Session '${req.sessionID}': Tried to send invalid message!`)
-                res.sendStatus(400)
-            }
-        } catch (err) { res.status(500).json(err) }
+            } else res.sendStatus(400)
+        } catch (err) {
+            logger.error({
+                sessionId: req.sessionID,
+                loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                method: req.method,
+                urlPath: req.url,
+                error: err,
+                stack: err.stack,
+                message: `${req.method} ${req.url} Failed => ${err}`
+            })
+            res.status(500).json(err)
+        }
     }
 }
 
