@@ -15,7 +15,7 @@ $(document).ready(() => {
                 else form.prop('loaded', true)
                 var values = []
                 for (var cert of certs) values.push({
-                    name: cert.name,
+                    name: cert.certName,
                     value: cert.id
                 })
                 $('#award_cert_modal_cert_dropdown').dropdown({
@@ -130,7 +130,7 @@ $(document).ready(() => {
                                     }
                                 })
                             }))
-                            .append($('<div class="header" style="margin: 0px;"></div>').text(cert.name))
+                            .append($('<div class="header" style="margin: 0px;"></div>').text(cert.certName))
                             .append($('<div></div>').text(cert.category + ' Certificate'))))
                 }
                 $('#revoke_cert_modal_error').hide()

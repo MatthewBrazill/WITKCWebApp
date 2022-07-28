@@ -112,10 +112,10 @@ const events = {
                             }
                         }
 
-                        if (exists) allDates[index].message = allDates[index].message + `, ${result.name}`
+                        if (exists) allDates[index].message = allDates[index].message + `, ${result.tripName}`
                         else allDates.push({
                             date: date,
-                            message: result.name,
+                            message: result.tripName,
                             class: 'green'
                         })
                     }

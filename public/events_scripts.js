@@ -5,7 +5,6 @@ $(document).ready(() => {
         method: 'GET',
         success: (dates) => {
             for (var i in dates) dates[i].date = new Date(dates[i].date)
-            console.log(dates)
             $('#event_calendar').attr('class', 'ui calendar')
             $('#event_calendar').calendar({
                 selectAdjacentDays: true,
@@ -42,8 +41,8 @@ $(document).ready(() => {
                         <a class="ui fluid link card" href="/trip/${event.tripId}" target="_blank">
                             <div class="content">
                                 <div class="header">
-                                    <div class="ui left floated">${event.name}</div>
-                                    <div class="ui right floated">Level: ${event.level}</div>
+                                    <div class="ui left floated">${event.tripName}</div>
+                                    <div class="ui right floated">Level: ${event.skillLevel}</div>
                                 </div>
                             </div>
                         </a>

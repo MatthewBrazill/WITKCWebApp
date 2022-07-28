@@ -57,8 +57,8 @@ $(document).ready(() => {
                 }
             })
 
-            $('#name').on('input', () => {
-                const name = $('#name')
+            $('#tripName').on('input', () => {
+                const name = $('#tripName')
                 const field = name.parent()
                 if (!name.val().match(/^[\p{L}\d!?&() ]{1,64}$/u)) {
                     field.attr('class', 'field error')
@@ -182,17 +182,17 @@ $(document).ready(() => {
                 }
             })
 
-            $('#level_dropdown').dropdown()
-            $('#level').on('change', () => {
-                const level = $('#level')
-                const field = level.parent().parent()
+            $('#skillLevel_dropdown').dropdown()
+            $('#skillLevel').on('change', () => {
+                const skillLevel = $('#skillLevel')
+                const field = skillLevel.parent().parent()
 
-                if (level.val() < 1 || level.val() > 5 || level.val() == '') {
+                if (skillLevel.val() < 1 || skillLevel.val() > 5 || skillLevel.val() == '') {
                     field.attr('class', 'field error')
-                    level.prop('valid', false)
+                    skillLevel.prop('valid', false)
                 } else {
                     field.attr('class', 'field success')
-                    level.prop('valid', true)
+                    skillLevel.prop('valid', true)
                 }
             })
 

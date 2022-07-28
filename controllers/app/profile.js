@@ -83,7 +83,7 @@ const profile = {
                     result.img = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: result.img })
                     data.user = result
 
-                    res.render('view_profile', data)
+                    res.render('user', data)
                 } else res.render('404', data)
             } else res.render('404', data)
         } else res.redirect('/login')

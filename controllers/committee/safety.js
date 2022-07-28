@@ -66,45 +66,86 @@ const safety = {
                 } else res.sendStatus(400)
             } else res.sendStatus(403)
             else res.sendStatus(401)
-        } catch (err) { res.status(500).json(err) }
+        } catch (err) {
+            logger.error({
+                sessionId: req.sessionID,
+                loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                method: req.method,
+                urlPath: req.url,
+                error: err,
+                stack: err.stack,
+                message: `${req.method} ${req.url} Failed => ${err}`
+            })
+            res.status(500).json(err)
+        }
     },
 
     async acceptTrip(req, res) {
         try {
             var data = await helper.viewData(req, 'API')
 
-            if (data.loggedIn) {
-                if (data.committee == 'safety' || data.admin) {
-                    if (req.body.tripId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
-                        trips.update({
-                            tripId: req.body.tripId,
-                            approved: true
-                        })
-                        res.sendStatus(200)
-                    } else res.sendStatus(400)
-                } else res.sendStatus(403)
+            // Authenticate user
+            if (data.loggedIn) if (data.committee == 'safety' || data.admin) {
+
+                // Validate input
+                if (req.body.tripId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
+                    if (await trips.update({
+                        tripId: req.body.tripId,
+                        approved: true
+                    })) res.sendStatus(200)
+                    else res.sendStatus(503)
+                } else res.sendStatus(400)
             } else res.sendStatus(403)
-        } catch (err) { res.status(500).json(err) }
+            else res.sendStatus(401)
+        } catch (err) {
+            logger.error({
+                sessionId: req.sessionID,
+                loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                method: req.method,
+                urlPath: req.url,
+                error: err,
+                stack: err.stack,
+                message: `${req.method} ${req.url} Failed => ${err}`
+            })
+            res.status(500).json(err)
+        }
     },
 
     async rejectTrip(req, res) {
         try {
             var data = await helper.viewData(req, 'API')
 
-            if (data.loggedIn) {
-                if (data.committee == 'safety' || data.admin) {
-                    if (req.body.tripId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
-                        s3.putObject({
-                            Bucket: 'witkc',
-                            Key: `deletedTrips/${req.body.tripId}.json`,
-                            Body: JSON.stringify(await trips.get(req.body.tripId))
-                        })
-                        trips.delete(req.body.tripId)
-                        res.sendStatus(200)
-                    } else res.sendStatus(400)
-                } else res.sendStatus(403)
+            // Authenticate user
+            if (data.loggedIn) if (data.committee == 'safety' || data.admin) {
+
+                // Validate input
+                if (req.body.tripId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
+                    s3.putObject({
+                        Bucket: 'witkc',
+                        Key: `deletedTrips/${req.body.tripId}.json`,
+                        Body: JSON.stringify(await trips.get(req.body.tripId))
+                    })
+
+                    if (await trips.delete(req.body.tripId)) res.sendStatus(200)
+                    else res.sendStatus(503)
+                } else res.sendStatus(400)
             } else res.sendStatus(403)
-        } catch (err) { res.status(500).json(err) }
+            else res.sendStatus(401)
+        } catch (err) {
+            logger.error({
+                sessionId: req.sessionID,
+                loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                method: req.method,
+                urlPath: req.url,
+                error: err,
+                stack: err.stack,
+                message: `${req.method} ${req.url} Failed => ${err}`
+            })
+            res.status(500).json(err)
+        }
     }
 }
 

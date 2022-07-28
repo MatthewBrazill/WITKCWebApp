@@ -1,9 +1,9 @@
 [
     {
         "id": "179c8595-366f-4b05-819a-750f6f7de7c5",
-        "name": "Sit on Top Flatwater",
+        "certName": "Sit on Top Flatwater",
         "category": "SOT",
-        "level": "1",
+        "skillLevel": "1",
         "link": "https://www.canoe.ie/sit-on-top-flatwater-skills/",
         "aims": [
             "Paddle safely and competently on a Sit-on-Top on sheltered flat water as a member of a group being led.",
@@ -12,9 +12,9 @@
     },
     {
         "id": "b6fce740-bbff-49f9-be30-9fb4ce8e670f",
-        "name": "Sit on Top Sea",
+        "certName": "Sit on Top Sea",
         "category": "SOT",
-        "level": "3",
+        "skillLevel": "3",
         "link": "https://www.canoe.ie/sit-on-top-sea-skills/",
         "aims": [
             "Paddle safely and competently in smooth seas (Douglas Sea Scale: 0.10-0.50 meters swell) as a member of a group of peers.",
@@ -25,9 +25,9 @@
     },
     {
         "id": "9b6cd190-103c-43a8-9b20-02566ee42994",
-        "name": "Sit on Top River",
+        "certName": "Sit on Top River",
         "category": "SOT",
-        "level": "4",
+        "skillLevel": "4",
         "link": "https://www.canoe.ie/sit-on-top-river/",
         "aims": [
             "Paddle safely and competently on rivers up to and including Grade II rivers as a member of a group of peers.",
@@ -37,9 +37,9 @@
     },
     {
         "id": "0c6465ff-c4ad-478c-a004-7015faefa640",
-        "name": "Intro to SUP",
+        "certName": "Intro to SUP",
         "category": "SUP",
-        "level": "1",
+        "skillLevel": "1",
         "link": "https://www.canoe.ie/stand-up-paddle-intro/",
         "aims": [
             "Paddle safely and competently on a SUP board on sheltered flat water as part of a group being led.",
@@ -49,9 +49,9 @@
     },
     {
         "id": "41fbfcb5-31e0-4bc3-96e5-92f954b9619f",
-        "name": "Flatwater SUP",
+        "certName": "Flatwater SUP",
         "category": "SUP",
-        "level": "2",
+        "skillLevel": "2",
         "link": "https://www.canoe.ie/stand-up-paddle-flatwater/",
         "aims": [
             "Paddle safely and competently on a SUP on sheltered flat water.",
@@ -61,9 +61,9 @@
     },
     {
         "id": "dea7140d-c844-484a-9a84-c997d797b422",
-        "name": "Level 1 Paddlesport Skills",
+        "certName": "Level 1 Paddlesport Skills",
         "category": "Kayak",
-        "level": "1",
+        "skillLevel": "1",
         "link": "https://www.canoe.ie/level-1-paddlesport-skills/",
         "aims": [
             "Perform fundamental Paddling Skills.",
@@ -72,9 +72,9 @@
     },
     {
         "id": "00bba133-c28c-4019-97f9-455c4e45602c",
-        "name": "Level 2 Kayak Skills",
+        "certName": "Level 2 Kayak Skills",
         "category": "Kayak",
-        "level": "2",
+        "skillLevel": "2",
         "link": "https://www.canoe.ie/level-2-kayak-skills/",
         "aims": [
             "Kayak safely and competently on flat water, Grade I rivers, very sheltered coastal areas as a member of a group of peers.",
@@ -85,9 +85,9 @@
     },
     {
         "id": "c7e39b6d-1b4b-40fc-8491-27284a3fbe4d",
-        "name": "Level 3 River Kayak Skills",
+        "certName": "Level 3 River Kayak Skills",
         "category": "Kayak",
-        "level": "3",
+        "skillLevel": "3",
         "link": "https://www.canoe.ie/level-3-river-kayak-skills/",
         "aims": [
             "Kayak safely and competently on rivers up to and including Grade II rivers as a member of a group of peers.",
@@ -97,9 +97,9 @@
     },
     {
         "id": "48da9d14-d094-4184-a663-5c8148314aa8",
-        "name": "Level 4 River Kayak Skills",
+        "certName": "Level 4 River Kayak Skills",
         "category": "Kayak",
-        "level": "4",
+        "skillLevel": "4",
         "link": "https://www.canoe.ie/level-4-river-kayak-skills/",
         "aims": [
             "Kayak safely and proficiently on rivers up to and including Grade III difficulty as part of a group of peers.",
@@ -110,9 +110,9 @@
     },
     {
         "id": "dd9d9997-c778-4c4d-a065-97625b0a4bf9",
-        "name": "Level 5 River Kayak Skills",
+        "certName": "Level 5 River Kayak Skills",
         "category": "Kayak",
-        "level": "5",
+        "skillLevel": "5",
         "link": "https://www.canoe.ie/level-5-river-kayak-skills/",
         "aims": [
             "Develop the necessary skills, group awareness, and group management to kayak safely and competently on rivers up to and including rivers of Grade IV & advanced white-water difficulty.",
@@ -122,9 +122,9 @@
     },
     {
         "id": "dd9fc5b1-7fda-4c83-85b8-e114a17636e9",
-        "name": "Level 3 Sea Kayak Skills",
+        "certName": "Level 3 Sea Kayak Skills",
         "category": "Kayak",
-        "level": "3",
+        "skillLevel": "3",
         "link": "https://www.canoe.ie/level-3-sea-kayak-skills/",
         "aims": [
             "Kayak safely and competently in smooth seas (Douglas Sea Scale. Waves below 0.5m/1.64ft) as a member of a group of peers.",
@@ -135,9 +135,9 @@
     },
     {
         "id": "a373aeaa-94ae-4ce9-b5bf-de17d8baaa3e",
-        "name": "Level 4 Sea Kayak Skills",
+        "certName": "Level 4 Sea Kayak Skills",
         "category": "Kayak",
-        "level": "4",
+        "skillLevel": "4",
         "link": "https://www.canoe.ie/level-4-sea-kayak-skills/",
         "aims": [
             "Kayak safely and competently on the Sea up to and including slight seas (Douglas Sea Scale, 1-2 metre swell) and force 4 winds (11-16 knots), including overfalls and tide races as part of a group of peers.",
@@ -148,9 +148,9 @@
     },
     {
         "id": "72d3ce86-5486-4ed2-ba7f-5d9b9eb67d89",
-        "name": "Level 5 Sea Kayak Skills",
+        "certName": "Level 5 Sea Kayak Skills",
         "category": "Kayak",
-        "level": "5",
+        "skillLevel": "5",
         "link": "https://www.canoe.ie/level-5-sea-kayak-skills/",
         "aims": [
             "Kayak with advanced paddling and rescue techniques appropriate to moderate/rough sea conditions (Douglas Sea Scale, 2-3m swell and 17-21 knots winds/ 31-38km/h).",
@@ -159,9 +159,9 @@
     },
     {
         "id": "c26a871b-35fd-45e4-9b50-8bfe0a77708d",
-        "name": "Level 2 Canoe Skills",
+        "certName": "Level 2 Canoe Skills",
         "category": "Canoe",
-        "level": "2",
+        "skillLevel": "2",
         "link": "https://www.canoe.ie/level-2-canoe-skills/",
         "aims": [
             "Canoe safely and competently on flat water, Grade I rivers, very sheltered open water areas as a member of a group of peers.",
@@ -172,9 +172,9 @@
     },
     {
         "id": "4a2bbe04-9a60-4c71-802c-7c094d36ab73",
-        "name": "Level 3 Canoe Skills",
+        "certName": "Level 3 Canoe Skills",
         "category": "Canoe",
-        "level": "3",
+        "skillLevel": "3",
         "link": "https://www.canoe.ie/level-3-canoe-skills/",
         "aims": [
             "Canoe safely and competently on rivers up to and including of Grade II difficulty as a member of peers.",
@@ -184,9 +184,9 @@
     },
     {
         "id": "f6582283-d6e3-4bb2-820e-d3eeb62ef0c1",
-        "name": "Level 4 Canoe Skills",
+        "certName": "Level 4 Canoe Skills",
         "category": "Canoe",
-        "level": "4",
+        "skillLevel": "4",
         "link": "https://www.canoe.ie/level-4-canoe-skills/",
         "aims": [
             "Canoe safely and competently on rivers up to and including rivers of Grade II-III difficulty as part of a group of peers.",
@@ -197,9 +197,9 @@
     },
     {
         "id": "fc126191-94dc-44f8-b356-d9f8d9f54adb",
-        "name": "Level 5 Canoe Skills",
+        "certName": "Level 5 Canoe Skills",
         "category": "Canoe",
-        "level": "5",
+        "skillLevel": "5",
         "link": "https://www.canoe.ie/level-5-canoe-skills/",
         "aims": [
             "Develop the necessary skills and group awareness and management to paddle safely and competently on rivers up to and including rivers of Grade III+ difficulty.",
@@ -209,9 +209,9 @@
     },
     {
         "id": "4fb9051f-5e12-4dca-93e0-72c04fe54a0a",
-        "name": "River Safety and Rescue 1",
+        "certName": "River Safety and Rescue 1",
         "category": "Rescue",
-        "level": "1",
+        "skillLevel": "1",
         "link": "https://www.canoe.ie/river-safety-and-rescue-1/",
         "aims": [
             "Understand the appropriate equipment for Grade I water.",
@@ -223,9 +223,9 @@
     },
     {
         "id": "c008c330-33a5-441f-b7ec-140472b4468d",
-        "name": "River Safety and Rescue 2",
+        "certName": "River Safety and Rescue 2",
         "category": "Rescue",
-        "level": "3",
+        "skillLevel": "3",
         "link": "https://www.canoe.ie/river-safety-and-rescue-2/",
         "aims": [
             "Understand the appropriate equipment for Grade II water.",
@@ -237,9 +237,9 @@
     },
     {
         "id": "44318c91-47b0-4a70-9d70-4a97255939a6",
-        "name": "River Safety and Rescue 3",
+        "certName": "River Safety and Rescue 3",
         "category": "Rescue",
-        "level": "5",
+        "skillLevel": "5",
         "link": "https://www.canoe.ie/river-safety-and-rescue-3/",
         "aims": [
             "Understand the appropriate equipment for Grade III water.",
@@ -251,9 +251,9 @@
     },
     {
         "id": "f738076f-4320-4987-ab08-f525e67d3d42",
-        "name": "Essential Coastal Navigation",
+        "certName": "Essential Coastal Navigation",
         "category": "Navigation",
-        "level": "4",
+        "skillLevel": "4",
         "link": "https://www.canoe.ie/essential-coastal-navigation/",
         "aims": [
             "To know the different resources available to them to plan coastal journeys (i.e. Pilots, almanacs, sailing directions, charts and other digital available data).",
@@ -264,9 +264,9 @@
     },
     {
         "id": "e5524681-c3c4-4a81-8a8c-7032c9664aa4",
-        "name": "Advanced Coastal Navigation",
+        "certName": "Advanced Coastal Navigation",
         "category": "Navigation",
-        "level": "6",
+        "skillLevel": "6",
         "link": "https://www.canoe.ie/advanced-coastal-navigation/",
         "aims": [
             "To apply the relevant knowledge and information in planning a trip in areas of tidal races/overfalls, open crossings or areas with limited escape options.",

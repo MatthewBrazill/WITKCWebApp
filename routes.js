@@ -108,16 +108,17 @@ router.post('/api/pro/article/delete', pro.deleteArticle) // PRO POST to delete 
 
 // Trips
 router.get('/trip/create', trip.createPage) // GET HTML of create trip page
+router.get('/trip/edit/:tripId', trip.editPage) // GET HTML of edit trip page
 router.get('/trip/:tripId', trip.viewPage) // GET HTML of view trip page
 
 // Trips APIs
 router.post('/api/trip/create', trip.create) // VERIFIED POST to create a trip request
 // TODO GET TRIP // POST to get a trip
 router.get('/api/trip/list', trip.list) // GET list of all trips
+router.post('/api/trip/update', trip.update) // OWNER/SAFETY POST to update a trip
 router.post('/api/trip/join', trip.join) // VERIFIED POST to join a trip
 router.post('/api/trip/leave', trip.leave) // VERIFIED POST to leave a trip
-// TODO UPDATE TRIP // OWNER/SAFETY POST to update a trip
-// TODO DELETE TRIP // OWNER/SAFETY POST to delete a trip
+router.post('/api/trip/delete', trip.delete) // OWNER/SAFETY POST to delete a trip
 
 
 

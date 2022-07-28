@@ -65,7 +65,10 @@
     <div class="ui segment">
 
         <h1 class="ui dividing header">
-            {{trip.name}}
+            {{trip.tripName}}
+            {{#if editable}}
+            <a class="ui right floated button" href="/trip/edit/{{trip.tripId}}">Edit Trip</a>
+            {{/if}}
             {{#if trip.joinable}}
             {{#if joined}}
             <div class="ui right floated negative button" id="participation" data-state="{{joined}}">Leave Trip</div>
@@ -91,11 +94,11 @@
 
                 <h5 class="ui header">The trip will go to:</h5>
                 <ol class="ui list">
-                    <li value="">{{trip.location.lineOne}}</li>
-                    {{#if trip.location.lineTwo}}<li value="">{{trip.location.lineTwo}}</li>{{/if}}
-                    <li value="">{{trip.location.city}}</li>
-                    <li value="">{{trip.location.county}}</li>
-                    <li value="">{{trip.location.code}}</li>
+                    <li value="">{{trip.destination.lineOne}}</li>
+                    {{#if trip.destination.lineTwo}}<li value="">{{trip.destination.lineTwo}}</li>{{/if}}
+                    <li value="">{{trip.destination.city}}</li>
+                    <li value="">{{trip.destination.county}}</li>
+                    <li value="">{{trip.destination.code}}</li>
                 </ol>
 
                 <h5 class="ui header">On this trip you will likely encounter:</h5>

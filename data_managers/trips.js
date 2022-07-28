@@ -10,14 +10,14 @@ const trips = {
         if (trip === null || trip === undefined) return false
         var tripItem = new Map()
         for (var attr in trip) {
-            if (attr == 'location') {
+            if (attr == 'destination') {
                 tripItem[attr] = {
                     L: [
-                        { S: trip.location.lineOne },
-                        { S: trip.location.lineTwo },
-                        { S: trip.location.city },
-                        { S: trip.location.county },
-                        { S: trip.location.code }
+                        { S: trip.destination.lineOne },
+                        { S: trip.destination.lineTwo },
+                        { S: trip.destination.city },
+                        { S: trip.destination.county },
+                        { S: trip.destination.code }
                     ]
                 }
             } else if (attr == 'enoughSafety') tripItem[attr] = { BOOL: trip[attr] }
@@ -29,7 +29,7 @@ const trips = {
         return dynamo.putItem({
             Item: tripItem,
             TableName: 'witkc-trips'
-        }).promise().then(() => {
+        }).promise().then((data) => {
             if (data) {
                 logger.info({
                     trip: trip,
@@ -64,13 +64,13 @@ const trips = {
                     if ('S' in data.Item[attr]) trip[attr] = data.Item[attr].S
                     else if ('SS' in data.Item[attr]) trip[attr] = data.Item[attr].SS
                     else if ('BOOL' in data.Item[attr]) trip[attr] = data.Item[attr].BOOL
-                    else if (attr == 'location') {
-                        trip.location = {
-                            lineOne: data.Item['location'].L[0].S,
-                            lineTwo: data.Item['location'].L[1].S,
-                            city: data.Item['location'].L[2].S,
-                            county: data.Item['location'].L[3].S,
-                            code: data.Item['location'].L[4].S
+                    else if (attr == 'destination') {
+                        trip.destination = {
+                            lineOne: data.Item['destination'].L[0].S,
+                            lineTwo: data.Item['destination'].L[1].S,
+                            city: data.Item['destination'].L[2].S,
+                            county: data.Item['destination'].L[3].S,
+                            code: data.Item['destination'].L[4].S
                         }
                     }
                 }
@@ -110,13 +110,13 @@ const trips = {
                         if ('S' in item[attr]) trip[attr] = item[attr].S
                         else if ('SS' in item[attr]) trip[attr] = item[attr].SS
                         else if ('BOOL' in item[attr]) trip[attr] = item[attr].BOOL
-                        else if (attr == 'location') {
-                            trip.location = {
-                                lineOne: item['location'].L[0].S,
-                                lineTwo: item['location'].L[1].S,
-                                city: item['location'].L[2].S,
-                                county: item['location'].L[3].S,
-                                code: item['location'].L[4].S
+                        else if (attr == 'destination') {
+                            trip.destination = {
+                                lineOne: item['destination'].L[0].S,
+                                lineTwo: item['destination'].L[1].S,
+                                city: item['destination'].L[2].S,
+                                county: item['destination'].L[3].S,
+                                code: item['destination'].L[4].S
                             }
                         }
                     }
@@ -151,19 +151,19 @@ const trips = {
             if (data.Items != undefined) {
                 var trips = []
                 for (var item of data.Items) {
-                    if (new Date(item['startDate'].S) <= new Date(date) && new Date(date) <= new Date(item['endDate'].S)) {
+                    if (new Date(item['startDate'].S).setHours(0, 0, 0, 0) <= new Date(date).setHours(0, 0, 0, 0) && new Date(date).setHours(0, 0, 0, 0) <= new Date(item['endDate'].S).setHours(0, 0, 0, 0)) {
                         var trip = {}
                         for (var attr in item) {
                             if ('S' in item[attr]) trip[attr] = item[attr].S
                             else if ('SS' in item[attr]) trip[attr] = item[attr].SS
                             else if ('BOOL' in item[attr]) trip[attr] = item[attr].BOOL
-                            else if (attr == 'location') {
-                                trip.location = {
-                                    lineOne: item['location'].L[0].S,
-                                    lineTwo: item['location'].L[1].S,
-                                    city: item['location'].L[2].S,
-                                    county: item['location'].L[3].S,
-                                    code: item['location'].L[4].S
+                            else if (attr == 'destination') {
+                                trip.destination = {
+                                    lineOne: item['destination'].L[0].S,
+                                    lineTwo: item['destination'].L[1].S,
+                                    city: item['destination'].L[2].S,
+                                    county: item['destination'].L[3].S,
+                                    code: item['destination'].L[4].S
                                 }
                             }
                         }
@@ -203,13 +203,13 @@ const trips = {
                         if ('S' in item[attr]) trip[attr] = item[attr].S
                         else if ('SS' in item[attr]) trip[attr] = item[attr].SS
                         else if ('BOOL' in item[attr]) trip[attr] = item[attr].BOOL
-                        else if (attr == 'location') {
-                            trip.location = {
-                                lineOne: item['location'].L[0].S,
-                                lineTwo: item['location'].L[1].S,
-                                city: item['location'].L[2].S,
-                                county: item['location'].L[3].S,
-                                code: item['location'].L[4].S
+                        else if (attr == 'destination') {
+                            trip.destination = {
+                                lineOne: item['destination'].L[0].S,
+                                lineTwo: item['destination'].L[1].S,
+                                city: item['destination'].L[2].S,
+                                county: item['destination'].L[3].S,
+                                code: item['destination'].L[4].S
                             }
                         }
                     }
@@ -248,13 +248,13 @@ const trips = {
                         if ('S' in item[attr]) trip[attr] = item[attr].S
                         else if ('SS' in item[attr]) trip[attr] = item[attr].SS
                         else if ('BOOL' in item[attr]) trip[attr] = item[attr].BOOL
-                        else if (attr == 'location') {
-                            trip.location = {
-                                lineOne: item['location'].L[0].S,
-                                lineTwo: item['location'].L[1].S,
-                                city: item['location'].L[2].S,
-                                county: item['location'].L[3].S,
-                                code: item['location'].L[4].S
+                        else if (attr == 'destination') {
+                            trip.destination = {
+                                lineOne: item['destination'].L[0].S,
+                                lineTwo: item['destination'].L[1].S,
+                                city: item['destination'].L[2].S,
+                                county: item['destination'].L[3].S,
+                                code: item['destination'].L[4].S
                             }
                         }
                     }
@@ -292,13 +292,13 @@ const trips = {
                         if ('S' in item[attr]) trip[attr] = item[attr].S
                         else if ('SS' in item[attr]) trip[attr] = item[attr].SS
                         else if ('BOOL' in item[attr]) trip[attr] = item[attr].BOOL
-                        else if (attr == 'location') {
-                            trip.location = {
-                                lineOne: item['location'].L[0].S,
-                                lineTwo: item['location'].L[1].S,
-                                city: item['location'].L[2].S,
-                                county: item['location'].L[3].S,
-                                code: item['location'].L[4].S
+                        else if (attr == 'destination') {
+                            trip.destination = {
+                                lineOne: item['destination'].L[0].S,
+                                lineTwo: item['destination'].L[1].S,
+                                city: item['destination'].L[2].S,
+                                county: item['destination'].L[3].S,
+                                code: item['destination'].L[4].S
                             }
                         }
                     }
@@ -338,13 +338,13 @@ const trips = {
                         if ('S' in item[attr]) trip[attr] = item[attr].S
                         else if ('SS' in item[attr]) trip[attr] = item[attr].SS
                         else if ('BOOL' in item[attr]) trip[attr] = item[attr].BOOL
-                        else if (attr == 'location') {
-                            trip.location = {
-                                lineOne: item['location'].L[0].S,
-                                lineTwo: item['location'].L[1].S,
-                                city: item['location'].L[2].S,
-                                county: item['location'].L[3].S,
-                                code: item['location'].L[4].S
+                        else if (attr == 'destination') {
+                            trip.destination = {
+                                lineOne: item['destination'].L[0].S,
+                                lineTwo: item['destination'].L[1].S,
+                                city: item['destination'].L[2].S,
+                                county: item['destination'].L[3].S,
+                                code: item['destination'].L[4].S
                             }
                         }
                     }
@@ -383,15 +383,15 @@ const trips = {
                 attributes[`:${attr}`] = { S: new Date(item[attr].S).toUTCString()}
             }
             //*/
-            else if (attr == 'location') {
+            else if (attr == 'destination') {
                 expression += `${attr} = :${attr}, `
                 attributes[`:${attr}`] = {
                     L: [
-                        { S: trip.location.lineOne },
-                        { S: trip.location.lineTwo },
-                        { S: trip.location.city },
-                        { S: trip.location.county },
-                        { S: trip.location.code }
+                        { S: trip.destination.lineOne },
+                        { S: trip.destination.lineTwo },
+                        { S: trip.destination.city },
+                        { S: trip.destination.county },
+                        { S: trip.destination.code }
                     ]
                 }
             } else if (typeof trip[attr] == 'boolean') {
@@ -411,7 +411,7 @@ const trips = {
             ExpressionAttributeValues: attributes,
             UpdateExpression: expression,
             TableName: 'witkc-trips'
-        }).promise().then(() => {
+        }).promise().then((data) => {
             if (data) {
                 logger.info({
                     trip: trip,
@@ -439,7 +439,7 @@ const trips = {
         return dynamo.deleteItem({
             Key: { 'tripId': { S: tripId } },
             TableName: 'witkc-trips'
-        }).promise().then(() => {
+        }).promise().then((data) => {
             if (data) {
                 logger.info({
                     tripId: tripId,
