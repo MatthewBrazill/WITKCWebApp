@@ -1,6 +1,8 @@
 'use strict'
 
 // Import the extensions
+const datadogTracer = require('dd-trace').init({ logInjection: true })
+const datadogRum = require('@datadog/browser-rum').datadogRum
 const AWS = require('aws-sdk')
 const ssm = new AWS.SSM()
 const express = require('express')
@@ -10,7 +12,6 @@ const sessionStore = require('connect-dynamodb')({ session: session })
 const handlebars = require('express-handlebars')
 const logger = require('./log.js')
 const helper = require('./controllers/helper.js')
-const datadogRum = require('@datadog/browser-rum').datadogRum
 
 async function start() {
     // Create the app
@@ -127,13 +128,13 @@ datadogRum.init({
     applicationId: 'd8892f0f-d31f-4804-b21e-c630a433a383',
     clientToken: 'pub86493d96655e179161fb37ff340b7255',
     site: 'datadoghq.com',
-    service: 'witkc',
+    service: 'witkc-webapp',
     sampleRate: 100,
     premiumSampleRate: 100,
     trackInteractions: true,
     defaultPrivacyLevel: 'mask-user-input'
-});
-datadogRum.startSessionReplayRecording();
+})
+datadogRum.startSessionReplayRecording()
 logger.debug('Datadog Initialized')
 
 // Create Server

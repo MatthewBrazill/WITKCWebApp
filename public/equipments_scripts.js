@@ -64,8 +64,8 @@ $(document).ready(() => {
         }
     })
 
-    $('#name').on('input', () => {
-        const name = $('#name')
+    $('#gearName').on('input', () => {
+        const name = $('#gearName')
         const field = name.parent()
         if (!name.val().match(/^[\w- ]{1,24}$/)) {
             field.attr('class', 'field error')

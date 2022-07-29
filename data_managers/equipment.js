@@ -51,7 +51,7 @@ const equipment = {
             if (data.Item != undefined) {
                 var gear = {
                     equipmentId: data.Item['equipmentId'].S,
-                    name: data.Item['name'].S,
+                    gearName: data.Item['gearName'].S,
                     brand: data.Item['brand'].S,
                     type: data.Item['type'].S,
                     img: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: data.Item['img'].S })
@@ -112,7 +112,7 @@ const equipment = {
                 for (var item of data.Items) {
                     var gear = {
                         equipmentId: item['equipmentId'].S,
-                        name: item['name'].S,
+                        gearName: item['gearName'].S,
                         brand: item['brand'].S,
                         unavailableDates: [],
                         img: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: item['img'].S })

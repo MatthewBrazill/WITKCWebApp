@@ -44,7 +44,7 @@ const gear = {
                     urlPath: req.url,
                     message: `Recieved Fields => ${fields}`
                 })
-                if (!fields.name.match(/^[\w- ]{1,24}$/)) valid = false
+                if (!fields.gearName.match(/^[\w- ]{1,24}$/)) valid = false
                 if (!fields.brand.match(/^[\w- ]{1,24}$/)) valid = false
                 if (!['boat', 'paddle', 'deck', 'ba', 'helmet', 'wetsuit'].includes(fields.type)) valid = false
 
@@ -84,7 +84,7 @@ const gear = {
                     // Create gear object
                     var gear = {
                         equipmentId: uuid.v4(),
-                        name: helper.capitalize(fields.name),
+                        gearName: helper.capitalize(fields.gearName),
                         type: fields.type,
                         brand: helper.capitalize(fields.brand),
                         dateAdded: new Date().toUTCString(),

@@ -8,7 +8,7 @@ $(document).ready(() => {
             var values = []
             for (var boat of boats) values.push({
                 value: boat.equipmentId,
-                name: boat.name,
+                name: boat.gearName,
                 image: boat.img
             })
             $('#boat_dropdown').removeClass('loading')
