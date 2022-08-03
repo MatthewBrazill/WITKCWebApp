@@ -33,7 +33,7 @@ const profile = {
                 })
                 data.scripts.committee = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/committee_scripts.js' })
                 data[data.committee] = await committee.getRole(data.committee)
-                data.scripts[data.committee] = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: `js / ${data.committee} _scripts.js` })
+                data.scripts[data.committee] = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: `js/${data.committee}_scripts.js` })
 
                 if (data.committee == 'equipments') {
                     // Capitalize all of the Gear Data

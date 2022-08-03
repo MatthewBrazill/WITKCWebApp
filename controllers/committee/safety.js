@@ -122,13 +122,10 @@ const safety = {
 
                 // Validate input
                 if (req.body.tripId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
-                    s3.putObject({
-                        Bucket: 'witkc',
-                        Key: `deletedTrips/${req.body.tripId}.json`,
-                        Body: JSON.stringify(await trips.get(req.body.tripId))
-                    })
-
-                    if (await trips.delete(req.body.tripId)) res.sendStatus(200)
+                    if (await trips.update({
+                        tripId: req.body.tripId,
+                        approved: false
+                    })) res.sendStatus(200)
                     else res.sendStatus(503)
                 } else res.sendStatus(400)
             } else res.sendStatus(403)

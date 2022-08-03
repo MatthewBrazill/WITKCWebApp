@@ -177,7 +177,7 @@ const trip = {
 
                             default:
                                 data.trip.hazards.others = 'checked=""'
-                                data.trip.hazards.othersValue = hazard.substring(15, -1)
+                                data.trip.hazards.othersValue = hazard.slice(15, -1)
                                 break;
                         }
 
@@ -260,7 +260,7 @@ const trip = {
                     }
 
                     // Create trip
-                    if (await trips.create({
+                    var trip = {
                         tripId: uuid.v4(),
                         tripName: helper.capitalize(req.body.tripName),
                         creator: data.member.memberId,
@@ -277,10 +277,11 @@ const trip = {
                         skillLevel: req.body.skillLevel,
                         safety: req.body.safety.split(','),
                         enoughSafety: (req.body.enough_safety == 'true'),
-                        approved: (data.committee == 'safety'),
                         hazards: hazards,
                         attendees: req.body.safety.split(',')
-                    })) res.status(200).json({ url: `/trip/${trip.tripId}` })
+                    }
+                    if (data.committee == 'safety') trip.approved = true
+                    if (await trips.create(trip)) res.status(200).json({ url: `/trip/${trip.tripId}` })
                     else res.status(503)
                 } else res.sendStatus(400)
             } else res.sendStatus(403)
@@ -508,6 +509,12 @@ const trip = {
                     data.trip = await trips.get(req.body.tripId)
                     if (data.trip != null) {
                         if (data.member.memberId == data.trip.creator || data.admin || data.committee) {
+                            s3.putObject({
+                                Bucket: 'witkc',
+                                Key: `deletedTrips/${req.body.tripId}.json`,
+                                Body: JSON.stringify(await trips.get(req.body.tripId))
+                            })
+
                             if (await trips.delete(req.body.tripId)) res.sendStatus(200)
                             else res.sendStatus(503)
                         } else res.sendStatus(403)

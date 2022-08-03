@@ -24,7 +24,6 @@ const trips = {
             else if (attr == 'hazards' || attr == 'safety' || attr == 'attendees') tripItem[attr] = { SS: trip[attr] }
             else tripItem[attr] = { S: trip[attr] }
         }
-        tripItem['approved'] = { BOOL: false }
         tripItem['joinable'] = { BOOL: true }
         return dynamo.putItem({
             Item: tripItem,
@@ -76,7 +75,7 @@ const trips = {
                 }
                 logger.info({
                     tripId: tripId,
-                    objectType: 'tirp',
+                    objectType: 'trip',
                     storageType: 'dynamo',
                     message: `Got Trip`
                 })
@@ -124,7 +123,7 @@ const trips = {
                 }
                 logger.info({
                     memberId: memberId,
-                    objectType: 'tirp',
+                    objectType: 'trip',
                     storageType: 'dynamo',
                     message: `Got Trips For Member`
                 })
@@ -172,7 +171,7 @@ const trips = {
                 }
                 logger.info({
                     date: date,
-                    objectType: 'tirp',
+                    objectType: 'trip',
                     storageType: 'dynamo',
                     message: `Got Trips On Date`
                 })
@@ -216,7 +215,7 @@ const trips = {
                     trips.push(trip)
                 }
                 logger.info({
-                    objectType: 'tirp',
+                    objectType: 'trip',
                     storageType: 'dynamo',
                     message: `Listed Trips`
                 })
@@ -236,8 +235,7 @@ const trips = {
 
     async pending() {
         return dynamo.scan({
-            ExpressionAttributeValues: { ':false': { BOOL: false } },
-            FilterExpression: 'approved = :false',
+            FilterExpression: 'attribute_not_exists(approved)',
             TableName: 'witkc-trips'
         }).promise().then((data) => {
             if (data.Items != undefined) {
@@ -261,7 +259,7 @@ const trips = {
                     trips.push(trip)
                 }
                 logger.info({
-                    objectType: 'tirp',
+                    objectType: 'trip',
                     storageType: 'dynamo',
                     message: `Got Pending Trips`
                 })
@@ -286,7 +284,7 @@ const trips = {
         }).promise().then((data) => {
             if (data.Items != undefined) {
                 var trips = []
-                for (var item of data.Items) if (date <= new Date(item['startDate'].S) && new Date(item['startDate'].S) <= new Date()) {
+                for (var item of data.Items) if (date.setHours(0, 0, 0, 0) <= new Date(item['startDate'].S).setHours(0, 0, 0, 0) && new Date(item['startDate'].S).setHours(0, 0, 0, 0) <= new Date().setHours(0, 0, 0, 0)) {
                     var trip = {}
                     for (var attr in item) {
                         if ('S' in item[attr]) trip[attr] = item[attr].S
@@ -306,7 +304,7 @@ const trips = {
                 }
                 logger.info({
                     date: date,
-                    objectType: 'tirp',
+                    objectType: 'trip',
                     storageType: 'dynamo',
                     message: `Got Trips Since Date`
                 })
@@ -332,7 +330,7 @@ const trips = {
         }).promise().then((data) => {
             if (data.Items != undefined) {
                 var trips = []
-                for (var item of data.Items) if (new Date(item['startDate'].S) >= date) {
+                for (var item of data.Items) if (new Date(item['startDate'].S).setHours(0, 0, 0, 0) >= date.setHours(0, 0, 0, 0)) {
                     var trip = {}
                     for (var attr in item) {
                         if ('S' in item[attr]) trip[attr] = item[attr].S
@@ -352,7 +350,7 @@ const trips = {
                 }
                 logger.info({
                     date: date,
-                    objectType: 'tirp',
+                    objectType: 'trip',
                     storageType: 'dynamo',
                     message: `Got Trips From Date`
                 })
@@ -377,12 +375,6 @@ const trips = {
         var expression = 'SET '
         for (var attr in trip) {
             if (attr == 'tripId' || attr == 'attendees') { }
-            /*
-            else if (attr == 'startDate || endDate') {
-                expression += `${attr} = :${attr}, `
-                attributes[`:${attr}`] = { S: new Date(item[attr].S).toUTCString()}
-            }
-            //*/
             else if (attr == 'destination') {
                 expression += `${attr} = :${attr}, `
                 attributes[`:${attr}`] = {
@@ -423,7 +415,7 @@ const trips = {
             } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
         }).catch((err) => {
             logger.warn({
-                tirp: trip,
+                trip: trip,
                 objectType: 'trip',
                 storageType: 'dynamo',
                 error: err,

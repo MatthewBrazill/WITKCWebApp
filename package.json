@@ -1,6 +1,6 @@
 {
   "name": "witkc-webapp",
-  "version": "1.9.0",
+  "version": "1.9.3",
   "description": "A Web App for the WIT Kayaking Club.",
   "main": "app.js",
   "scripts": {

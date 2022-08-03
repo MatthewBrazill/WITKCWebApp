@@ -116,7 +116,7 @@ const events = {
                         else allDates.push({
                             date: date,
                             message: result.tripName,
-                            class: 'green'
+                            class: result.approved === undefined ? 'yellow' : result.approved ? 'green' : 'red'
                         })
                     }
                 }
