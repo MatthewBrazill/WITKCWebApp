@@ -39,7 +39,7 @@ $(document).ready(() => {
         url: '/api/cookie/check',
         method: 'GET',
         success: (res) => {
-            if (!res.allow_cookies) $('#cookie_nag').nag({ persists: true })
+            if (!res.allowCookies) $('#cookie_nag').nag({ persists: true })
         }
     })
 
@@ -49,7 +49,7 @@ $(document).ready(() => {
         $.ajax({
             url: '/api/cookie/allow',
             method: 'POST',
-            data: { allow_cookies: true }
+            data: { allowCookies: true }
         })
     })
 

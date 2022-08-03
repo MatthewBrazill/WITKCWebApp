@@ -41,7 +41,7 @@ $(document).ready(() => {
                     inputs.each((index, element) => {
                         var input = $(element)
                         if (input.attr('type') == 'checkbox') {
-                            if (input.attr('id') == 'enough_safety') data.enough_safety = input.prop('checked')
+                            if (input.attr('id') == 'enoughSafety') data.enoughSafety = input.prop('checked')
                             else if (input.attr('id') == 'other_hazards_checkbox' && input.prop('checked')) data.hazards.push($('#other_hazards').val())
                             else if (input.prop('checked')) data.hazards.push(input.attr('id'))
                         } else if (input.attr('id').split('_')[1] == 'date') data[input.attr('id')] = input.prop('date')
@@ -69,8 +69,8 @@ $(document).ready(() => {
                 }
             })
 
-            $('#start_date').on('change', () => {
-                const start = $('#start_date')
+            $('#startDate').on('change', () => {
+                const start = $('#startDate')
                 const date = new Date(start.parent().parent().calendar('get date'))
                 const field = start.parent().parent().parent()
                 if (date === null) {
@@ -84,8 +84,8 @@ $(document).ready(() => {
                 }
             })
 
-            $('#end_date').on('change', () => {
-                const end = $('#end_date')
+            $('#endDate').on('change', () => {
+                const end = $('#endDate')
                 const date = new Date(end.parent().parent().calendar('get date'))
                 const field = end.parent().parent().parent()
                 if (date === null) {
@@ -111,8 +111,8 @@ $(document).ready(() => {
                 }
             })
 
-            $('#line_one').on('input', () => {
-                const line = $('#line_one')
+            $('#lineOne').on('input', () => {
+                const line = $('#lineOne')
                 const field = line.parent()
                 if (!line.val().match(/^[\w- ]{1,32}$/)) {
                     field.attr('class', 'field error')
@@ -123,8 +123,8 @@ $(document).ready(() => {
                 }
             })
 
-            $('#line_two').on('input', () => {
-                const line = $('#line_two')
+            $('#lineTwo').on('input', () => {
+                const line = $('#lineTwo')
                 const field = line.parent()
                 if (line.val() == '') {
                     field.attr('class', 'field')
@@ -228,13 +228,13 @@ $(document).ready(() => {
                 }
             })
 
-            $('#enough_safety').on('change', () => {
-                const box = $('#enough_safety')
+            $('#enoughSafety').on('change', () => {
+                const box = $('#enoughSafety')
 
                 if (!box.prop('checked')) box.siblings().text(`No (This does not mean your trip will be denied! We will try to find additional safety boaters for your trip.)`)
                 else box.siblings().text('Yes')
             })
-            $('#enough_safety').trigger('change')
+            $('#enoughSafety').trigger('change')
 
             $('#other_hazards_checkbox').on('change', () => {
                 const box = $('#other_hazards_checkbox')

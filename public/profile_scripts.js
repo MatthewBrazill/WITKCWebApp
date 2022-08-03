@@ -60,8 +60,8 @@ $(document).ready(() => {
         }
     })
 
-    $('#first_name').on('input', () => {
-        const name = $('#first_name')
+    $('#firstName').on('input', () => {
+        const name = $('#firstName')
         const field = name.parent()
         if (!name.val().match(/^\p{L}{1,16}$/u)) {
             field.attr('class', 'field error')
@@ -72,8 +72,8 @@ $(document).ready(() => {
         }
     })
 
-    $('#last_name').on('input', () => {
-        const name = $('#last_name')
+    $('#lastName').on('input', () => {
+        const name = $('#lastName')
         const field = name.parent()
         if (!name.val().match(/^\p{L}{1,16}$/u)) {
             field.attr('class', 'field error')
@@ -127,8 +127,8 @@ $(document).ready(() => {
         })
     })
 
-    $('#line_one').on('input', () => {
-        const line = $('#line_one')
+    $('#lineOne').on('input', () => {
+        const line = $('#lineOne')
         const field = line.parent()
         if (!line.val().match(/^[\w- ]{1,32}$/)) {
             field.attr('class', 'field error')
@@ -139,8 +139,8 @@ $(document).ready(() => {
         }
     })
 
-    $('#line_two').on('input', () => {
-        const line = $('#line_two')
+    $('#lineTwo').on('input', () => {
+        const line = $('#lineTwo')
         const field = line.parent()
         if (line.val() == '') {
             field.attr('class', 'field')

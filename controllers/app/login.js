@@ -44,7 +44,7 @@ const login = {
                 message: `Login Succeeded`
             })
             req.session.memberId = memberId
-            req.session.allow_cookies = true
+            req.session.allowCookies = true
             res.status(200).json({ url: '/profile/me' })
         } else {
             logger.debug({

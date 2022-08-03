@@ -17,7 +17,7 @@
         <!-- Book gear button -->
         <div class="column">
 
-            <a class="ui disabled fluid teal button" href="/equipment/book">
+            <a class="ui {{#if member.verified}}{{else}}disabled{{/if}} fluid teal button" href="/equipment/book">
                 <div class="ui first center aligned icon header">
                     <i class="big shopping cart icon"></i>
                     Book Gear

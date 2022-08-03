@@ -214,16 +214,16 @@ const trip = {
 
                 // Validate input
                 if (!req.body.tripName.match(/^[\p{L}\d!?&() ]{1,64}$/u)) valid = false
-                if (!req.body.start_date.match(/^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)$/)) valid = false
-                if (!req.body.end_date.match(/^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)$/)) valid = false
+                if (!req.body.startDate.match(/^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)$/)) valid = false
+                if (!req.body.endDate.match(/^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)$/)) valid = false
                 if (!req.body.description.match(/^[^<>]{1,500}$/u)) valid = false
-                if (!req.body.line_one.match(/^[\w- ]{1,32}$/)) valid = false
-                if (!req.body.line_two.match(/^[\w- ]{1,32}$/) && req.body.line_two != '') valid = false
+                if (!req.body.lineOne.match(/^[\w- ]{1,32}$/)) valid = false
+                if (!req.body.lineTwo.match(/^[\w- ]{1,32}$/) && req.body.lineTwo != '') valid = false
                 if (!req.body.city.match(/^[\w- ]{1,32}$/)) valid = false
                 if (!counties.includes(req.body.county)) valid = false
                 if (!req.body.code.match(/^[a-z0-9]{3}[ ]?[a-z0-9]{4}$/i) && !req.body.code.match(/^[a-z0-9]{2,4}[ ]?[a-z0-9]{3}$/i)) valid = false
                 if (req.body.skillLevel < 1 || req.body.skillLevel > 5) valid = false
-                if (req.body.enough_safety != 'true' && req.body.enough_safety != 'false') valid = false
+                if (req.body.enoughSafety != 'true' && req.body.enoughSafety != 'false') valid = false
                 if (!req.body.safety.split(',').every((item) => memberIds.includes(item))) valid = false
                 if (req.body.hazards != undefined) if (!req.body.hazards.every(item => {
                     if (!commonHazards.includes(item)) {
@@ -264,19 +264,19 @@ const trip = {
                         tripId: uuid.v4(),
                         tripName: helper.capitalize(req.body.tripName),
                         creator: data.member.memberId,
-                        startDate: new Date(req.body.start_date).toUTCString(),
-                        endDate: new Date(req.body.end_date).toUTCString(),
+                        startDate: new Date(req.body.startDate).toUTCString(),
+                        endDate: new Date(req.body.endDate).toUTCString(),
                         description: req.body.description,
                         destination: {
-                            lineOne: helper.capitalize(req.body.line_one),
-                            lineTwo: helper.capitalize(req.body.line_two),
+                            lineOne: helper.capitalize(req.body.lineOne),
+                            lineTwo: helper.capitalize(req.body.lineTwo),
                             city: helper.capitalize(req.body.city),
                             county: req.body.county,
                             code: req.body.code.toUpperCase().replace(/\s/g, ''),
                         },
                         skillLevel: req.body.skillLevel,
                         safety: req.body.safety.split(','),
-                        enoughSafety: (req.body.enough_safety == 'true'),
+                        enoughSafety: (req.body.enoughSafety == 'true'),
                         hazards: hazards,
                         attendees: req.body.safety.split(',')
                     }
@@ -351,16 +351,16 @@ const trip = {
 
                             // Validate input
                             if (!req.body.tripName.match(/^[\p{L}\d!?&() ]{1,64}$/u)) valid = false
-                            if (!req.body.start_date.match(/^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)$/)) valid = false
-                            if (!req.body.end_date.match(/^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)$/)) valid = false
+                            if (!req.body.startDate.match(/^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)$/)) valid = false
+                            if (!req.body.endDate.match(/^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)$/)) valid = false
                             if (!req.body.description.match(/^[^<>]{1,500}$/u)) valid = false
-                            if (!req.body.line_one.match(/^[\w- ]{1,32}$/)) valid = false
-                            if (!req.body.line_two.match(/^[\w- ]{1,32}$/) && req.body.line_two != '') valid = false
+                            if (!req.body.lineOne.match(/^[\w- ]{1,32}$/)) valid = false
+                            if (!req.body.lineTwo.match(/^[\w- ]{1,32}$/) && req.body.lineTwo != '') valid = false
                             if (!req.body.city.match(/^[\w- ]{1,32}$/)) valid = false
                             if (!counties.includes(req.body.county)) valid = false
                             if (!req.body.code.match(/^[a-z0-9]{3}[ ]?[a-z0-9]{4}$/i) && !req.body.code.match(/^[a-z0-9]{2,4}[ ]?[a-z0-9]{3}$/i)) valid = false
                             if (req.body.skillLevel < 1 || req.body.skillLevel > 5) valid = false
-                            if (req.body.enough_safety != 'true' && req.body.enough_safety != 'false') valid = false
+                            if (req.body.enoughSafety != 'true' && req.body.enoughSafety != 'false') valid = false
                             if (!req.body.safety.split(',').every((item) => memberIds.includes(item))) valid = false
                             if (req.body.hazards != undefined) if (!req.body.hazards.every(item => {
                                 if (!commonHazards.includes(item)) {
@@ -400,19 +400,19 @@ const trip = {
                                 if (await trips.update({
                                     tripId: req.body.tripId,
                                     tripName: helper.capitalize(req.body.tripName),
-                                    startDate: new Date(req.body.start_date).toUTCString(),
-                                    endDate: new Date(req.body.end_date).toUTCString(),
+                                    startDate: new Date(req.body.startDate).toUTCString(),
+                                    endDate: new Date(req.body.endDate).toUTCString(),
                                     description: req.body.description,
                                     destination: {
-                                        lineOne: helper.capitalize(req.body.line_one),
-                                        lineTwo: helper.capitalize(req.body.line_two),
+                                        lineOne: helper.capitalize(req.body.lineOne),
+                                        lineTwo: helper.capitalize(req.body.lineTwo),
                                         city: helper.capitalize(req.body.city),
                                         county: req.body.county,
                                         code: req.body.code.toUpperCase().replace(/\s/g, ''),
                                     },
                                     skillLevel: req.body.skillLevel,
                                     safety: req.body.safety.split(','),
-                                    enoughSafety: (req.body.enough_safety == 'true'),
+                                    enoughSafety: (req.body.enoughSafety == 'true'),
                                     approved: (data.committee == 'safety'),
                                     hazards: hazards,
                                     attendees: req.body.safety.split(',')
