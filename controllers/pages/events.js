@@ -91,10 +91,10 @@ const events = {
                 var allDates = []
                 for (var result of results) {
                     var dates = []
-                    var start = new Date(result.startDate)
-                    var end = new Date(result.endDate)
 
                     // Add dates to the list for each day in trip length
+                    var start = new Date(result.startDate).setHours(0, 0, 0, 0)
+                    var end = new Date(result.endDate).setHours(0, 0, 0, 0)
                     while (start <= end) {
                         dates.push(start.toUTCString())
                         start.setDate(start.getDate() + 1)

@@ -396,7 +396,7 @@ const trip = {
                                         break;
                                 }
 
-                                // Create trip
+                                // Update trip
                                 if (await trips.update({
                                     tripId: req.body.tripId,
                                     tripName: helper.capitalize(req.body.tripName),
