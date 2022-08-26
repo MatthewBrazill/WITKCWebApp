@@ -44,12 +44,13 @@ const expenses = {
 
                 // Loop through fields and deconstruct transport string
                 logger.debug({
+                    fields: fields,
                     sessionId: req.sessionID,
                     loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
                     memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
                     method: req.method,
                     urlPath: req.url,
-                    message: `Recieved Fields => ${fields}`
+                    message: `Recieved ${fields.length} Fields`
                 })
                 for (var field in fields) {
                     var values = fields[field].split('%')
@@ -64,12 +65,13 @@ const expenses = {
 
                 // Loop through images
                 logger.debug({
+                    files: files,
                     sessionId: req.sessionID,
                     loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
                     memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
                     method: req.method,
                     urlPath: req.url,
-                    message: `Recieved Files => ${files}`
+                    message: `Recieved ${files.length} Files`
                 })
                 for (var file in files) if (files[file].mimetype.split('/')[0] == 'image') receipts.push(files[file].filepath)
                 if (receipts.length == 0) valid = false

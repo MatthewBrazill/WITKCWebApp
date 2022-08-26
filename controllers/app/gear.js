@@ -26,16 +26,15 @@ const gear = {
                     else resolve({ fields, files })
                 }))
 
-                console.log(fields, files)
-
                 // Server-Side Validation
                 logger.debug({
+                    fields: fields,
                     sessionId: req.sessionID,
                     loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
                     memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
                     method: req.method,
                     urlPath: req.url,
-                    message: `Recieved Fields => ${fields}`
+                    message: `Recieved ${fields.length} Fields`
                 })
                 if (!fields.gearName.match(/^[\w- ]{1,24}$/)) valid = false
                 if (!fields.brand.match(/^[\w- ]{1,24}$/)) valid = false
@@ -70,7 +69,7 @@ const gear = {
                     urlPath: req.url,
                     message: `Recieved File => ${files}`
                 })
-                if (files[0].mimetype.split('/')[0] != 'image') valid = false
+                if (files.length > 0) if (files[0].mimetype.split('/')[0] != 'image') valid = false
 
                 if (valid) {
 
