@@ -7,6 +7,7 @@ const s3 = new AWS.S3()
 const helper = require('../helper.js')
 const uuid = require('uuid')
 const bookings = require('../../data_managers/bookings.js')
+const equipment = require('../../data_managers/equipment.js')
 
 const gear = {
     async bookPage(req, res) {
@@ -15,6 +16,11 @@ const gear = {
 
         //Authenticate user
         if (data.loggedIn) if (data.member.verified) {
+            data.equipment = equipment.getAll()
+
+            // Capitalize all of the Gear Data
+            for (var attr in data.equipment) for (var gear of data.equipment[attr]) for (var a in gear)
+                if (!['equipmentId', 'img'].includes(a)) gear[a] = helper.capitalize(gear[a].toString())
             res.render('bookings', data)
         } else res.status(403).redirect('/profile/me')
         else res.status(401).redirect('/login')

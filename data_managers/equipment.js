@@ -17,7 +17,7 @@ const equipment = {
         return dynamo.putItem({
             Item: attributes,
             TableName: 'witkc-equipment'
-        }).promise().then(() => {
+        }).promise().then((data) => {
             if (data) {
                 logger.info({
                     equipment: equipment,
@@ -171,7 +171,7 @@ const equipment = {
         return dynamo.deleteItem({
             Key: { 'equipmentId': { S: equipmentId } },
             TableName: 'witkc-equipment'
-        }).promise().then(() => {
+        }).promise().then((data) => {
             if (data) {
                 logger.info({
                     equipmentId: equipmentId,

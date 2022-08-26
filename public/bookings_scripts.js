@@ -23,6 +23,39 @@ $(document).ready(() => {
         startCalendar: $('#fromDate')
     })
 
+    $('#booking_form').submit((event) => {
+        event.preventDefault()
+        const form = $('#booking_form')
+        const inputs = $("form#booking_form input[type!=button]")
+        var valid = true
+
+        inputs.trigger('input')
+        inputs.trigger('change')
+        inputs.each((index, element) => {
+            var input = $(element)
+            if (!input.prop('valid')) valid = false
+        })
+
+        if (!valid) form.attr('class', 'ui error form')
+        else {
+            form.attr('class', 'ui loading form')
+            var data = {}
+            inputs.each((index, element) => {
+                var input = $(element)
+                data[input.attr('id')] = input.val()
+            })
+            $.ajax({
+                url: '/api/equipment/find',
+                method: 'POST',
+                data: data,
+                success: (res) => {
+                    
+                },
+                error: () => form.attr('class', 'ui error form')
+            })
+        }
+    })
+
     $('#type').on('change', () => {
         const type = $('#type')
         $('#boat_filters').hide()
@@ -70,36 +103,5 @@ $(document).ready(() => {
         }
     })
 
-    $('#booking_form').submit((event) => {
-        event.preventDefault()
-        const form = $('#booking_form')
-        const inputs = $("form#booking_form input[type!=button]")
-        var valid = true
-
-        inputs.trigger('input')
-        inputs.each((index, element) => {
-            var input = $(element)
-            if (!input.prop('valid')) valid = false
-        })
-
-        if (!valid) form.attr('class', 'ui error form')
-        else {
-            form.attr('class', 'ui loading form')
-            var data = {}
-            inputs.each((index, element) => {
-                var input = $(element)
-                data[input.attr('id')] = input.val()
-            })
-            $.ajax({
-                url: '/api/login',
-                method: 'POST',
-                data: data,
-                success: (res) => window.location = res.url,
-                error: () => {
-                    form.attr('class', 'ui error form')
-                    inputs.each((index, element) => $(element).val(''))
-                }
-            })
-        }
-    })
+    $('#')
 })

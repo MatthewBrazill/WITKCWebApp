@@ -50,7 +50,7 @@ const expenses = {
                     memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
                     method: req.method,
                     urlPath: req.url,
-                    message: `Recieved ${fields.length} Fields`
+                    message: `Recieved ${Object.keys(fields).length} Fields`
                 })
                 for (var field in fields) {
                     var values = fields[field].split('%')
@@ -71,7 +71,7 @@ const expenses = {
                     memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
                     method: req.method,
                     urlPath: req.url,
-                    message: `Recieved ${files.length} Files`
+                    message: `Recieved ${Object.keys(files).length} Files`
                 })
                 for (var file in files) if (files[file].mimetype.split('/')[0] == 'image') receipts.push(files[file].filepath)
                 if (receipts.length == 0) valid = false

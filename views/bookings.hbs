@@ -212,7 +212,140 @@
                     </div>
 
                     <hr style="border-color: gray">
-                    <div class="ui items search_results"></div>
+                    <div class="ui items" id="search_results">
+                        {{#if equipments.equipment}}
+
+                        <!-- Boats -->
+                        <div class="ui items">
+
+                            {{#each equipments.equipment.boats}}
+
+                            <div class="ui fluid card" id="{{this.equipmentId}}">
+                                <div class="content">
+                                    <div class="ui right floated mini buttons" style="padding-top: 8px;">
+                                        <div class="ui negative icon button delete_gear"><i class="trash icon"></i></div>
+                                        <div class="ui positive icon button edit_gear"><i class="pen icon"></i></div>
+                                    </div>
+                                    <div class="ui header" style="margin: 0px;">{{this.brand}}: {{this.gearName}}</div>
+                                    <div>Type: {{this.boatType}}, Size: {{this.boatSize}}, Cockpit: {{this.boatCockpit}}</div>
+                                </div>
+                            </div>
+
+                            {{/each}}
+
+                        </div>
+
+                        <!-- Paddles -->
+                        <div class="ui items">
+
+                            {{#each equipments.equipment.paddles}}
+
+                            <div class="ui fluid card" id="{{this.equipmentId}}">
+                                <div class="content">
+                                    <div class="ui right floated mini buttons" style="padding-top: 8px;">
+                                        <div class="ui negative icon button delete_gear"><i class="trash icon"></i></div>
+                                        <div class="ui positive icon button edit_gear"><i class="pen icon"></i></div>
+                                    </div>
+                                    <div class="ui header" style="margin: 0px;">{{this.brand}}: {{this.gearName}}</div>
+                                    <div>Type: {{this.paddleType}}, Length: {{this.paddleLength}}cm</div>
+                                </div>
+                            </div>
+
+                            {{/each}}
+
+                        </div>
+
+                        <!-- Decks -->
+                        <div class="ui items">
+
+                            {{#each equipments.equipment.decks}}
+
+                            <div class="ui fluid card" id="{{this.equipmentId}}">
+                                <div class="content">
+                                    <div class="ui right floated mini buttons" style="padding-top: 8px;">
+                                        <div class="ui negative icon button delete_gear"><i class="trash icon"></i></div>
+                                        <div class="ui positive icon button edit_gear"><i class="pen icon"></i></div>
+                                    </div>
+                                    <div class="ui header" style="margin: 0px;">{{this.brand}}: {{this.gearName}}</div>
+                                    <div>Type: {{this.deckType}}, Size: {{this.deckSize}}</div>
+                                </div>
+                            </div>
+
+                            {{/each}}
+
+                        </div>
+
+                        <!-- BAs -->
+                        <div class="ui items">
+
+                            {{#each equipments.equipment.bas}}
+
+                            <div class="ui fluid card" id="{{this.equipmentId}}">
+                                <div class="content">
+                                    <div class="ui right floated mini buttons" style="padding-top: 8px;">
+                                        <div class="ui negative icon button delete_gear"><i class="trash icon"></i></div>
+                                        <div class="ui positive icon button edit_gear"><i class="pen icon"></i></div>
+                                    </div>
+                                    <div class="ui header" style="margin: 0px;">{{this.brand}}: {{this.gearName}}</div>
+                                    <div>Size: {{this.baSize}}</div>
+                                </div>
+                            </div>
+
+                            {{/each}}
+
+                        </div>
+
+                        <!-- Helmets -->
+                        <div class="ui items">
+
+                            {{#each equipments.equipment.helmets}}
+
+                            <div class="ui fluid card" id="{{this.equipmentId}}">
+                                <div class="content">
+                                    <div class="ui right floated mini buttons" style="padding-top: 8px;">
+                                        <div class="ui negative icon button delete_gear"><i class="trash icon"></i></div>
+                                        <div class="ui positive icon button edit_gear"><i class="pen icon"></i></div>
+                                    </div>
+                                    <div class="ui header" style="margin: 0px;">{{this.brand}}: {{this.gearName}}</div>
+                                    <div>Type: {{this.helmetType}}, Size: {{this.helmetSize}}</div>
+                                </div>
+                            </div>
+
+                            {{/each}}
+
+                        </div>
+
+                        <!-- Wetsuits -->
+                        <div class="ui items">
+
+                            {{#each equipments.equipment.wetsuits}}
+
+                            <div class="ui fluid card" id="{{this.equipmentId}}">
+                                <div class="content">
+                                    <div class="ui right floated mini buttons" style="padding-top: 8px;">
+                                        <div class="ui negative icon button delete_gear"><i class="trash icon"></i></div>
+                                        <div class="ui positive icon button edit_gear"><i class="pen icon"></i></div>
+                                    </div>
+                                    <div class="ui header" style="margin: 0px;">{{this.brand}}: {{this.gearName}}</div>
+                                    <div>Size: {{this.wetsuitSize}}</div>
+                                </div>
+                            </div>
+
+                            {{/each}}
+
+                        </div>
+
+                        {{else}}
+
+                        <div class="ui fluid placeholder segment">
+                            <div class="ui icon header">
+                                <i class="search icon"></i>
+                                No Equipment Matches Your Search
+                            </div>
+                        </div>
+
+                        {{/if}}
+                    </div>
                     <br>
 
                     <!-- Error -->

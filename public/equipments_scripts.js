@@ -29,7 +29,7 @@ $(document).ready(() => {
 
             inputs.each((index, element) => {
                 var input = $(element)
-                if (input.attr('id').split('_')[0] == $('#type').val() || input.attr('id') == 'type' || input.attr('id') == 'gearName' || input.attr('id') == 'brand') {
+                if (input.attr('id').includes($('#type').val()) || input.attr('id') == 'type' || input.attr('id') == 'gearName' || input.attr('id') == 'brand') {
                     data.append(input.attr('id'), input.val())
                 }
                 if (input.attr('id') == 'file') data.append('file', file[0].files[0])

@@ -34,7 +34,7 @@ const gear = {
                     memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
                     method: req.method,
                     urlPath: req.url,
-                    message: `Recieved ${fields.length} Fields`
+                    message: `Recieved ${Object.keys(fields).length} Fields`
                 })
                 if (!fields.gearName.match(/^[\w- ]{1,24}$/)) valid = false
                 if (!fields.brand.match(/^[\w- ]{1,24}$/)) valid = false
@@ -62,12 +62,13 @@ const gear = {
 
                 // Check image
                 logger.debug({
+                    files: files,
                     sessionId: req.sessionID,
                     loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
                     memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
                     method: req.method,
                     urlPath: req.url,
-                    message: `Recieved File => ${files}`
+                    message: `Recieved ${Object.keys(files).length} Files}`
                 })
                 if (files.length > 0) if (files[0].mimetype.split('/')[0] != 'image') valid = false
 
