@@ -1,33 +1,71 @@
 <script src="{{scripts.gear}}" hidden></script>
 <div class="twelve wide column">
     <div class="ui centered grid">
-        <div class="eight wide column">
+        <div class="sixteen wide column">
 
             <div class="ui segment">
 
                 <h1 class="ui center aligned header">Book Equipment</h1>
 
-                <form class="ui form" id="gear_form" autocomplete="off">
+                <form class="ui form" id="booking_form" autocomplete="off">
 
-                    <div class="field">
-                        <div class="ui search selection dropdown">
-                            <input type="hidden" id="trip">
-                            <i class="dropdown icon"></i>
+                    <div class="fields">
+
+                        <!-- From -->
+                        <div class="four wide field">
+                            <div class="ui calendar" id="start_calendar">
+                                <div class="ui input left icon">
+                                    <i class="calendar icon"></i>
+                                    <input type="text" id="fromDate" placeholder="Book From">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- To -->
+                        <div class="four wide field">
+                            <div class="ui calendar" id="end_calendar">
+                                <div class="ui input left icon">
+                                    <i class="calendar icon"></i>
+                                    <input type="text" id="toDate" placeholder="Book Until">
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Boat -->
-                    <div class="field">
-                        <label>Will you need a boat?</label>
-                        <div class="ui toggle checkbox">
-                            <input type="checkbox" id="boat">
-                            <label>No</label>
+                    <!-- Other Filters -->
+                    <hr style="border-color: gray">
+                    <h5 style="margin-bottom: 5px">Filters</h5>
+
+
+                    <div class="fields">
+                        <!-- Type Filter -->
+                        <div class="four wide field">
+                            <div class="ui clearable selection dropdown">
+                                <input type="hidden" id="type">
+                                <div class="default text">Type</div>
+                                <div class="menu">
+                                    <div class="item" data-value="boat">Boat</div>
+                                    <div class="item" data-value="paddle">Paddle</div>
+                                    <div class="item" data-value="deck">Spray-Deck</div>
+                                    <div class="item" data-value="ba">Buoyancy Aid</div>
+                                    <div class="item" data-value="helmet">Helmet</div>
+                                    <div class="item" data-value="wetsuit">Wetsuit</div>
+                                </div>
+                                <i class="dropdown icon"></i>
+                            </div>
+                        </div>
+
+                        <!-- Search Bar -->
+                        <div class="twelve wide field">
+                            <input type="text" id="search" placeholder="Search...">
                         </div>
                     </div>
-                    <div id="boat_fields" hidden>
-                        <div class="field">
-                            <div class="ui selection dropdown">
-                                <input type="hidden" id="boat_type">
+
+                    <!-- Boat Type -->
+                    <div class="fields" id="boat_filters">
+                        <div class="four wide field">
+                            <div class="ui clearable selection dropdown">
+                                <input type="hidden" id="boatType">
                                 <div class="default text">Boat Type</div>
                                 <div class="menu">
                                     <div class="item" data-value="polo">Polo Boat</div>
@@ -39,9 +77,9 @@
                             </div>
                         </div>
 
-                        <div class="field">
-                            <div class="ui selection dropdown">
-                                <input type="hidden" id="boat_size">
+                        <div class="four wide field">
+                            <div class="ui clearable selection dropdown">
+                                <input type="hidden" id="boatSize">
                                 <div class="default text">Boat Size</div>
                                 <div class="menu">
                                     <div class="item" data-value="s">S</div>
@@ -52,9 +90,9 @@
                             </div>
                         </div>
 
-                        <div class="field">
-                            <div class="ui selection dropdown">
-                                <input type="hidden" id="boat_cockpit">
+                        <div class="four wide field">
+                            <div class="ui clearable selection dropdown">
+                                <input type="hidden" id="boatCockpit">
                                 <div class="default text">Cockpit Size</div>
                                 <div class="menu">
                                     <div class="item" data-value="big">Big Cockpit</div>
@@ -63,21 +101,13 @@
                                 <i class="dropdown icon"></i>
                             </div>
                         </div>
-                        <br>
                     </div>
 
-                    <!-- Paddle -->
-                    <div class="field">
-                        <label>Will you need a paddle?</label>
-                        <div class="ui toggle checkbox">
-                            <input type="checkbox" id="paddle">
-                            <label>No</label>
-                        </div>
-                    </div>
-                    <div id="paddle_fields" hidden>
-                        <div class="field">
-                            <div class="ui selection dropdown">
-                                <input type="hidden" id="paddle_type">
+                    <!-- Paddle Type -->
+                    <div class="fields" id="paddle_filters">
+                        <div class="four wide field">
+                            <div class="ui clearable selection dropdown">
+                                <input type="hidden" id="paddleType">
                                 <div class="default text">Paddle Type</div>
                                 <div class="menu">
                                     <div class="item" data-value="polo">Polo Paddle</div>
@@ -87,25 +117,13 @@
                                 <i class="dropdown icon"></i>
                             </div>
                         </div>
-
-                        <div class="field">
-                            <input type="text" id="paddle_length">
-                        </div>
-                        <br>
                     </div>
 
-                    <!-- Deck -->
-                    <div class="field">
-                        <label>Will you need a spray-deck?</label>
-                        <div class="ui toggle checkbox">
-                            <input type="checkbox" id="deck">
-                            <label>No</label>
-                        </div>
-                    </div>
-                    <div id="deck_fields" hidden>
-                        <div class="field">
-                            <div class="ui selection dropdown">
-                                <input type="hidden" id="deck_type">
+                    <!-- Deck Type -->
+                    <div class="fields" id="deck_filters">
+                        <div class="four wide field">
+                            <div class="ui clearable selection dropdown">
+                                <input type="hidden" id="deckType">
                                 <div class="default text">Deck Type</div>
                                 <div class="menu">
                                     <div class="item" data-value="key">Keyhole</div>
@@ -115,9 +133,9 @@
                             </div>
                         </div>
 
-                        <div class="field">
-                            <div class="ui selection dropdown">
-                                <input type="hidden" id="deck_size">
+                        <div class="four wide field">
+                            <div class="ui clearable selection dropdown">
+                                <input type="hidden" id="deckSize">
                                 <div class="default text">Deck Size</div>
                                 <div class="menu">
                                     <div class="item" data-value="xxxs/xxs">XXXS/XXS</div>
@@ -129,21 +147,13 @@
                                 <i class="dropdown icon"></i>
                             </div>
                         </div>
-                        <br>
                     </div>
 
-                    <!-- BA -->
-                    <div class="field">
-                        <label>Will you need a buoyancy aid?</label>
-                        <div class="ui toggle checkbox">
-                            <input type="checkbox" id="ba">
-                            <label>No</label>
-                        </div>
-                    </div>
-                    <div id="ba_fields" hidden>
-                        <div class="field">
-                            <div class="ui selection dropdown">
-                                <input type="hidden" id="ba_size">
+                    <!-- Ba Type -->
+                    <div class="fields" id="ba_filters">
+                        <div class="four wide field">
+                            <div class="ui clearable selection dropdown">
+                                <input type="hidden" id="baSize">
                                 <div class="default text">BA Size</div>
                                 <div class="menu">
                                     <div class="item" data-value="s">S</div>
@@ -152,21 +162,13 @@
                                 <i class="dropdown icon"></i>
                             </div>
                         </div>
-                        <br>
                     </div>
 
-                    <!-- Helmet -->
-                    <div class="field">
-                        <label>Will you need a helmet?</label>
-                        <div class="ui toggle checkbox">
-                            <input type="checkbox" id="helmet">
-                            <label>No</label>
-                        </div>
-                    </div>
-                    <div id="helmet_fields" hidden>
-                        <div class="field">
-                            <div class="ui selection dropdown">
-                                <input type="hidden" id="helmet_type">
+                    <!-- Helmet Type -->
+                    <div class="fields" id="helmet_filters">
+                        <div class="four wide field">
+                            <div class="ui clearable selection dropdown">
+                                <input type="hidden" id="helmetType">
                                 <div class="default text">Helmet Type</div>
                                 <div class="menu">
                                     <div class="item" data-value="polo">Polo Helmet</div>
@@ -177,9 +179,9 @@
                             </div>
                         </div>
 
-                        <div class="field">
-                            <div class="ui selection dropdown">
-                                <input type="hidden" id="helmet_size">
+                        <div class="four wide field">
+                            <div class="ui clearable selection dropdown">
+                                <input type="hidden" id="helmetSize">
                                 <div class="default text">Helmet Size</div>
                                 <div class="menu">
                                     <div class="item" data-value="s">S</div>
@@ -190,21 +192,13 @@
                                 <i class="dropdown icon"></i>
                             </div>
                         </div>
-                        <br>
                     </div>
 
-                    <!-- Wetsuit -->
-                    <div class="field">
-                        <label>Will you need a wetsuit?</label>
-                        <div class="ui toggle checkbox">
-                            <input type="checkbox" id="wetsuit">
-                            <label>No</label>
-                        </div>
-                    </div>
-                    <div id="wetsuit_fields" hidden>
-                        <div class="field">
-                            <div class="ui selection dropdown">
-                                <input type="hidden" id="wetsuit_size">
+                    <!-- Wetsuit Type -->
+                    <div class="fields" id="wetsuit_filters">
+                        <div class="four wide field">
+                            <div class="ui clearable selection dropdown">
+                                <input type="hidden" id="wetsuitSize">
                                 <div class="default text">Wetsuit Size</div>
                                 <div class="menu">
                                     <div class="item" data-value="s">S</div>
@@ -216,6 +210,9 @@
                             </div>
                         </div>
                     </div>
+
+                    <hr style="border-color: gray">
+                    <div class="ui items search_results"></div>
                     <br>
 
                     <!-- Error -->

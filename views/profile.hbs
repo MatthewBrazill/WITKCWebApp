@@ -1,3 +1,4 @@
+<script src="{{scripts.profile}}" hidden></script>
 <div class="twelve wide column">
 
     <!-- Option buttons -->
@@ -42,7 +43,7 @@
             <a class="ui disabled fluid teal button" href="/volunteer">
                 <div class="ui first center aligned icon header">
                     <i class="big heart icon"></i>
-                    Volunteering
+                    Volunteer
                 </div>
             </a>
         </div>
@@ -52,6 +53,15 @@
 
     <!-- Dashboard -->
     <div class="ui segment">
+
+        <!-- Bookings -->
+        <h3 class="ui dividing header">My Bookings</h3>
+
+        <div class="ui loading placeholder segment" id="bookings_calendar"></div>
+
+        <div class="ui loading placeholder segment" id="bookings_list"></div>
+
+
 
         <!-- Trips -->
         <h3 class="ui dividing header">My Trips</h3>
