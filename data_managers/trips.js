@@ -278,13 +278,13 @@ const trips = {
     },
 
     async since(date) {
-        if (!date instanceof Date) return null
+        if (date == null || date == undefined) return null
         return dynamo.scan({
             TableName: 'witkc-trips'
         }).promise().then((data) => {
             if (data.Items != undefined) {
                 var trips = []
-                for (var item of data.Items) if (date.setHours(0, 0, 0, 0) <= new Date(item['startDate'].S).setHours(0, 0, 0, 0) && new Date(item['startDate'].S).setHours(0, 0, 0, 0) <= new Date().setHours(0, 0, 0, 0)) {
+                for (var item of data.Items) if (new Date(date).setHours(0, 0, 0, 0) <= new Date(item['startDate'].S).setHours(0, 0, 0, 0) && new Date(item['startDate'].S).setHours(0, 0, 0, 0) <= new Date().setHours(0, 0, 0, 0)) {
                     var trip = {}
                     for (var attr in item) {
                         if ('S' in item[attr]) trip[attr] = item[attr].S
