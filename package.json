@@ -4,6 +4,8 @@
   "description": "A Web App for the WIT Kayaking Club.",
   "main": "app.js",
   "scripts": {
+    "prestart": "export DD_TAGS=\"git.commit.sha:$(git rev-parse head) git.repository_url:https://github.com/MatthewBrazill/witkc-webapp\"",
+    "pretest": "export DD_TAGS=\"git.commit.sha:$(git rev-parse head) git.repository_url:https://github.com/MatthewBrazill/witkc-webapp\"",
     "start": "cd /home/ec2-user/witkc-webapp ; node app.js",
     "test": "node app.js"
   },

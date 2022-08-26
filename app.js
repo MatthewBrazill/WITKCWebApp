@@ -97,7 +97,7 @@ async function start() {
         res.status(404)
         // Respond with HTML page
         if (req.accepts('html')) helper.viewData(req, '404 - Page not found').then((data) => res.render('404', data))
-        // Respond with json
+        // Respond with JSON
         else if (req.accepts('json')) res.json({ err: 'Not found' })
         // Default: Plain-Text
         else res.type('text').send('404 - Page Not Found')
