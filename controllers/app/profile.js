@@ -169,10 +169,11 @@ const profile = {
             var data = await helper.viewData(req, 'API')
 
             if (data.loggedIn) {
-                var { fields, files } = new formidable.IncomingForm().parse(req, (err, fields, files) => {
-                    if (err) throw err
-                    else return { fields, files }
-                })
+                var { fields, files } = await new Promise((resolve, reject) => new formidable.IncomingForm().parse(req, (err, fields, files) => {
+                    // Check for any errors
+                    if (err) reject(err)
+                    else resolve({ fields, files })
+                }))
 
                 // Validate file
                 if (files.file !== undefined) if (files.file.type.split('/')[0] == 'image') {

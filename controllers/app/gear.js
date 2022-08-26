@@ -20,11 +20,13 @@ const gear = {
             if (data.loggedIn) if (data.committee == 'safety' || data.admin) {
 
                 // Use formidable for image transfer
-                var { fields, files } = new formidable.IncomingForm().parse(req, (err, fields, files) => {
+                var { fields, files } = await new Promise((resolve, reject) => new formidable.IncomingForm().parse(req, (err, fields, files) => {
                     // Check for any errors
-                    if (err) throw err
-                    else return { fields, files }
-                })
+                    if (err) reject(err)
+                    else resolve({ fields, files })
+                }))
+
+                console.log(fields, files)
 
                 // Server-Side Validation
                 logger.debug({
