@@ -12,7 +12,21 @@
                     type: 'date',
                     minDate: new Date(),
                     initialDate: new Date('{{trip.startDate}}'),
-                    endCalendar: $('#end_calendar')
+                    endCalendar: $('#end_calendar'),
+                    onChange: () => {
+                        const start = $('#startDate')
+                        const startDate = $('#start_calendar').calendar('get date')
+                        const startField = $('#start_calendar').parent()
+                        if (startDate == null) {
+                            startField.attr('class', 'inline field error')
+                            start.prop('date', '')
+                            start.prop('valid', false)
+                        } else {
+                            startField.attr('class', 'inline field success')
+                            start.prop('date', new Date(startDate).toISOString())
+                            start.prop('valid', true)
+                        }
+                    }
                 })
                 $('#end_calendar').calendar({
                     selectAdjacentDays: true,
@@ -20,7 +34,21 @@
                     type: 'date',
                     minDate: new Date(),
                     initialDate: new Date('{{trip.endDate}}'),
-                    startCalendar: $('#start_calendar')
+                    startCalendar: $('#start_calendar'),
+                    onChange: () => {
+                        const end = $('#endDate')
+                        const endDate = $('#end_calendar').calendar('get date')
+                        const endField = $('#end_calendar').parent()
+                        if (endDate === null) {
+                            endField.attr('class', 'inline field error')
+                            end.prop('date', '')
+                            end.prop('valid', false)
+                        } else {
+                            endField.attr('class', 'inline field success')
+                            end.prop('date', new Date(endDate).toISOString())
+                            end.prop('valid', true)
+                        }
+                    }
                 })
 
                 $('#delete').click(() => {

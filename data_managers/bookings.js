@@ -53,15 +53,15 @@ const bookings = {
                 var bookedDates = []
                 for (var booking of data.Items) {
                     // Preapre for Formatic Calendar formating
-                    var date = new Date(booking[fromDate]).setHours(0, 0, 0, 0)
-                    while (date <= booking[new Date(toDate).setHours(0, 0, 0, 0)]) {
+                    var date = new Date(booking['fromDate'].S)
+                    while (date.setHours(0, 0, 0, 0) <= new Date(booking['toDate'].S).setHours(0, 0, 0, 0)) {
                         bookedDates.push(date)
                         date.setDate(date.getDate() + 1)
                     }
                 }
 
                 for (var bookedDate of bookedDates) {
-                    if (new Date(fromDate).setHours(0, 0, 0, 0) <= bookedDate && bookedDate <= new Date(toDate).setHours(0, 0, 0, 0)) {
+                    if (new Date(fromDate).setHours(0, 0, 0, 0) <= bookedDate.setHours(0, 0, 0, 0) && bookedDate.setHours(0, 0, 0, 0) <= new Date(toDate).setHours(0, 0, 0, 0)) {
                         logger.info({
                             equipmentId: equipmentId,
                             fromDate: fromDate,

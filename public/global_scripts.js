@@ -40,6 +40,20 @@ $(document).ready(() => {
         method: 'GET',
         success: (res) => {
             if (!res.allowCookies) $('#cookie_nag').nag({ persists: true })
+            else {
+                window.DD_RUM && window.DD_RUM.init({
+                    applicationId: 'd8892f0f-d31f-4804-b21e-c630a433a383',
+                    clientToken: 'pub86493d96655e179161fb37ff340b7255',
+                    site: 'datadoghq.com',
+                    service: 'setukc-webapp',
+                    env: '{{env}}',
+                    sampleRate: 100,
+                    premiumSampleRate: 100,
+                    trackFrustrations: true,
+                    defaultPrivacyLevel: 'mask-user-input'
+                });
+                window.DD_RUM && window.DD_RUM.startSessionReplayRecording()
+            }
         }
     })
 

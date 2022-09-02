@@ -210,17 +210,17 @@ const gear = {
 
                 // Validate Input
                 if (!req.body.search.match(/^[\w- ]{0,64}$/)) valid = false
-                if (!['boat', 'paddle', 'deck', 'ba', 'helmet', 'wetsuit', undefined].includes(req.body.type)) valid = false
-                if (!['polo', 'whitewater', 'freestyle', 'other', undefined].includes(req.body.boatType)) valid = false
-                if (!['s', 'm', 'l', undefined].includes(req.body.boatSize)) valid = false
-                if (!['big', 'key', undefined].includes(req.body.boatCockpit)) valid = false
-                if (!['polo', 'straight', 'crank', undefined].includes(req.body.paddleType)) valid = false
-                if (!['big', 'key', undefined].includes(req.body.deckType)) valid = false
-                if (!['xxxs/xxs', 'xxs/xs', 'xs/s', 'm/l', 'xl/xxl', undefined].includes(req.body.deckSize)) valid = false
-                if (!['s', 'l', undefined].includes(req.body.baSize)) valid = false
-                if (!['polo', 'full', 'half', undefined].includes(req.body.helmetType)) valid = false
-                if (!['s', 'm', 'l', 'xl', undefined].includes(req.body.helmetSize)) valid = false
-                if (!['s', 'm', 'l', 'xl', undefined].includes(req.body.wetsuitSize)) valid = false
+                if (!['boat', 'paddle', 'deck', 'ba', 'helmet', 'wetsuit', ''].includes(req.body.type)) valid = false
+                if (!['polo', 'whitewater', 'freestyle', 'other', ''].includes(req.body.boatType)) valid = false
+                if (!['s', 'm', 'l', ''].includes(req.body.boatSize)) valid = false
+                if (!['big', 'key', ''].includes(req.body.boatCockpit)) valid = false
+                if (!['polo', 'straight', 'crank', ''].includes(req.body.paddleType)) valid = false
+                if (!['big', 'key', ''].includes(req.body.deckType)) valid = false
+                if (!['xxxs/xxs', 'xxs/xs', 'xs/s', 'm/l', 'xl/xxl', ''].includes(req.body.deckSize)) valid = false
+                if (!['s', 'l', ''].includes(req.body.baSize)) valid = false
+                if (!['polo', 'full', 'half', ''].includes(req.body.helmetType)) valid = false
+                if (!['s', 'm', 'l', 'xl', ''].includes(req.body.helmetSize)) valid = false
+                if (!['s', 'm', 'l', 'xl', ''].includes(req.body.wetsuitSize)) valid = false
 
                 if (valid) {
                     var result = await equipment.getAll()
@@ -231,18 +231,18 @@ const gear = {
                         for this but hey, not like this will ever get scaling issues. If youre the new guy handeling this, and
                         by some miricle you have too many pieces of equipment to handle: May god have mercy on you; don't call me. */
                         for (var i in result) {
-                            if (req.body.search != undefined && !result[i].gearName.toLowerCase().includes(req.body.search.toLowerCase())) result.splice(i)
-                            else if (req.body.type != undefined && result[i].type != req.body.type) result.splice(i)
-                            else if (req.body.boatType != undefined && result[i].boatType != req.body.boatType) result.splice(i)
-                            else if (req.body.boatSize != undefined && result[i].boatSize != req.body.boatSize) result.splice(i)
-                            else if (req.body.boatCockpit != undefined && result[i].boatCockpit != req.body.boatCockpit) result.splice(i)
-                            else if (req.body.paddleType != undefined && result[i].paddleType != req.body.paddleType) result.splice(i)
-                            else if (req.body.deckType != undefined && result[i].deckType != req.body.deckType) result.splice(i)
-                            else if (req.body.deckSize != undefined && result[i].deckSize != req.body.deckSize) result.splice(i)
-                            else if (req.body.baSize != undefined && result[i].baSize != req.body.baSize) result.splice(i)
-                            else if (req.body.helmetType != undefined && result[i].helmetType != req.body.helmetType) result.splice(i)
-                            else if (req.body.helmetSize != undefined && result[i].helmetSize != req.body.helmetSize) result.splice(i)
-                            else if (req.body.wetsuitSize != undefined && result[i].wetsuitSize != req.body.wetsuitSize) result.splice(i)
+                            if (req.body.search != '' && !result[i].gearName.toLowerCase().includes(req.body.search.toLowerCase())) result.splice(i)
+                            else if (req.body.type != '' && result[i].type != req.body.type) result.splice(i)
+                            else if (req.body.boatType != '' && result[i].boatType != req.body.boatType) result.splice(i)
+                            else if (req.body.boatSize != '' && result[i].boatSize != req.body.boatSize) result.splice(i)
+                            else if (req.body.boatCockpit != '' && result[i].boatCockpit != req.body.boatCockpit) result.splice(i)
+                            else if (req.body.paddleType != '' && result[i].paddleType != req.body.paddleType) result.splice(i)
+                            else if (req.body.deckType != '' && result[i].deckType != req.body.deckType) result.splice(i)
+                            else if (req.body.deckSize != '' && result[i].deckSize != req.body.deckSize) result.splice(i)
+                            else if (req.body.baSize != '' && result[i].baSize != req.body.baSize) result.splice(i)
+                            else if (req.body.helmetType != '' && result[i].helmetType != req.body.helmetType) result.splice(i)
+                            else if (req.body.helmetSize != '' && result[i].helmetSize != req.body.helmetSize) result.splice(i)
+                            else if (req.body.wetsuitSize != '' && result[i].wetsuitSize != req.body.wetsuitSize) result.splice(i)
                         }
 
                         res.status(200).json(result)

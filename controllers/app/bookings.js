@@ -16,7 +16,7 @@ const gear = {
 
         //Authenticate user
         if (data.loggedIn) if (data.member.verified) {
-            data.equipment = equipment.getAll()
+            data.equipment = await equipment.getAll()
 
             // Capitalize all of the Gear Data
             for (var attr in data.equipment) for (var gear of data.equipment[attr]) for (var a in gear)
@@ -101,10 +101,19 @@ const gear = {
                 var result = await bookings.getAllFor(data.member.memberId)
                 if (result != null) {
                     var dates = []
-                    for (var booking of result) dates.push({
-                        date: booking.fromDate,
-                        class: 'green'
-                    })
+
+                    for (var booking of result) {
+                        var start = new Date(booking.fromDate)
+                        var end = new Date(booking.toDate)
+
+                        while (start.setHours(0, 0, 0, 0) <= end.setHours(0, 0, 0, 0)) {
+                            dates.push({
+                                date: start.toUTCString(),
+                                class: 'green'
+                            })
+                            start.setDate(start.getDate() + 1)
+                        }
+                    }
                     res.status(200).json(dates)
                 } else res.sendStatus(404)
             } else res.sendStatus(403)
@@ -124,7 +133,7 @@ const gear = {
         }
     },
 
-    async list(req, res) {
+    async day(req, res) {
         try {
             var data = await helper.viewData(req, 'API')
 
@@ -135,11 +144,14 @@ const gear = {
                 if (req.body.date.match(/^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)$/)) {
 
                     var result = await bookings.getAllFor(data.member.memberId)
-                    console.log(result, [], 'emtpy')
                     if (result != null) {
                         var list = []
                         var date = new Date(req.body.date).setHours(0, 0, 0, 0)
                         for (var booking of result) if (new Date(booking.fromDate).setHours(0, 0, 0, 0) <= date && date <= new Date(booking.toDate).setHours(0, 0, 0, 0)) list.push(booking)
+                        for (var i in list) {
+                            list[i].equipment = await equipment.get(list[i].equipmentId)
+                            list[i].equipment.type = helper.capitalize(list[i].equipment.type)
+                        }
                         res.status(200).json(list)
                     } else res.sendStatus(404)
                 } else res.sendStatus(400)
@@ -174,14 +186,16 @@ const gear = {
                 if (!req.body.toDate.match(/^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)$/)) valid = false
 
                 if (valid) {
-                    if (await bookings.book({
-                        bookingId: uuid.v4(),
-                        equipmentId: req.body.equipmentId,
-                        memberId: data.member.memberId,
-                        fromDate: req.body.fromDate,
-                        toDate: req.body.toDate
-                    })) res.status(200).json(result)
-                    else res.sendStatus(404)
+                    if (await bookings.available(req.body.equipmentId, req.body.fromDate, req.body.toDate)) {
+                        if (await bookings.create({
+                            bookingId: uuid.v4(),
+                            equipmentId: req.body.equipmentId,
+                            memberId: data.member.memberId,
+                            fromDate: req.body.fromDate,
+                            toDate: req.body.toDate
+                        })) res.sendStatus(200)
+                        else res.sendStatus(404)
+                    } else res.sendStatus(404)
                 } else res.sendStatus(400)
             } else res.sendStatus(403)
             else res.sendStatus(401)

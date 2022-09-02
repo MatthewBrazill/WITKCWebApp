@@ -130,13 +130,13 @@ router.post('/api/equipment/create', gear.create) // EQUIPMENTS POST to create a
 router.post('/api/equipment/available', bookings.available) // VERIFIED POST to check if an item of equipemnt is available to be booked
 router.post('/api/equipment/get', gear.get) // VERIFIED POST to get a equipment item
 router.get('/api/equipment/list', gear.list) // VERIFIED GET to list all equipment
-router.get('/api/equipment/find', gear.find) // VERIFIED POST to find equipment based on flilters and a search query
+router.post('/api/equipment/find', gear.find) // VERIFIED POST to find equipment based on flilters and a search query
 router.post('/api/equipment/book', bookings.book) // VERIFIED POST to book an item of equipment
 router.post('/api/equipment/update', gear.update) // EQUIPMENTS POST to update an item of equipment
 router.post('/api/equipment/delete', gear.delete) // EQUIPMENTs POST to delete an item of equipment
 // Bookings APIs
-router.get('/api/bookings/dates', bookings.dates) // VERIFIED GET to list all bookings for the owning member
-router.get('/api/bookings/list', bookings.list) // VERIFIED GET to list all bookings for the owning member
+router.get('/api/bookings/dates', bookings.dates) // VERIFIED GET to list dates for bookings for the owning member
+router.post('/api/bookings/day', bookings.day) // VERIFIED POST to list all bookings for the owning member on a date
 router.post('/api/bookings/update', bookings.update) // OWNER POST to update a booking
 router.post('/api/bookings/delete', bookings.delete) // OWNER POST to delete a booking
 

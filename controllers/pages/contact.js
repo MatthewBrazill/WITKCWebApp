@@ -44,7 +44,7 @@ const contact = {
                             Subject: { Data: `Contact Form Message: ${ticket}` }
                         }
                     },
-                    FromEmailAddress: 'witkc.contact-form@brazill.net',
+                    FromEmailAddress: 'setukc.contact-form@brazill.net',
                     Destination: { ToAddresses: ['matthew.s.brazill@gmail.com'] },
                     ReplyToAddresses: [req.body.email]
                 }).promise().then(() => {

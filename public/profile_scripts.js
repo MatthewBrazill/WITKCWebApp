@@ -48,28 +48,30 @@ $(document).ready(() => {
         const calendar = $('#bookings_calendar')
         const list = $('#bookings_list')
 
+        list.html('')
         list.attr('class', 'ui loading placeholder segment')
         $.ajax({
-            url: '/api/bookings/list',
+            url: '/api/bookings/day',
             method: 'POST',
             data: { date: calendar.calendar('get date').toISOString() },
             success: (bookings) => {
                 if (bookings.length == 0) {
                     list.attr('class', 'ui placeholder segment')
+                    list.html('')
                     list.html('<div class="ui icon header"><i class="calendar alternate icon"></i>You have no bookings for this day!</div>')
                 } else {
-                    list.attr('class', 'ui items')
                     list.html('')
+                    list.attr('class', 'ui items')
                     for (var booking of bookings) {
                         list.append($(`
-                        <a class="ui fluid link card" href="/trip/${booking.bookingId}" target="_blank">
+                        <div class="ui fluid card" id="${booking.bookingId}" target="_blank">
                             <div class="content">
                                 <div class="header">
                                     <div class="ui left floated">${booking.equipment.type}:</div>
                                     <div class="ui right floated">${booking.equipment.brand}: ${booking.equipment.gearName}</div>
                                 </div>
                             </div>
-                        </a>
+                        </div>
                         `))
                     }
                 }

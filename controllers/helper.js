@@ -18,10 +18,12 @@ const helper = {
             scripts: {
                 global: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/global_scripts.js' }),
             },
-            witkcLogo: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'img/witkc_logo.webp' }),
-            witkcIcon: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'img/witkc_icon.ico' }),
-            loggedIn: false
+            setukcLogo: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'img/witkc_logo.webp' }),
+            setukcIcon: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'img/witkc_icon.ico' }),
+            loggedIn: false,
+            env: process.env.DD_ENV
         }
+
         logger.debug({
             sessionId: req.sessionID,
             loggedIn: typeof req.session.memberId !== "undefined" ? true : false,

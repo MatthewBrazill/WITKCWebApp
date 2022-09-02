@@ -11,14 +11,43 @@ $(document).ready(() => {
                 firstDayOfWeek: 1,
                 type: 'date',
                 minDate: new Date(),
-                endCalendar: $('#end_calendar')
-            })
-            $('#end_calendar').calendar({
-                selectAdjacentDays: true,
-                firstDayOfWeek: 1,
-                type: 'date',
-                minDate: new Date(),
-                startCalendar: $('#start_calendar')
+                endCalendar: $('#end_calendar'),
+                onChange: () => {
+                    const start = $('#startDate')
+                    const startDate = $('#start_calendar').calendar('get date')
+                    const startField = $('#start_calendar').parent()
+                    if (startDate == null) {
+                        startField.attr('class', 'inline field error')
+                        start.prop('date', '')
+                        start.prop('valid', false)
+                    } else {
+                        startField.attr('class', 'inline field success')
+                        start.prop('date', new Date(startDate).toISOString())
+                        start.prop('valid', true)
+                        $('#end_calendar').parent().show()
+                        $('#end_calendar').calendar({
+                            selectAdjacentDays: true,
+                            firstDayOfWeek: 1,
+                            type: 'date',
+                            minDate: new Date(),
+                            startCalendar: $('#start_calendar'),
+                            onChange: () => {
+                                const end = $('#endDate')
+                                const endDate = $('#end_calendar').calendar('get date')
+                                const endField = $('#end_calendar').parent()
+                                if (endDate === null) {
+                                    endField.attr('class', 'inline field error')
+                                    end.prop('date', '')
+                                    end.prop('valid', false)
+                                } else {
+                                    endField.attr('class', 'inline field success')
+                                    end.prop('date', new Date(endDate).toISOString())
+                                    end.prop('valid', true)
+                                }
+                            }
+                        })
+                    }
+                }
             })
 
             $('#trip_form').on('submit', (event) => {
@@ -66,36 +95,6 @@ $(document).ready(() => {
                 } else {
                     field.attr('class', 'field success')
                     name.prop('valid', true)
-                }
-            })
-
-            $('#startDate').on('change', () => {
-                const start = $('#startDate')
-                const date = new Date(start.parent().parent().calendar('get date'))
-                const field = start.parent().parent().parent()
-                if (date === null) {
-                    field.attr('class', 'inline field error')
-                    start.prop('date', '')
-                    start.prop('valid', false)
-                } else {
-                    field.attr('class', 'inline field success')
-                    start.prop('date', date.toISOString())
-                    start.prop('valid', true)
-                }
-            })
-
-            $('#endDate').on('change', () => {
-                const end = $('#endDate')
-                const date = new Date(end.parent().parent().calendar('get date'))
-                const field = end.parent().parent().parent()
-                if (date === null) {
-                    field.attr('class', 'inline field error')
-                    end.prop('date', '')
-                    end.prop('valid', false)
-                } else {
-                    field.attr('class', 'inline field success')
-                    end.prop('date', date.toISOString())
-                    end.prop('valid', true)
                 }
             })
 
