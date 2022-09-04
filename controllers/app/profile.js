@@ -53,6 +53,7 @@ const profile = {
                     message: `Admin User`
                 })
                 data.committee = true
+                data.scripts.admin = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/admin_scripts.js' })
                 data.scripts.committee = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/committee_scripts.js' })
                 for (var role of ['captain', 'vice', 'safety', 'treasurer', 'equipments', 'pro', 'freshers']) {
                     data[role] = await committee.getRole(role)

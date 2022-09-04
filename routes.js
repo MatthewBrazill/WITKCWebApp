@@ -82,6 +82,8 @@ router.post('/api/announcement/create', committee.createAnnouncement) // COMMITT
 // TODO UPDATE ANNOUNCEMENT // COMMITTEE POST to update an announcement
 router.post('/api/announcement/read', committee.readAnnouncement) // LOGIN POST to mark an announcement as read
 // TODO DELETE ANNOUNCEMENT // COMMITTEE POST to delete an announcement
+router.get('/api/committee', committee.list) // GET committee
+router.post('/api/committee/appoint', committee.appoint) // POST to appoint the committee members
 
 
 

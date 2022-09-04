@@ -1,0 +1,100 @@
+<script src="{{scripts.admin}}" hidden></script>
+<div class="ui segment">
+    <h3 class="ui dividing header">Appoint Committee</h3>
+
+    <div class="ui two column grid">
+
+        <div class="ui sixteen wide column">
+
+            <div class="ui cards" id="committee_role_list">
+
+                <div class="ui fluid card">
+                    <div class="content">
+                        <div class="ui left floated header" style="margin: 0px; padding-top: 7px">Captain:</div>
+                        <div class="ui right floated clearable search selection dropdown" id="assign_captain_dropdown" style="width: 300px;">
+                            <input type="hidden" id="assign_captain">
+                            <div class="text"></div>
+                            <i class="dropdown icon"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="ui fluid card">
+                    <div class="content">
+                        <div class="ui left floated header" style="margin: 0px; padding-top: 7px">Vice-Captain:</div>
+                        <div class="ui right floated clearable search selection dropdown" id="assign_vice_dropdown" style="width: 300px;">
+                            <input type="hidden" id="assign_vice">
+                            <div class="text"></div>
+                            <i class="dropdown icon"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ui fluid card">
+                    <div class="content">
+                        <div class="ui left floated header" style="margin: 0px; padding-top: 7px">Safety and Development:</div>
+                        <div class="ui right floated clearable search selection dropdown" id="assign_safety_dropdown" style="width: 300px;">
+                            <input type="hidden" id="assign_safety">
+                            <div class="text"></div>
+                            <i class="dropdown icon"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ui fluid card">
+                    <div class="content">
+                        <div class="ui left floated header" style="margin: 0px; padding-top: 7px">Treasurer:</div>
+                        <div class="ui right floated clearable search selection dropdown" id="assign_treasurer_dropdown" style="width: 300px;">
+                            <input type="hidden" id="assign_treasurer">
+                            <div class="text"></div>
+                            <i class="dropdown icon"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ui fluid card">
+                    <div class="content">
+                        <div class="ui left floated header" style="margin: 0px; padding-top: 7px">Equipment:</div>
+                        <div class="ui right floated clearable search selection dropdown" id="assign_equipments_dropdown" style="width: 300px;">
+                            <input type="hidden" id="assign_equipments">
+                            <div class="text"></div>
+                            <i class="dropdown icon"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ui fluid card">
+                    <div class="content">
+                        <div class="ui left floated header" style="margin: 0px; padding-top: 7px">Public Relations:</div>
+                        <div class="ui right floated clearable search selection dropdown" id="assign_pro_dropdown" style="width: 300px;">
+                            <input type="hidden" id="assign_pro">
+                            <div class="text"></div>
+                            <i class="dropdown icon"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ui fluid card">
+                    <div class="content">
+                        <div class="ui left floated header" style="margin: 0px; padding-top: 7px">New Members:</div>
+                        <div class="ui right floated clearable search selection dropdown" id="assign_freshers_dropdown" style="width: 300px;">
+                            <input type="hidden" id="assign_freshers">
+                            <div class="text"></div>
+                            <i class="dropdown icon"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ui error message" id="appointment_error" hidden>
+                <div class="header">Failed to appoint the committee!</div>
+            </div>
+
+            <div class="ui success message" id="appointment_success" hidden>
+                <div class="header">Committee Appointed!</div>
+            </div>
+
+            <div class="ui fluid positive button" style="margin-top: 25px;" id="assign_committee_button">Confirm Committee</div>
+        </div>
+    </div>
+</div>

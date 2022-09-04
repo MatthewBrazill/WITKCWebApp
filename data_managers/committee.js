@@ -90,6 +90,7 @@ const committee = {
                         description: item['description'].S
                     }
                     if (item['memberId'].S == '') role.member = {
+                        memberId: '',
                         firstName: 'Currently',
                         lastName: 'Vacant',
                         img: 'img/placeholder_avatar.webp'
