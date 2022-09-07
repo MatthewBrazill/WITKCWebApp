@@ -176,7 +176,7 @@ router.get('/terms', terms.termsPage) // GET HTML of ToS page
 
 // Cookie APIs
 router.get('/api/cookie/check', cookies.check) // GET cookie check
-router.post('/api/cookie/allow', cookies.allow) // POST cookie choice
+router.post('/api/cookie/allow', cookies.allow) // GET to allow cookies
 
 
 
