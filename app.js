@@ -71,6 +71,7 @@ async function start() {
             loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
             memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
             method: req.method,
+            body: req.method == 'POST' ? req.body : null,
             urlPath: req.url,
             message: `${req.method} ${req.url}`
         })

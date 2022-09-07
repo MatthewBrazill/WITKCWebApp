@@ -9,6 +9,7 @@ const helper = require('../helper.js')
 const formidable = require('formidable')
 const uuid = require('uuid')
 const equipment = require('../../data_managers/equipment.js')
+const bookings = require('../../data_managers/bookings.js')
 
 const gear = {
     async create(req, res) {
@@ -221,6 +222,8 @@ const gear = {
                 if (!['polo', 'full', 'half', ''].includes(req.body.helmetType)) valid = false
                 if (!['s', 'm', 'l', 'xl', ''].includes(req.body.helmetSize)) valid = false
                 if (!['s', 'm', 'l', 'xl', ''].includes(req.body.wetsuitSize)) valid = false
+                if (!req.body.fromDate.match(/^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)$/) && req.body.fromDate != '') valid = false
+                if (!req.body.toDate.match(/^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)$/) && req.body.toDate != '') valid = false
 
                 if (valid) {
                     var result = await equipment.getAll()
@@ -243,6 +246,7 @@ const gear = {
                             else if (req.body.helmetType != '' && result[i].helmetType != req.body.helmetType) result.splice(i)
                             else if (req.body.helmetSize != '' && result[i].helmetSize != req.body.helmetSize) result.splice(i)
                             else if (req.body.wetsuitSize != '' && result[i].wetsuitSize != req.body.wetsuitSize) result.splice(i)
+                            else if (!await bookings.available(result[i].equipmentId, req.body.fromDate, req.body.toDate)) result.splice(i)
                         }
 
                         res.status(200).json(result)

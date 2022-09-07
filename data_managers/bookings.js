@@ -50,28 +50,23 @@ const bookings = {
             TableName: 'witkc-bookings'
         }).promise().then((data) => {
             if (data.Items != undefined) {
-                var bookedDates = []
                 for (var booking of data.Items) {
                     // Preapre for Formatic Calendar formating
                     var date = new Date(booking['fromDate'].S)
                     while (date.setHours(0, 0, 0, 0) <= new Date(booking['toDate'].S).setHours(0, 0, 0, 0)) {
-                        bookedDates.push(date)
+                        if (new Date(fromDate).setHours(0, 0, 0, 0) <= date.setHours(0, 0, 0, 0) && date.setHours(0, 0, 0, 0) <= new Date(toDate).setHours(0, 0, 0, 0)) {
+                            logger.info({
+                                equipmentId: equipmentId,
+                                fromDate: fromDate,
+                                toDate: toDate,
+                                available: false,
+                                objectType: 'booking',
+                                storageType: 'dynamo',
+                                message: `Checked Booking Availability`
+                            })
+                            return false
+                        }
                         date.setDate(date.getDate() + 1)
-                    }
-                }
-
-                for (var bookedDate of bookedDates) {
-                    if (new Date(fromDate).setHours(0, 0, 0, 0) <= bookedDate.setHours(0, 0, 0, 0) && bookedDate.setHours(0, 0, 0, 0) <= new Date(toDate).setHours(0, 0, 0, 0)) {
-                        logger.info({
-                            equipmentId: equipmentId,
-                            fromDate: fromDate,
-                            toDate: toDate,
-                            available: false,
-                            objectType: 'booking',
-                            storageType: 'dynamo',
-                            message: `Checked Booking Availability`
-                        })
-                        return false
                     }
                 }
 

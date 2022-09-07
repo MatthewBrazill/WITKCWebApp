@@ -63,16 +63,20 @@ $(document).ready(() => {
                     list.html('')
                     list.attr('class', 'ui items')
                     for (var booking of bookings) {
-                        list.append($(`
-                        <div class="ui fluid card" id="${booking.bookingId}" target="_blank">
-                            <div class="content">
-                                <div class="header">
-                                    <div class="ui left floated">${booking.equipment.type}:</div>
-                                    <div class="ui right floated">${booking.equipment.brand}: ${booking.equipment.gearName}</div>
-                                </div>
-                            </div>
-                        </div>
-                        `))
+                        list.append($(`<div class="ui fluid card" id="${booking.bookingId}"></div>`)
+                            .append($(`<div class="content"></div>`)
+                                .append($(`<div class="ui right floated negative icon button"><i class="ui trash icon"></i></div>`).on('click', function () {
+                                    const button = $(this)
+                                    $.ajax({
+                                        url: '/api/bookings/delete',
+                                        method: 'POST',
+                                        data: { bookingId: button.parent().parent().attr('id') },
+                                        success: () => { button.parent().parent().remove() }
+                                    })
+                                }))
+                                .append($(`<div class="header" style="margin-top: 6px"><div class="ui left floated">${booking.fromDate.substring(0, 10)} to ${booking.toDate.substring(0, 10)} - ${booking.equipment.type}:</div><div class="ui right floated" style="padding-right: 15px">${booking.equipment.brand}: ${booking.equipment.gearName}</div></div>`))
+                            )
+                        )
                     }
                 }
             },

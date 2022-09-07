@@ -93,6 +93,15 @@ $(document).ready(() => {
         updateQuery()
     })
 
+    $('#type').on('change', () => {
+        $('.filter').each(function () {
+            if ($(this).attr('id') != 'type') {
+                $(this).parent().dropdown('clear')
+                $(this).trigger('change')
+            }
+        })
+    })
+
     updateCart()
     $('#cart_button').click(() => {
         const from = $('#fromDate')
@@ -105,6 +114,8 @@ $(document).ready(() => {
         }
     })
 
+    $('#fromDate').prop('date', '')
+    $('#toDate').prop('date', '')
     $("form#booking_form input[type!=button][id!=fromDate][id!=toDate]").trigger('change')
     $("form#booking_form input[type!=button][id!=fromDate][id!=toDate]").trigger('input')
 })
@@ -124,47 +135,57 @@ function updateQuery() {
             var input = $(element)
             data[input.attr('id')] = input.val()
         })
+        data.fromDate = $('#fromDate').prop('date')
+        data.toDate = $('#toDate').prop('date')
+
+        $('#search_results').html('')
+        $('#search_results').attr('class', 'ui loading placeholder segment')
         $.ajax({
             url: '/api/equipment/find',
             method: 'POST',
             data: data,
             success: (res) => {
-                $('#search_results').html('')
-                for (gear of res) {
-                    var content = $(`<div class="content"></div>`)
-                    var cookies = document.cookie.replace(' ', '').split(';')
-                    var cart = []
-                    if (cookies != '') for (var cookie of cookies) if (cookie.split('=')[0] == 'setukcGearCart') cart = JSON.parse(cookie.split('=')[1])
-
-                    if (!cart.includes(gear.equipmentId)) content.append($(`<button class="ui right floated blue icon button add_cart_button" style="margin-top: 3px;">Add to <i class="ui cart icon"></i></button>`).click(function () {
-                        const button = $(this)
-                        const card = $(this).parent().parent()
-
+                $('#search_results').attr('class', 'ui placeholder segment')
+                $('#search_results').html('<div class="ui icon header"><i class="frown outline icon"></i>There is no matching equipment available!</div>')
+                if (res.length > 0) {
+                    $('#search_results').html('')
+                    $('#search_results').attr('class', 'ui items')
+                    for (gear of res) {
+                        var content = $(`<div class="content"></div>`)
                         var cookies = document.cookie.replace(' ', '').split(';')
                         var cart = []
                         if (cookies != '') for (var cookie of cookies) if (cookie.split('=')[0] == 'setukcGearCart') cart = JSON.parse(cookie.split('=')[1])
 
-                        fromDateChange()
-                        toDateChange()
-                        if (!cart.includes(card.attr('id'))) {
-                            button.html('Added <i class="ui check icon"></i>')
-                            button.unbind()
-                            cart.push(card.attr('id'))
-                            document.cookie = `setukcGearCart=${JSON.stringify(cart)};path=/`
-                            updateCart()
-                        }
-                    }))
-                    else content.append($(`<button class="ui right floated blue icon button add_cart_button" style="margin-top: 3px;">Added <i class="ui check icon"></i></button>`))
-                    content.append($(`<div class="ui header" style="margin: 0px;">${gear.brand}: ${gear.gearName}</div>`))
+                        if (!cart.includes(gear.equipmentId)) content.append($(`<button class="ui right floated blue icon button add_cart_button" style="margin-top: 3px;">Add to <i class="ui cart icon"></i></button>`).click(function () {
+                            const button = $(this)
+                            const card = $(this).parent().parent()
 
-                    if (gear.type == 'boat') content.append($(`<div>Type: ${gear.boatType[0].toUpperCase() + gear.boatType.slice(1)}, Size: ${gear.boatSize.toUpperCase()}, Cockpit: ${gear.boatCockpit[0].toUpperCase() + gear.boatCockpit.slice(1)}</div>`))
-                    else if (gear.type == 'paddle') content.append($(`<div>Type: ${gear.paddleType[0].toUpperCase() + gear.paddleType.slice(1)}, Length: ${gear.paddleLength}</div>`))
-                    else if (gear.type == 'deck') content.append($(`<div>Type: ${gear.deckType[0].toUpperCase() + gear.deckType.slice(1)}, Size: ${gear.deckSize.toUpperCase()}</div>`))
-                    else if (gear.type == 'ba') content.append($(`<div>Size: ${gear.baSize.toUpperCase()}</div>`))
-                    else if (gear.type == 'helmet') content.append($(`<div>Type: ${gear.helmetType[0].toUpperCase() + gear.helmetType.slice(1)}, Size: ${gear.helmetSize.toUpperCase()}</div>`))
-                    else if (gear.type == 'wetsuit') content.append($(`<div>Size: ${gear.wetsuitSize.toUpperCase()}</div>`))
+                            var cookies = document.cookie.replace(' ', '').split(';')
+                            var cart = []
+                            if (cookies != '') for (var cookie of cookies) if (cookie.split('=')[0] == 'setukcGearCart') cart = JSON.parse(cookie.split('=')[1])
 
-                    $('#search_results').append($(`<div class="ui fluid card" id="${gear.equipmentId}"></div>`).append(content))
+                            fromDateChange()
+                            toDateChange()
+                            if (!cart.includes(card.attr('id'))) {
+                                button.html('Added <i class="ui check icon"></i>')
+                                button.unbind()
+                                cart.push(card.attr('id'))
+                                document.cookie = `setukcGearCart=${JSON.stringify(cart)};path=/`
+                                updateCart()
+                            }
+                        }))
+                        else content.append($(`<button class="ui right floated blue icon button add_cart_button" style="margin-top: 3px;">Added <i class="ui check icon"></i></button>`))
+                        content.append($(`<div class="ui header" style="margin: 0px;">${gear.brand}: ${gear.gearName}</div>`))
+
+                        if (gear.type == 'boat') content.append($(`<div>Type: ${gear.boatType[0].toUpperCase() + gear.boatType.slice(1)}, Size: ${gear.boatSize.toUpperCase()}, Cockpit: ${gear.boatCockpit[0].toUpperCase() + gear.boatCockpit.slice(1)}</div>`))
+                        else if (gear.type == 'paddle') content.append($(`<div>Type: ${gear.paddleType[0].toUpperCase() + gear.paddleType.slice(1)}, Length: ${gear.paddleLength}</div>`))
+                        else if (gear.type == 'deck') content.append($(`<div>Type: ${gear.deckType[0].toUpperCase() + gear.deckType.slice(1)}, Size: ${gear.deckSize.toUpperCase()}</div>`))
+                        else if (gear.type == 'ba') content.append($(`<div>Size: ${gear.baSize.toUpperCase()}</div>`))
+                        else if (gear.type == 'helmet') content.append($(`<div>Type: ${gear.helmetType[0].toUpperCase() + gear.helmetType.slice(1)}, Size: ${gear.helmetSize.toUpperCase()}</div>`))
+                        else if (gear.type == 'wetsuit') content.append($(`<div>Size: ${gear.wetsuitSize.toUpperCase()}</div>`))
+
+                        $('#search_results').append($(`<div class="ui fluid card" id="${gear.equipmentId}"></div>`).append(content))
+                    }
                 }
             },
             error: () => form.attr('class', 'ui error form')
@@ -238,4 +259,5 @@ function toDateChange() {
         to.prop('date', new Date(toDate).toISOString())
         to.prop('valid', true)
     }
+    updateQuery()
 }

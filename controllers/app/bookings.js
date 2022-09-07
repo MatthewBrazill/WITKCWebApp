@@ -251,8 +251,11 @@ const gear = {
 
                 // Validate input
                 if (req.body.bookingId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
-                    if (await bookings.delete(req.body.bookingId)) res.sendStatus(204)
-                    else res.sendStatus(503)
+                    var result = await bookings.get(req.body.bookingId)
+                    if (result != null && result.memberId == data.member.memberId) {
+                        if (await bookings.delete(req.body.bookingId)) res.sendStatus(204)
+                        else res.sendStatus(503)
+                    } else res.sendStatus(403)
                 } else res.sendStatus(400)
             } else res.sendStatus(403)
             else res.sendStatus(401)
