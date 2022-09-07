@@ -11,14 +11,43 @@ $(document).ready(() => {
                 firstDayOfWeek: 1,
                 type: 'date',
                 minDate: new Date(),
-                endCalendar: $('#end_calendar')
-            })
-            $('#end_calendar').calendar({
-                selectAdjacentDays: true,
-                firstDayOfWeek: 1,
-                type: 'date',
-                minDate: new Date(),
-                startCalendar: $('#start_calendar')
+                endCalendar: $('#end_calendar'),
+                onChange: () => {
+                    const start = $('#startDate')
+                    const startDate = $('#start_calendar').calendar('get date')
+                    const startField = $('#start_calendar').parent()
+                    if (startDate == null) {
+                        startField.attr('class', 'inline field error')
+                        start.prop('date', '')
+                        start.prop('valid', false)
+                    } else {
+                        startField.attr('class', 'inline field success')
+                        start.prop('date', new Date(startDate).toISOString())
+                        start.prop('valid', true)
+                        $('#end_calendar').parent().show()
+                        $('#end_calendar').calendar({
+                            selectAdjacentDays: true,
+                            firstDayOfWeek: 1,
+                            type: 'date',
+                            minDate: new Date(),
+                            startCalendar: $('#start_calendar'),
+                            onChange: () => {
+                                const end = $('#endDate')
+                                const endDate = $('#end_calendar').calendar('get date')
+                                const endField = $('#end_calendar').parent()
+                                if (endDate === null) {
+                                    endField.attr('class', 'inline field error')
+                                    end.prop('date', '')
+                                    end.prop('valid', false)
+                                } else {
+                                    endField.attr('class', 'inline field success')
+                                    end.prop('date', new Date(endDate).toISOString())
+                                    end.prop('valid', true)
+                                }
+                            }
+                        })
+                    }
+                }
             })
 
             $('#trip_form').on('submit', (event) => {
@@ -41,7 +70,7 @@ $(document).ready(() => {
                     inputs.each((index, element) => {
                         var input = $(element)
                         if (input.attr('type') == 'checkbox') {
-                            if (input.attr('id') == 'enough_safety') data.enough_safety = input.prop('checked')
+                            if (input.attr('id') == 'enoughSafety') data.enoughSafety = input.prop('checked')
                             else if (input.attr('id') == 'other_hazards_checkbox' && input.prop('checked')) data.hazards.push($('#other_hazards').val())
                             else if (input.prop('checked')) data.hazards.push(input.attr('id'))
                         } else if (input.attr('id').split('_')[1] == 'date') data[input.attr('id')] = input.prop('date')
@@ -69,36 +98,6 @@ $(document).ready(() => {
                 }
             })
 
-            $('#start_date').on('change', () => {
-                const start = $('#start_date')
-                const date = new Date(start.parent().parent().calendar('get date'))
-                const field = start.parent().parent().parent()
-                if (date === null) {
-                    field.attr('class', 'inline field error')
-                    start.prop('date', '')
-                    start.prop('valid', false)
-                } else {
-                    field.attr('class', 'inline field success')
-                    start.prop('date', date.toISOString())
-                    start.prop('valid', true)
-                }
-            })
-
-            $('#end_date').on('change', () => {
-                const end = $('#end_date')
-                const date = new Date(end.parent().parent().calendar('get date'))
-                const field = end.parent().parent().parent()
-                if (date === null) {
-                    field.attr('class', 'inline field error')
-                    end.prop('date', '')
-                    end.prop('valid', false)
-                } else {
-                    field.attr('class', 'inline field success')
-                    end.prop('date', date.toISOString())
-                    end.prop('valid', true)
-                }
-            })
-
             $('#description').on('input', () => {
                 const description = $('#description')
                 const field = description.parent()
@@ -111,8 +110,8 @@ $(document).ready(() => {
                 }
             })
 
-            $('#line_one').on('input', () => {
-                const line = $('#line_one')
+            $('#lineOne').on('input', () => {
+                const line = $('#lineOne')
                 const field = line.parent()
                 if (!line.val().match(/^[\w- ]{1,32}$/)) {
                     field.attr('class', 'field error')
@@ -123,8 +122,8 @@ $(document).ready(() => {
                 }
             })
 
-            $('#line_two').on('input', () => {
-                const line = $('#line_two')
+            $('#lineTwo').on('input', () => {
+                const line = $('#lineTwo')
                 const field = line.parent()
                 if (line.val() == '') {
                     field.attr('class', 'field')
@@ -228,13 +227,13 @@ $(document).ready(() => {
                 }
             })
 
-            $('#enough_safety').on('change', () => {
-                const box = $('#enough_safety')
+            $('#enoughSafety').on('change', () => {
+                const box = $('#enoughSafety')
 
                 if (!box.prop('checked')) box.siblings().text(`No (This does not mean your trip will be denied! We will try to find additional safety boaters for your trip.)`)
                 else box.siblings().text('Yes')
             })
-            $('#enough_safety').trigger('change')
+            $('#enoughSafety').trigger('change')
 
             $('#other_hazards_checkbox').on('change', () => {
                 const box = $('#other_hazards_checkbox')

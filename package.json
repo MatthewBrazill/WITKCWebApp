@@ -1,11 +1,11 @@
 {
-  "name": "witkc-webapp",
-  "version": "1.9.0",
-  "description": "A Web App for the WIT Kayaking Club.",
+  "name": "setukc-webapp",
+  "version": "1.0.1",
+  "description": "A Web App for the SETU Kayaking Club.",
   "main": "app.js",
   "scripts": {
-    "start": "cd /home/ec2-user/witkc-webapp ; node app.js",
-    "test": "node app.js"
+    "start": "cd /home/ec2-user/witkc-webapp ; DD_TAGS=\"git.commit.sha:$(git rev-parse head) git.repository_url:https://github.com/MatthewBrazill/witkc-webapp\" DD_ENV=\"prod\" node app.js",
+    "test": "DD_TAGS=\"git.commit.sha:$(git rev-parse head) git.repository_url:https://github.com/MatthewBrazill/witkc-webapp\" DD_ENV=\"dev\" node app.js"
   },
   "repository": {
     "type": "git",
@@ -18,7 +18,6 @@
   },
   "homepage": "https://github.com/MatthewBrazill/witkc-webapp#readme",
   "dependencies": {
-    "@datadog/browser-rum": "^4.14.0",
     "aws-sdk": "^2.1092.0",
     "bcrypt": "^5.0.1",
     "connect-dynamodb": "^2.0.4",

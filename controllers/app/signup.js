@@ -31,13 +31,13 @@ const signup = {
             ]
 
             // Server-Side Validation
-            if (!req.body.first_name.match(/^\p{L}{1,16}$/u)) valid = false
-            if (!req.body.last_name.match(/^\p{L}{1,16}$/u)) valid = false
+            if (!req.body.firstName.match(/^\p{L}{1,16}$/u)) valid = false
+            if (!req.body.lastName.match(/^\p{L}{1,16}$/u)) valid = false
             if (!req.body.username.match(/^[\w-]{1,16}$/) || await members.resolveUsername(req.body.username) !== null) valid = false
             if (!req.body.email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.[a-z]{2,})$/i)) valid = false
             if (!req.body.phone.match(/^[+0]+\d{8,12}$/) && req.body.phone != '') valid = false
-            if (!req.body.line_one.match(/^[\w- ]{1,32}$/)) valid = false
-            if (!req.body.line_two.match(/^[\w- ]{1,32}$/) && req.body.line_two != '') valid = false
+            if (!req.body.lineOne.match(/^[\w- ]{1,32}$/)) valid = false
+            if (!req.body.lineTwo.match(/^[\w- ]{1,32}$/) && req.body.lineTwo != '') valid = false
             if (!req.body.city.match(/^[\w- ]{1,32}$/)) valid = false
             if (!counties.includes(req.body.county)) valid = false
             if (!req.body.code.match(/^[a-z0-9]{3}[ ]?[a-z0-9]{4}$/i) && !req.body.code.match(/^[a-z0-9]{2,4}[ ]?[a-z0-9]{3}$/i)) valid = false
@@ -50,15 +50,15 @@ const signup = {
                 var member = {
                     memberId: uuid.v4(),
                     username: req.body.username,
-                    firstName: helper.capitalize(req.body.first_name),
-                    lastName: helper.capitalize(req.body.last_name),
+                    firstName: helper.capitalize(req.body.firstName),
+                    lastName: helper.capitalize(req.body.lastName),
                     email: req.body.email.toLowerCase(),
                     phone: helper.internationalize(req.body.phone),
                     verified: false,
                     promotion: true,
                     address: {
-                        lineOne: helper.capitalize(req.body.line_one),
-                        lineTwo: helper.capitalize(req.body.line_two),
+                        lineOne: helper.capitalize(req.body.lineOne),
+                        lineTwo: helper.capitalize(req.body.lineTwo),
                         city: helper.capitalize(req.body.city),
                         county: req.body.county,
                         code: req.body.code.toUpperCase().replace(/\s/g, ''),
@@ -71,7 +71,7 @@ const signup = {
                 var pSuccess = passwords.create(member.memberId, await bcrypt.hash(req.body.password, 10))
 
                 req.session.memberId = member.memberId
-                req.session.allow_cookies = true
+                req.session.allowCookies = true
 
                 if (await mSuccess && await pSuccess) res.status(200).json({ url: '/profile/me' })
                 else {

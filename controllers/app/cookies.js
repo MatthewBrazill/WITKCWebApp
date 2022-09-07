@@ -6,9 +6,9 @@ const logger = require('../../log.js')
 const cookies = {
     async check(req, res) {
         try {
-            // If allow_cookies is set, cookies are allowed, if not, not
-            if (req.session.allow_cookies) res.status(200).json({ allow_cookies: true })
-            else res.status(200).json({ allow_cookies: false })
+            // If allowCookies is set, cookies are allowed, if not, not
+            if (req.session.allowCookies) res.status(200).json({ allowCookies: true })
+            else res.status(200).json({ allowCookies: false })
         } catch (err) {
             logger.error({
                 sessionId: req.sessionID,
@@ -27,10 +27,10 @@ const cookies = {
     async allow(req, res) {
         try {
             // Validate input
-            if (req.body.allow_cookies == 'true' || req.body.allow_cookies == 'false') {
+            if (req.body.allowCookies == 'true' || req.body.allowCookies == 'false') {
 
                 // Set cookie to allowed
-                if (req.body.allow_cookies == 'true') {
+                if (req.body.allowCookies == 'true') {
                     logger.debug({
                         sessionId: req.sessionID,
                         loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
@@ -39,7 +39,7 @@ const cookies = {
                         urlPath: req.url,
                         message: `Allowed Cookies`
                     })
-                    req.session.allow_cookies = true
+                    req.session.allowCookies = true
                 }
                 res.sendStatus(200)
             } else res.sendStatus(400)

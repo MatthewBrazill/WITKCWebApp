@@ -1,25 +1,17 @@
 'use strict'
 
-const equipment = require('../../data_managers/equipment.js')
 // Imports
 const logger = require('../../log.js')
+const AWS = require('aws-sdk')
+const s3 = new AWS.S3()
 const sharp = require('sharp')
 const helper = require('../helper.js')
 const formidable = require('formidable')
 const uuid = require('uuid')
+const equipment = require('../../data_managers/equipment.js')
+const bookings = require('../../data_managers/bookings.js')
 
 const gear = {
-    async bookPage(req, res) {
-        var data = await helper.viewData(req, 'Book Equipment')
-        data.scripts.gear = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/gear_scripts.js' })
-
-        //Authenticate user
-        if (data.loggedIn) if (data.member.verified) {
-            res.render('gear', data)
-        } else res.status(403).redirect('/profile/me')
-        else res.status(401).redirect('/login')
-    },
-
     async create(req, res) {
         try {
             var data = await helper.viewData(req, 'API')
@@ -29,20 +21,21 @@ const gear = {
             if (data.loggedIn) if (data.committee == 'safety' || data.admin) {
 
                 // Use formidable for image transfer
-                var { fields, files } = new formidable.IncomingForm().parse(req, (err, fields, files) => {
+                var { fields, files } = await new Promise((resolve, reject) => new formidable.IncomingForm().parse(req, (err, fields, files) => {
                     // Check for any errors
-                    if (err) throw err
-                    else return { fields, files }
-                })
+                    if (err) reject(err)
+                    else resolve({ fields, files })
+                }))
 
                 // Server-Side Validation
                 logger.debug({
+                    fields: fields,
                     sessionId: req.sessionID,
                     loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
                     memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
                     method: req.method,
                     urlPath: req.url,
-                    message: `Recieved Fields => ${fields}`
+                    message: `Recieved ${Object.keys(fields).length} Fields`
                 })
                 if (!fields.gearName.match(/^[\w- ]{1,24}$/)) valid = false
                 if (!fields.brand.match(/^[\w- ]{1,24}$/)) valid = false
@@ -50,34 +43,35 @@ const gear = {
 
                 // Validate based on the type of equipment
                 if (fields.type == 'boat') {
-                    if (!['polo', 'whitewater', 'freestyle', 'other'].includes(fields.boat_type)) valid = false
-                    if (!['s', 'm', 'l'].includes(fields.boat_size)) valid = false
-                    if (!['big', 'key'].includes(fields.boat_cockpit)) valid = false
+                    if (!['polo', 'whitewater', 'freestyle', 'other'].includes(fields.boatType)) valid = false
+                    if (!['s', 'm', 'l'].includes(fields.boatSize)) valid = false
+                    if (!['big', 'key'].includes(fields.boatCockpit)) valid = false
                 } else if (fields.type == 'paddle') {
-                    if (!['polo', 'straight', 'crank'].includes(fields.paddle_type)) valid = false
+                    if (!['polo', 'straight', 'crank'].includes(fields.paddleType)) valid = false
                     if (fields.paddle_length < 0 || fields.paddle_length > 1000) valid = false
                 } else if (fields.type == 'deck') {
-                    if (!['big', 'key'].includes(fields.deck_type)) valid = false
-                    if (!['xxxs/xxs', 'xxs/xs', 'xs/s', 'm/l', 'xl/xxl'].includes(fields.deck_size)) valid = false
+                    if (!['big', 'key'].includes(fields.deckType)) valid = false
+                    if (!['xxxs/xxs', 'xxs/xs', 'xs/s', 'm/l', 'xl/xxl'].includes(fields.deckSize)) valid = false
                 } else if (fields.type == 'ba') {
-                    if (!['s', 'l'].includes(fields.ba_size)) valid = false
+                    if (!['s', 'l'].includes(fields.baSize)) valid = false
                 } else if (fields.type == 'helmet') {
-                    if (!['polo', 'full', 'half'].includes(fields.helmet_type)) valid = false
-                    if (!['s', 'm', 'l', 'xl'].includes(fields.helmet_size)) valid = false
+                    if (!['polo', 'full', 'half'].includes(fields.helmetType)) valid = false
+                    if (!['s', 'm', 'l', 'xl'].includes(fields.helmetSize)) valid = false
                 } else if (fields.type == 'wetsuit') {
-                    if (!['s', 'm', 'l', 'xl'].includes(fields.wetsuit_size)) valid = false
+                    if (!['s', 'm', 'l', 'xl'].includes(fields.wetsuitSize)) valid = false
                 }
 
-                // Loop through images
+                // Check image
                 logger.debug({
+                    files: files,
                     sessionId: req.sessionID,
                     loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
                     memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
                     method: req.method,
                     urlPath: req.url,
-                    message: `Recieved File => ${files}`
+                    message: `Recieved ${Object.keys(files).length} Files}`
                 })
-                if (files[0].mimetype.split('/')[0] == 'image') receipts.push(files[0].filepath)
+                if (files.length > 0) if (files[0].mimetype.split('/')[0] != 'image') valid = false
 
                 if (valid) {
 
@@ -93,22 +87,22 @@ const gear = {
 
                     // Populate gear object based on type
                     if (fields.type == 'boat') {
-                        gear.boatType = fields.boat_type
-                        gear.boatSize = fields.boat_size
-                        gear.boatCockpit = fields.boat_cockpit
+                        gear.boatType = fields.boatType
+                        gear.boatSize = fields.boatSize
+                        gear.boatCockpit = fields.boatCockpit
                     } else if (fields.type == 'paddle') {
-                        gear.paddleType = fields.paddle_type
+                        gear.paddleType = fields.paddleType
                         gear.paddleLength = fields.paddle_length
                     } else if (fields.type == 'deck') {
-                        gear.deckType = fields.deck_type
-                        gear.deckSize = fields.deck_size
+                        gear.deckType = fields.deckType
+                        gear.deckSize = fields.deckSize
                     } else if (fields.type == 'ba') {
-                        gear.baSize = fields.ba_size
+                        gear.baSize = fields.baSize
                     } else if (fields.type == 'helmet') {
-                        gear.helmetType = fields.helmet_type
-                        gear.helmetSize = fields.helmet_size
+                        gear.helmetType = fields.helmetType
+                        gear.helmetSize = fields.helmetSize
                     } else if (fields.type == 'wetsuit') {
-                        gear.wetsuitSize = fields.wetsuit_size
+                        gear.wetsuitSize = fields.wetsuitSize
                     }
 
                     // If file exists put to S3
@@ -207,7 +201,75 @@ const gear = {
         }
     },
 
-    async update() {
+    async find(req, res) {
+        try {
+            var data = await helper.viewData(req, 'API')
+
+            // Authenticate user
+            if (data.loggedIn) if (data.member.verified) {
+                var valid = true
+
+                // Validate Input
+                if (!req.body.search.match(/^[\w- ]{0,64}$/)) valid = false
+                if (!['boat', 'paddle', 'deck', 'ba', 'helmet', 'wetsuit', ''].includes(req.body.type)) valid = false
+                if (!['polo', 'whitewater', 'freestyle', 'other', ''].includes(req.body.boatType)) valid = false
+                if (!['s', 'm', 'l', ''].includes(req.body.boatSize)) valid = false
+                if (!['big', 'key', ''].includes(req.body.boatCockpit)) valid = false
+                if (!['polo', 'straight', 'crank', ''].includes(req.body.paddleType)) valid = false
+                if (!['big', 'key', ''].includes(req.body.deckType)) valid = false
+                if (!['xxxs/xxs', 'xxs/xs', 'xs/s', 'm/l', 'xl/xxl', ''].includes(req.body.deckSize)) valid = false
+                if (!['s', 'l', ''].includes(req.body.baSize)) valid = false
+                if (!['polo', 'full', 'half', ''].includes(req.body.helmetType)) valid = false
+                if (!['s', 'm', 'l', 'xl', ''].includes(req.body.helmetSize)) valid = false
+                if (!['s', 'm', 'l', 'xl', ''].includes(req.body.wetsuitSize)) valid = false
+                if (!req.body.fromDate.match(/^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)$/) && req.body.fromDate != '') valid = false
+                if (!req.body.toDate.match(/^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)$/) && req.body.toDate != '') valid = false
+
+                if (valid) {
+                    var result = await equipment.getAll()
+                    if (result != null) {
+                        result = result.boats.concat(result.paddles, result.decks, result.bas, result.helmets, result.wetsuits)
+
+                        /* Had to write some shitty custom filter. Should probably have just used a better kind of database 
+                        for this but hey, not like this will ever get scaling issues. If youre the new guy handeling this, and
+                        by some miricle you have too many pieces of equipment to handle: May god have mercy on you; don't call me. */
+                        for (var i in result) {
+                            if (req.body.search != '' && !result[i].gearName.toLowerCase().includes(req.body.search.toLowerCase())) result.splice(i)
+                            else if (req.body.type != '' && result[i].type != req.body.type) result.splice(i)
+                            else if (req.body.boatType != '' && result[i].boatType != req.body.boatType) result.splice(i)
+                            else if (req.body.boatSize != '' && result[i].boatSize != req.body.boatSize) result.splice(i)
+                            else if (req.body.boatCockpit != '' && result[i].boatCockpit != req.body.boatCockpit) result.splice(i)
+                            else if (req.body.paddleType != '' && result[i].paddleType != req.body.paddleType) result.splice(i)
+                            else if (req.body.deckType != '' && result[i].deckType != req.body.deckType) result.splice(i)
+                            else if (req.body.deckSize != '' && result[i].deckSize != req.body.deckSize) result.splice(i)
+                            else if (req.body.baSize != '' && result[i].baSize != req.body.baSize) result.splice(i)
+                            else if (req.body.helmetType != '' && result[i].helmetType != req.body.helmetType) result.splice(i)
+                            else if (req.body.helmetSize != '' && result[i].helmetSize != req.body.helmetSize) result.splice(i)
+                            else if (req.body.wetsuitSize != '' && result[i].wetsuitSize != req.body.wetsuitSize) result.splice(i)
+                            else if (!await bookings.available(result[i].equipmentId, req.body.fromDate, req.body.toDate)) result.splice(i)
+                        }
+
+                        res.status(200).json(result)
+                    } else res.sendStatus(404)
+                } else res.sendStatus(400)
+            } else res.sendStatus(403)
+            else res.sendStatus(401)
+        } catch (err) {
+            logger.error({
+                sessionId: req.sessionID,
+                loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                method: req.method,
+                urlPath: req.url,
+                error: err,
+                stack: err.stack,
+                message: `${req.method} ${req.url} Failed => ${err}`
+            })
+            res.status(500).json(err)
+        }
+    },
+
+    async update(req, res) {
         try {
             var data = await helper.viewData(req, 'API')
 

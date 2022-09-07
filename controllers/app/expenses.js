@@ -36,20 +36,21 @@ const expenses = {
                 var receipts = []
 
                 // Use formidable for image transfer
-                var { fields, files } = new formidable.IncomingForm().parse(req, (err, fields, files) => {
+                var { fields, files } = await new Promise((resolve, reject) => new formidable.IncomingForm().parse(req, (err, fields, files) => {
                     // Check for any errors
-                    if (err) throw err
-                    else return { fields, files }
-                })
+                    if (err) reject(err)
+                    else resolve({ fields, files })
+                }))
 
                 // Loop through fields and deconstruct transport string
                 logger.debug({
+                    fields: fields,
                     sessionId: req.sessionID,
                     loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
                     memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
                     method: req.method,
                     urlPath: req.url,
-                    message: `Recieved Fields => ${fields}`
+                    message: `Recieved ${Object.keys(fields).length} Fields`
                 })
                 for (var field in fields) {
                     var values = fields[field].split('%')
@@ -64,12 +65,13 @@ const expenses = {
 
                 // Loop through images
                 logger.debug({
+                    files: files,
                     sessionId: req.sessionID,
                     loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
                     memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
                     method: req.method,
                     urlPath: req.url,
-                    message: `Recieved Files => ${files}`
+                    message: `Recieved ${Object.keys(files).length} Files`
                 })
                 for (var file in files) if (files[file].mimetype.split('/')[0] == 'image') receipts.push(files[file].filepath)
                 if (receipts.length == 0) valid = false

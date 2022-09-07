@@ -23,6 +23,7 @@ const pro = require('./controllers/committee/pro.js')
 const members = require('./controllers/app/members.js')
 const cookies = require('./controllers/app/cookies.js')
 const certificates = require('./controllers/app/certificates.js')
+const bookings = require('./controllers/app/bookings.js')
 
 
 
@@ -81,6 +82,8 @@ router.post('/api/announcement/create', committee.createAnnouncement) // COMMITT
 // TODO UPDATE ANNOUNCEMENT // COMMITTEE POST to update an announcement
 router.post('/api/announcement/read', committee.readAnnouncement) // LOGIN POST to mark an announcement as read
 // TODO DELETE ANNOUNCEMENT // COMMITTEE POST to delete an announcement
+router.get('/api/committee', committee.list) // GET committee
+router.post('/api/committee/appoint', committee.appoint) // POST to appoint the committee members
 
 
 
@@ -123,13 +126,21 @@ router.post('/api/trip/delete', trip.delete) // OWNER/SAFETY POST to delete a tr
 
 
 // Equipment
-router.get('/equipment/book', gear.bookPage) // GET HTML of equipment booking page
+router.get('/equipment/book', bookings.bookPage) // GET HTML of equipment booking page
 // Equipment APIs
 router.post('/api/equipment/create', gear.create) // EQUIPMENTS POST to create a new item of equipment
+router.post('/api/equipment/available', bookings.available) // VERIFIED POST to check if an item of equipemnt is available to be booked
 router.post('/api/equipment/get', gear.get) // VERIFIED POST to get a equipment item
 router.get('/api/equipment/list', gear.list) // VERIFIED GET to list all equipment
-router.post('/api/equipment/update', gear.update) // EQUIPMENTS POST to update a item of equipment
-router.post('/api/equipment/delete', gear.delete) // EQUIPMENTs POST to delete a item of equipment
+router.post('/api/equipment/find', gear.find) // VERIFIED POST to find equipment based on flilters and a search query
+router.post('/api/equipment/book', bookings.book) // VERIFIED POST to book an item of equipment
+router.post('/api/equipment/update', gear.update) // EQUIPMENTS POST to update an item of equipment
+router.post('/api/equipment/delete', gear.delete) // EQUIPMENTs POST to delete an item of equipment
+// Bookings APIs
+router.get('/api/bookings/dates', bookings.dates) // VERIFIED GET to list dates for bookings for the owning member
+router.post('/api/bookings/day', bookings.day) // VERIFIED POST to list all bookings for the owning member on a date
+router.post('/api/bookings/update', bookings.update) // OWNER POST to update a booking
+router.post('/api/bookings/delete', bookings.delete) // OWNER POST to delete a booking
 
 
 

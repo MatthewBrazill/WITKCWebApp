@@ -177,7 +177,7 @@ const trip = {
 
                             default:
                                 data.trip.hazards.others = 'checked=""'
-                                data.trip.hazards.othersValue = hazard.substring(15, -1)
+                                data.trip.hazards.othersValue = hazard.slice(15, -1)
                                 break;
                         }
 
@@ -214,16 +214,16 @@ const trip = {
 
                 // Validate input
                 if (!req.body.tripName.match(/^[\p{L}\d!?&() ]{1,64}$/u)) valid = false
-                if (!req.body.start_date.match(/^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)$/)) valid = false
-                if (!req.body.end_date.match(/^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)$/)) valid = false
+                if (!req.body.startDate.match(/^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)$/)) valid = false
+                if (!req.body.endDate.match(/^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)$/)) valid = false
                 if (!req.body.description.match(/^[^<>]{1,500}$/u)) valid = false
-                if (!req.body.line_one.match(/^[\w- ]{1,32}$/)) valid = false
-                if (!req.body.line_two.match(/^[\w- ]{1,32}$/) && req.body.line_two != '') valid = false
+                if (!req.body.lineOne.match(/^[\w- ]{1,32}$/)) valid = false
+                if (!req.body.lineTwo.match(/^[\w- ]{1,32}$/) && req.body.lineTwo != '') valid = false
                 if (!req.body.city.match(/^[\w- ]{1,32}$/)) valid = false
                 if (!counties.includes(req.body.county)) valid = false
                 if (!req.body.code.match(/^[a-z0-9]{3}[ ]?[a-z0-9]{4}$/i) && !req.body.code.match(/^[a-z0-9]{2,4}[ ]?[a-z0-9]{3}$/i)) valid = false
                 if (req.body.skillLevel < 1 || req.body.skillLevel > 5) valid = false
-                if (req.body.enough_safety != 'true' && req.body.enough_safety != 'false') valid = false
+                if (req.body.enoughSafety != 'true' && req.body.enoughSafety != 'false') valid = false
                 if (!req.body.safety.split(',').every((item) => memberIds.includes(item))) valid = false
                 if (req.body.hazards != undefined) if (!req.body.hazards.every(item => {
                     if (!commonHazards.includes(item)) {
@@ -260,27 +260,28 @@ const trip = {
                     }
 
                     // Create trip
-                    if (await trips.create({
+                    var trip = {
                         tripId: uuid.v4(),
                         tripName: helper.capitalize(req.body.tripName),
                         creator: data.member.memberId,
-                        startDate: new Date(req.body.start_date).toUTCString(),
-                        endDate: new Date(req.body.end_date).toUTCString(),
+                        startDate: new Date(req.body.startDate).toUTCString(),
+                        endDate: new Date(req.body.endDate).toUTCString(),
                         description: req.body.description,
                         destination: {
-                            lineOne: helper.capitalize(req.body.line_one),
-                            lineTwo: helper.capitalize(req.body.line_two),
+                            lineOne: helper.capitalize(req.body.lineOne),
+                            lineTwo: helper.capitalize(req.body.lineTwo),
                             city: helper.capitalize(req.body.city),
                             county: req.body.county,
                             code: req.body.code.toUpperCase().replace(/\s/g, ''),
                         },
                         skillLevel: req.body.skillLevel,
                         safety: req.body.safety.split(','),
-                        enoughSafety: (req.body.enough_safety == 'true'),
-                        approved: (data.committee == 'safety'),
+                        enoughSafety: (req.body.enoughSafety == 'true'),
                         hazards: hazards,
                         attendees: req.body.safety.split(',')
-                    })) res.status(200).json({ url: `/trip/${trip.tripId}` })
+                    }
+                    if (data.committee == 'safety') trip.approved = true
+                    if (await trips.create(trip)) res.status(200).json({ url: `/trip/${trip.tripId}` })
                     else res.status(503)
                 } else res.sendStatus(400)
             } else res.sendStatus(403)
@@ -350,16 +351,16 @@ const trip = {
 
                             // Validate input
                             if (!req.body.tripName.match(/^[\p{L}\d!?&() ]{1,64}$/u)) valid = false
-                            if (!req.body.start_date.match(/^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)$/)) valid = false
-                            if (!req.body.end_date.match(/^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)$/)) valid = false
+                            if (!req.body.startDate.match(/^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)$/)) valid = false
+                            if (!req.body.endDate.match(/^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)$/)) valid = false
                             if (!req.body.description.match(/^[^<>]{1,500}$/u)) valid = false
-                            if (!req.body.line_one.match(/^[\w- ]{1,32}$/)) valid = false
-                            if (!req.body.line_two.match(/^[\w- ]{1,32}$/) && req.body.line_two != '') valid = false
+                            if (!req.body.lineOne.match(/^[\w- ]{1,32}$/)) valid = false
+                            if (!req.body.lineTwo.match(/^[\w- ]{1,32}$/) && req.body.lineTwo != '') valid = false
                             if (!req.body.city.match(/^[\w- ]{1,32}$/)) valid = false
                             if (!counties.includes(req.body.county)) valid = false
                             if (!req.body.code.match(/^[a-z0-9]{3}[ ]?[a-z0-9]{4}$/i) && !req.body.code.match(/^[a-z0-9]{2,4}[ ]?[a-z0-9]{3}$/i)) valid = false
                             if (req.body.skillLevel < 1 || req.body.skillLevel > 5) valid = false
-                            if (req.body.enough_safety != 'true' && req.body.enough_safety != 'false') valid = false
+                            if (req.body.enoughSafety != 'true' && req.body.enoughSafety != 'false') valid = false
                             if (!req.body.safety.split(',').every((item) => memberIds.includes(item))) valid = false
                             if (req.body.hazards != undefined) if (!req.body.hazards.every(item => {
                                 if (!commonHazards.includes(item)) {
@@ -395,23 +396,23 @@ const trip = {
                                         break;
                                 }
 
-                                // Create trip
+                                // Update trip
                                 if (await trips.update({
                                     tripId: req.body.tripId,
                                     tripName: helper.capitalize(req.body.tripName),
-                                    startDate: new Date(req.body.start_date).toUTCString(),
-                                    endDate: new Date(req.body.end_date).toUTCString(),
+                                    startDate: new Date(req.body.startDate).toUTCString(),
+                                    endDate: new Date(req.body.endDate).toUTCString(),
                                     description: req.body.description,
                                     destination: {
-                                        lineOne: helper.capitalize(req.body.line_one),
-                                        lineTwo: helper.capitalize(req.body.line_two),
+                                        lineOne: helper.capitalize(req.body.lineOne),
+                                        lineTwo: helper.capitalize(req.body.lineTwo),
                                         city: helper.capitalize(req.body.city),
                                         county: req.body.county,
                                         code: req.body.code.toUpperCase().replace(/\s/g, ''),
                                     },
                                     skillLevel: req.body.skillLevel,
                                     safety: req.body.safety.split(','),
-                                    enoughSafety: (req.body.enough_safety == 'true'),
+                                    enoughSafety: (req.body.enoughSafety == 'true'),
                                     approved: (data.committee == 'safety'),
                                     hazards: hazards,
                                     attendees: req.body.safety.split(',')
@@ -508,6 +509,12 @@ const trip = {
                     data.trip = await trips.get(req.body.tripId)
                     if (data.trip != null) {
                         if (data.member.memberId == data.trip.creator || data.admin || data.committee) {
+                            s3.putObject({
+                                Bucket: 'witkc',
+                                Key: `deletedTrips/${req.body.tripId}.json`,
+                                Body: JSON.stringify(await trips.get(req.body.tripId))
+                            })
+
                             if (await trips.delete(req.body.tripId)) res.sendStatus(200)
                             else res.sendStatus(503)
                         } else res.sendStatus(403)

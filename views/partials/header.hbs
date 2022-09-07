@@ -14,11 +14,20 @@
         </div>
 
         <a class="item" href="/events">Events</a>
-        
+
         <a class="item" href="/contact">Contact Us</a>
 
         {{#if loggedIn}}
-        <a class="item" href="/profile/me">My WITKC</a>
+        <div class="ui simple dropdown item" id="my_setukc_dropdown">
+            My SETUKC
+            <i class="ui dropdown icon"></i>
+            <div class="menu">
+                <a class="item" href="/profile/me">My Profile</a>
+                <a class="item" href="/trip/create">Request Trip</a>
+                <a class="item" href="/equipment/book">Book Gear</a>
+                <a class="item" href="/expenses">Expenses</a>
+            </div>
+        </div>
         {{/if}}
 
         <div class="ui right dropdown item" id="language_dropdown">

@@ -54,10 +54,10 @@
                     <!-- Name -->
                     <div class="two fields">
                         <div class="field">
-                            <input type="text" id="first_name" placeholder="First Name" value="{{member.firstName}}">
+                            <input type="text" id="firstName" placeholder="First Name" value="{{member.firstName}}">
                         </div>
                         <div class="field">
-                            <input type="text" id="last_name" placeholder="Last Name" value="{{member.lastName}}">
+                            <input type="text" id="lastName" placeholder="Last Name" value="{{member.lastName}}">
                         </div>
                     </div>
 
@@ -87,12 +87,12 @@
                     <!-- ===Address=== -->
                     <!-- Line one -->
                     <div class="field">
-                        <input type="text" id="line_one" placeholder="First Line" value="{{member.address.lineOne}}">
+                        <input type="text" id="lineOne" placeholder="First Line" value="{{member.address.lineOne}}">
                     </div>
 
                     <!-- Line two -->
                     <div class="field">
-                        <input type="text" id="line_two" placeholder="Second Line" value="{{member.address.lineTwo}}">
+                        <input type="text" id="lineTwo" placeholder="Second Line" value="{{member.address.lineTwo}}">
                     </div>
 
                     <!-- City -->
@@ -218,8 +218,7 @@
                 <form class="ui form" id="customize_form" autocomplete="off">
 
                     <div class="field">
-                        <textarea style="resize: none" rows="5" id="bio" placeholder="Biography..."
-                            maxlength="500">{{member.bio}}</textarea>
+                        <textarea style="resize: none" rows="5" id="bio" placeholder="Biography..." maxlength="500">{{member.bio}}</textarea>
                     </div>
 
                     <!-- User image -->
@@ -270,8 +269,7 @@
                     <!-- Old password -->
                     <div class="field">
                         <div class="ui action input">
-                            <input type="password" placeholder="Password" id="old_password"
-                                autocomplete="current-password">
+                            <input type="password" placeholder="Password" id="old_password" autocomplete="current-password">
                             <button class="ui icon button" type="button" id="hide_old_password">
                                 <i class="eye slash icon"></i>
                             </button>
@@ -282,8 +280,7 @@
                     <!-- New password -->
                     <div class="field">
                         <div class="ui action input">
-                            <input type="password" placeholder="New Password" id="new_password"
-                                autocomplete="new-password">
+                            <input type="password" placeholder="New Password" id="new_password" autocomplete="new-password">
                             <button class="ui icon button" type="button" id="hide_new_password">
                                 <i class="eye slash icon"></i>
                             </button>
@@ -309,8 +306,7 @@
 
                     <!-- Confirm new password -->
                     <div class="field">
-                        <input type="password" placeholder="Confirm Password" id="confirm_password"
-                            autocomplete="new-password">
+                        <input type="password" placeholder="Confirm Password" id="confirm_password" autocomplete="new-password">
                     </div>
                     <br>
 

@@ -91,11 +91,11 @@ const events = {
                 var allDates = []
                 for (var result of results) {
                     var dates = []
-                    var start = new Date(result.startDate)
-                    var end = new Date(result.endDate)
 
                     // Add dates to the list for each day in trip length
-                    while (start <= end) {
+                    var start = new Date(result.startDate)
+                    var end = new Date(result.endDate)
+                    while (start.setHours(0, 0, 0, 0) <= end.setHours(0, 0, 0, 0)) {
                         dates.push(start.toUTCString())
                         start.setDate(start.getDate() + 1)
                     }
@@ -116,7 +116,7 @@ const events = {
                         else allDates.push({
                             date: date,
                             message: result.tripName,
-                            class: 'green'
+                            class: result.approved === undefined ? 'yellow' : result.approved ? 'green' : 'red'
                         })
                     }
                 }

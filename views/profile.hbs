@@ -1,7 +1,8 @@
+<script src="{{scripts.profile}}" hidden></script>
 <div class="twelve wide column">
 
     <!-- Option buttons -->
-    <div class="ui four column grid">
+    <div class="ui three column grid">
 
         <!-- Request trip button -->
         <div class="column">
@@ -17,7 +18,7 @@
         <!-- Book gear button -->
         <div class="column">
 
-            <a class="ui disabled fluid teal button" href="/equipment/book">
+            <a class="ui {{#if member.verified}}{{else}}disabled{{/if}} fluid teal button" href="/equipment/book">
                 <div class="ui first center aligned icon header">
                     <i class="big shopping cart icon"></i>
                     Book Gear
@@ -36,22 +37,31 @@
             </a>
         </div>
 
-        <!-- Expenses button -->
+        <!-- Volunteering button 
         <div class="column">
 
             <a class="ui disabled fluid teal button" href="/volunteer">
                 <div class="ui first center aligned icon header">
                     <i class="big heart icon"></i>
-                    Volunteering
+                    Volunteer
                 </div>
             </a>
-        </div>
+        </div>-->
     </div>
 
 
 
     <!-- Dashboard -->
     <div class="ui segment">
+
+        <!-- Bookings -->
+        <h3 class="ui dividing header">My Bookings</h3>
+
+        <div class="ui loading placeholder segment" id="bookings_calendar"></div>
+
+        <div class="ui loading placeholder segment" id="bookings_list"></div>
+
+
 
         <!-- Trips -->
         <h3 class="ui dividing header">My Trips</h3>
@@ -132,6 +142,8 @@
     </div>
 
     {{#if committee}}{{> committee}}{{/if}}
+
+    {{#if admin}}{{> admin}}{{/if}}
 
     {{#if captain}}{{> captain}}{{/if}}
 

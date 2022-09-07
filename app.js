@@ -1,8 +1,11 @@
 'use strict'
 
 // Import the extensions
-const datadogTracer = require('dd-trace').init({ logInjection: true })
+const datadogTracer = require('dd-trace')
+//import { datadogRum } from '@datadog/browser-rum'
+//import { datadogLogs } from '@datadog/browser-logs'
 const datadogRum = require('@datadog/browser-rum').datadogRum
+const datadogLogs = require('@datadog/browser-logs').datadogLogs
 const AWS = require('aws-sdk')
 const ssm = new AWS.SSM()
 const express = require('express')
@@ -68,6 +71,7 @@ async function start() {
             loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
             memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
             method: req.method,
+            body: req.method == 'POST' ? req.body : null,
             urlPath: req.url,
             message: `${req.method} ${req.url}`
         })
@@ -97,7 +101,7 @@ async function start() {
         res.status(404)
         // Respond with HTML page
         if (req.accepts('html')) helper.viewData(req, '404 - Page not found').then((data) => res.render('404', data))
-        // Respond with json
+        // Respond with JSON
         else if (req.accepts('json')) res.json({ err: 'Not found' })
         // Default: Plain-Text
         else res.type('text').send('404 - Page Not Found')
@@ -110,7 +114,7 @@ async function start() {
     })
 }
 
-logger.info('WITKC Web App Starting... ~~ Created by Matthew Brazill (https://github.com/MatthewBrazill)')
+logger.info('SETUKC Web App Starting... ~~ Created by Matthew Brazill (https://github.com/MatthewBrazill)')
 console.log(`
 __        __ ___  _____  _  __ ____  __        __     _          _                  
 \\ \\      / /|_ _||_   _|| |/ // ___| \\ \\      / /___ | |__      / \\    _ __   _ __  
@@ -123,19 +127,9 @@ __        __ ___  _____  _  __ ____  __        __     _          _
 
 `)
 
-// Initialize Datadog RUM
-datadogRum.init({
-    applicationId: 'd8892f0f-d31f-4804-b21e-c630a433a383',
-    clientToken: 'pub86493d96655e179161fb37ff340b7255',
-    site: 'datadoghq.com',
-    service: 'witkc-webapp',
-    sampleRate: 100,
-    premiumSampleRate: 100,
-    trackInteractions: true,
-    defaultPrivacyLevel: 'mask-user-input'
-})
-datadogRum.startSessionReplayRecording()
-logger.debug('Datadog Initialized')
+// Initialize Datadog Traces
+datadogTracer.init({ logInjection: true })
+logger.debug('Datadog Traces Initialized')
 
 // Create Server
 start().catch((err) => {

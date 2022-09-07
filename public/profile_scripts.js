@@ -24,6 +24,69 @@ $(document).ready(() => {
         $.tab('change tab', 'password')
     })
 
+    $.ajax({
+        url: '/api/bookings/dates',
+        method: 'GET',
+        success: (dates) => {
+            for (var i in dates) dates[i].date = new Date(dates[i].date)
+            $('#bookings_calendar').attr('class', 'ui calendar')
+            $('#bookings_calendar').calendar({
+                selectAdjacentDays: true,
+                initialDate: new Date(),
+                type: 'date',
+                today: true,
+                constantHeight: true,
+                firstDayOfWeek: 1,
+                eventDates: dates,
+                onChange: () => $('#bookings_calendar').trigger('change')
+            })
+            $('#bookings_calendar').ready(() => $('#bookings_calendar').trigger('change'))
+        }
+    })
+
+    $('#bookings_calendar').on('change', () => {
+        const calendar = $('#bookings_calendar')
+        const list = $('#bookings_list')
+
+        list.html('')
+        list.attr('class', 'ui loading placeholder segment')
+        $.ajax({
+            url: '/api/bookings/day',
+            method: 'POST',
+            data: { date: calendar.calendar('get date').toISOString() },
+            success: (bookings) => {
+                if (bookings.length == 0) {
+                    list.attr('class', 'ui placeholder segment')
+                    list.html('')
+                    list.html('<div class="ui icon header"><i class="calendar alternate icon"></i>You have no bookings for this day!</div>')
+                } else {
+                    list.html('')
+                    list.attr('class', 'ui items')
+                    for (var booking of bookings) {
+                        list.append($(`<div class="ui fluid card" id="${booking.bookingId}"></div>`)
+                            .append($(`<div class="content"></div>`)
+                                .append($(`<div class="ui right floated negative icon button"><i class="ui trash icon"></i></div>`).on('click', function () {
+                                    const button = $(this)
+                                    $.ajax({
+                                        url: '/api/bookings/delete',
+                                        method: 'POST',
+                                        data: { bookingId: button.parent().parent().attr('id') },
+                                        success: () => { button.parent().parent().remove() }
+                                    })
+                                }))
+                                .append($(`<div class="header" style="margin-top: 6px"><div class="ui left floated">${booking.fromDate.substring(0, 10)} to ${booking.toDate.substring(0, 10)} - ${booking.equipment.type}:</div><div class="ui right floated" style="padding-right: 15px">${booking.equipment.brand}: ${booking.equipment.gearName}</div></div>`))
+                            )
+                        )
+                    }
+                }
+            },
+            error: () => {
+                list.attr('class', 'ui placeholder segment')
+                list.html('<div class="ui icon header"><i class="red server icon"></i>There was a problem reaching the server. Try again later!</div>')
+            }
+        })
+    })
+
 
 
 
@@ -60,8 +123,8 @@ $(document).ready(() => {
         }
     })
 
-    $('#first_name').on('input', () => {
-        const name = $('#first_name')
+    $('#firstName').on('input', () => {
+        const name = $('#firstName')
         const field = name.parent()
         if (!name.val().match(/^\p{L}{1,16}$/u)) {
             field.attr('class', 'field error')
@@ -72,8 +135,8 @@ $(document).ready(() => {
         }
     })
 
-    $('#last_name').on('input', () => {
-        const name = $('#last_name')
+    $('#lastName').on('input', () => {
+        const name = $('#lastName')
         const field = name.parent()
         if (!name.val().match(/^\p{L}{1,16}$/u)) {
             field.attr('class', 'field error')
@@ -127,8 +190,8 @@ $(document).ready(() => {
         })
     })
 
-    $('#line_one').on('input', () => {
-        const line = $('#line_one')
+    $('#lineOne').on('input', () => {
+        const line = $('#lineOne')
         const field = line.parent()
         if (!line.val().match(/^[\w- ]{1,32}$/)) {
             field.attr('class', 'field error')
@@ -139,8 +202,8 @@ $(document).ready(() => {
         }
     })
 
-    $('#line_two').on('input', () => {
-        const line = $('#line_two')
+    $('#lineTwo').on('input', () => {
+        const line = $('#lineTwo')
         const field = line.parent()
         if (line.val() == '') {
             field.attr('class', 'field')

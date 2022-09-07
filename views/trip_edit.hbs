@@ -12,7 +12,21 @@
                     type: 'date',
                     minDate: new Date(),
                     initialDate: new Date('{{trip.startDate}}'),
-                    endCalendar: $('#end_calendar')
+                    endCalendar: $('#end_calendar'),
+                    onChange: () => {
+                        const start = $('#startDate')
+                        const startDate = $('#start_calendar').calendar('get date')
+                        const startField = $('#start_calendar').parent()
+                        if (startDate == null) {
+                            startField.attr('class', 'inline field error')
+                            start.prop('date', '')
+                            start.prop('valid', false)
+                        } else {
+                            startField.attr('class', 'inline field success')
+                            start.prop('date', new Date(startDate).toISOString())
+                            start.prop('valid', true)
+                        }
+                    }
                 })
                 $('#end_calendar').calendar({
                     selectAdjacentDays: true,
@@ -20,7 +34,21 @@
                     type: 'date',
                     minDate: new Date(),
                     initialDate: new Date('{{trip.endDate}}'),
-                    startCalendar: $('#start_calendar')
+                    startCalendar: $('#start_calendar'),
+                    onChange: () => {
+                        const end = $('#endDate')
+                        const endDate = $('#end_calendar').calendar('get date')
+                        const endField = $('#end_calendar').parent()
+                        if (endDate === null) {
+                            endField.attr('class', 'inline field error')
+                            end.prop('date', '')
+                            end.prop('valid', false)
+                        } else {
+                            endField.attr('class', 'inline field success')
+                            end.prop('date', new Date(endDate).toISOString())
+                            end.prop('valid', true)
+                        }
+                    }
                 })
 
                 $('#delete').click(() => {
@@ -53,7 +81,7 @@
                         inputs.each((index, element) => {
                             var input = $(element)
                             if (input.attr('type') == 'checkbox') {
-                                if (input.attr('id') == 'enough_safety') data.enough_safety = input.prop('checked')
+                                if (input.attr('id') == 'enoughSafety') data.enoughSafety = input.prop('checked')
                                 else if (input.attr('id') == 'other_hazards_checkbox' && input.prop('checked')) data.hazards.push($('#other_hazards').val())
                                 else if (input.prop('checked')) data.hazards.push(input.attr('id'))
                             } else if (input.attr('id').split('_')[1] == 'date') data[input.attr('id')] = input.prop('date')
@@ -81,8 +109,8 @@
                     }
                 })
 
-                $('#start_date').on('change', () => {
-                    const start = $('#start_date')
+                $('#startDate').on('change', () => {
+                    const start = $('#startDate')
                     const date = new Date(start.parent().parent().calendar('get date'))
                     const field = start.parent().parent().parent()
                     if (date === null) {
@@ -96,8 +124,8 @@
                     }
                 })
 
-                $('#end_date').on('change', () => {
-                    const end = $('#end_date')
+                $('#endDate').on('change', () => {
+                    const end = $('#endDate')
                     const date = new Date(end.parent().parent().calendar('get date'))
                     const field = end.parent().parent().parent()
                     if (date === null) {
@@ -123,8 +151,8 @@
                     }
                 })
 
-                $('#line_one').on('input', () => {
-                    const line = $('#line_one')
+                $('#lineOne').on('input', () => {
+                    const line = $('#lineOne')
                     const field = line.parent()
                     if (!line.val().match(/^[\w- ]{1,32}$/)) {
                         field.attr('class', 'field error')
@@ -135,8 +163,8 @@
                     }
                 })
 
-                $('#line_two').on('input', () => {
-                    const line = $('#line_two')
+                $('#lineTwo').on('input', () => {
+                    const line = $('#lineTwo')
                     const field = line.parent()
                     if (line.val() == '') {
                         field.attr('class', 'field')
@@ -239,13 +267,13 @@
                     }
                 })
 
-                $('#enough_safety').on('change', () => {
-                    const box = $('#enough_safety')
+                $('#enoughSafety').on('change', () => {
+                    const box = $('#enoughSafety')
 
                     if (!box.prop('checked')) box.siblings().text(`No (This does not mean your trip will be denied! We will try to find additional safety boaters for your trip.)`)
                     else box.siblings().text('Yes')
                 })
-                $('#enough_safety').trigger('change')
+                $('#enoughSafety').trigger('change')
 
                 $('#other_hazards_checkbox').on('change', () => {
                     const box = $('#other_hazards_checkbox')
@@ -276,11 +304,12 @@
                     }
                 })
 
-                // $('#safety_dropdown').dropdown('set exactly', [{{{trip.safety}}}])
-                $('form#trip_form input[type!=button][class!=search], textarea').trigger('change')
-                $('form#trip_form input[type!=button][class!=search], textarea').trigger('input')
-            },
-            error: () => { form.attr('class', 'ui error form') }
+                $('#safety_dropdown').dropdown('set exactly', [{{{ trip.safety }}
+        }])
+        $('form#trip_form input[type!=button][class!=search], textarea').trigger('change')
+        $('form#trip_form input[type!=button][class!=search], textarea').trigger('input')
+    },
+        error: () => { form.attr('class', 'ui error form') }
         })
     })
 </script>
@@ -305,7 +334,7 @@
                     <div class="ui calendar" id="start_calendar">
                         <div class="ui input left icon">
                             <i class="calendar icon"></i>
-                            <input type="text" id="start_date" placeholder="Start Date">
+                            <input type="text" id="startDate" placeholder="Start Date">
                         </div>
                     </div>
                 </div>
@@ -316,7 +345,7 @@
                     <div class="ui calendar" id="end_calendar">
                         <div class="ui input left icon">
                             <i class="calendar icon"></i>
-                            <input type="text" id="end_date" placeholder="End Date">
+                            <input type="text" id="endDate" placeholder="End Date">
                         </div>
                     </div>
                 </div>
@@ -340,12 +369,12 @@
 
                     <!-- Line one -->
                     <div class="field">
-                        <input type="text" id="line_one" placeholder="First Line" value="{{trip.destination.lineOne}}">
+                        <input type="text" id="lineOne" placeholder="First Line" value="{{trip.destination.lineOne}}">
                     </div>
 
                     <!-- Line two -->
                     <div class="field">
-                        <input type="text" id="line_two" placeholder="Second Line" value="{{trip.destination.lineTwo}}">
+                        <input type="text" id="lineTwo" placeholder="Second Line" value="{{trip.destination.lineTwo}}">
                     </div>
 
                     <!-- City -->
@@ -410,11 +439,11 @@
                     <h4 class="ui dividing header">Location - Coordinates</h4>
 
                     <div class="field">
-                        <input type="text" id="line_one" placeholder="North/South Coordinates">
+                        <input type="text" id="lineOne" placeholder="North/South Coordinates">
                     </div>
 
                     <div class="field">
-                        <input type="text" id="line_two" placeholder="East/West Coordinates">
+                        <input type="text" id="lineTwo" placeholder="East/West Coordinates">
                     </div>
                 </div>
                 -->
@@ -460,8 +489,8 @@
                             Do you think this is enough safety?
                         </label>
                         <div class="ui toggle checkbox">
-                            <input type="checkbox" id="enough_safety" {{{trip.enoughSafety}}}>
-                            <label id="enough_safety_text"></label>
+                            <input type="checkbox" id="enoughSafety" {{{trip.enoughSafety}}}>
+                            <label id="enoughSafety_text"></label>
                         </div>
                     </div>
                 </div>

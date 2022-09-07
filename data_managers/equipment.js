@@ -17,7 +17,7 @@ const equipment = {
         return dynamo.putItem({
             Item: attributes,
             TableName: 'witkc-equipment'
-        }).promise().then(() => {
+        }).promise().then((data) => {
             if (data) {
                 logger.info({
                     equipment: equipment,
@@ -114,6 +114,7 @@ const equipment = {
                         equipmentId: item['equipmentId'].S,
                         gearName: item['gearName'].S,
                         brand: item['brand'].S,
+                        type: item['type'].S,
                         unavailableDates: [],
                         img: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: item['img'].S })
                     }
@@ -171,7 +172,7 @@ const equipment = {
         return dynamo.deleteItem({
             Key: { 'equipmentId': { S: equipmentId } },
             TableName: 'witkc-equipment'
-        }).promise().then(() => {
+        }).promise().then((data) => {
             if (data) {
                 logger.info({
                     equipmentId: equipmentId,
