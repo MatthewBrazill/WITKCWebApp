@@ -2,10 +2,6 @@
 
 // Import the extensions
 const datadogTracer = require('dd-trace')
-//import { datadogRum } from '@datadog/browser-rum'
-//import { datadogLogs } from '@datadog/browser-logs'
-const datadogRum = require('@datadog/browser-rum').datadogRum
-const datadogLogs = require('@datadog/browser-logs').datadogLogs
 const AWS = require('aws-sdk')
 const ssm = new AWS.SSM()
 const express = require('express')
