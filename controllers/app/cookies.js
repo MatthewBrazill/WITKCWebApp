@@ -26,23 +26,16 @@ const cookies = {
 
     async allow(req, res) {
         try {
-            // Validate input
-            if (req.body.allowCookies == 'true' || req.body.allowCookies == 'false') {
-
-                // Set cookie to allowed
-                if (req.body.allowCookies == 'true') {
-                    logger.debug({
-                        sessionId: req.sessionID,
-                        loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
-                        memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
-                        method: req.method,
-                        urlPath: req.url,
-                        message: `Allowed Cookies`
-                    })
-                    req.session.allowCookies = true
-                }
-                res.sendStatus(200)
-            } else res.sendStatus(400)
+            logger.debug({
+                sessionId: req.sessionID,
+                loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                method: req.method,
+                urlPath: req.url,
+                message: `Allowed Cookies`
+            })
+            req.session.allowCookies = true
+            res.sendStatus(200)
         } catch (err) {
             logger.error({
                 sessionId: req.sessionID,

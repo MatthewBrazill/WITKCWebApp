@@ -62,8 +62,7 @@ $(document).ready(() => {
         $('#cookie_nag').hide()
         $.ajax({
             url: '/api/cookie/allow',
-            method: 'POST',
-            data: { allowCookies: true }
+            method: 'GET'
         })
     })
 
