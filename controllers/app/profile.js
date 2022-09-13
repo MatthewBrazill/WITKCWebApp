@@ -33,7 +33,7 @@ const profile = {
                 })
                 data.scripts.committee = process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/js/committee_scripts.js' : '/js/committee_scripts.js'
                 data[data.committee] = await committee.getRole(data.committee)
-                data.scripts[data.committee] = process.env.DD_ENV == 'prod' ? `https://setukc.s3.eu-west-1.amazonaws.com/js/${data.committee}_scripts.js` : `js/${data.committee}_scripts.js`
+                data.scripts[data.committee] = process.env.DD_ENV == 'prod' ? `https://setukc.s3.eu-west-1.amazonaws.com/js/${data.committee}_scripts.js` : `/js/${data.committee}_scripts.js`
 
                 if (data.committee == 'equipments') {
                     // Capitalize all of the Gear Data
@@ -57,7 +57,7 @@ const profile = {
                 data.scripts.committee = process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/js/committee_scripts.js' : '/js/committee_scripts.js'
                 for (var role of ['captain', 'vice', 'safety', 'treasurer', 'equipments', 'pro', 'freshers']) {
                     data[role] = await committee.getRole(role)
-                    data.scripts[role] = process.env.DD_ENV == 'prod' ? `https://setukc.s3.eu-west-1.amazonaws.com/js/${role}_scripts.js` : `js/${role}_scripts.js`
+                    data.scripts[role] = process.env.DD_ENV == 'prod' ? `https://setukc.s3.eu-west-1.amazonaws.com/js/${role}_scripts.js` : `/js/${role}_scripts.js`
                 }
 
                 // Capitalize all of the Gear Data
