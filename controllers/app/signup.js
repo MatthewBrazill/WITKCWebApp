@@ -13,7 +13,7 @@ const helper = require('../helper.js')
 const signup = {
     async signupPage(req, res) {
         var data = await helper.viewData(req, 'Sign Up')
-        data.scripts.signUp = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/sign_up_scripts.js' })
+        data.scripts.signUp = process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/js/sign_up_scripts.js' : '/js/sign_up_scripts.js'
 
         if (data.loggedIn) req.session.destroy()
 
@@ -63,7 +63,7 @@ const signup = {
                         county: req.body.county,
                         code: req.body.code.toUpperCase().replace(/\s/g, ''),
                     },
-                    img: 'img/placeholder_avatar.webp',
+                    img: '/img/placeholder_avatar.webp',
                     dateJoined: new Date().toUTCString()
                 }
 

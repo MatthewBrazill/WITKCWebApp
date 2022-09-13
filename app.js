@@ -106,19 +106,19 @@ async function start() {
 
     app.listen(8000, () => {
         logger.info(`Started! => https://witkc.brazill.net`)
-        console.log(`Listening on port 8000  ->  https://witkc.brazill.net`)
+        console.log(`  Listening on port 8000  ->  https://witkc.brazill.net`)
     })
 }
 
-logger.info('SETUKC Web App Starting... ~~ Created by Matthew Brazill (https://github.com/MatthewBrazill)')
+logger.info(`SETUKC Web App Starting... ~~ Created by Matthew Brazill (https://github.com/MatthewBrazill)`)
 console.log(`
-__        __ ___  _____  _  __ ____  __        __     _          _                  
-\\ \\      / /|_ _||_   _|| |/ // ___| \\ \\      / /___ | |__      / \\    _ __   _ __  
- \\ \\ /\\ / /  | |   | |  | ' /| |      \\ \\ /\\ / // _ \\| '_ \\    / _ \\  | '_ \\ | '_ \\ 
-  \\ V  V /   | |   | |  | . \\| |___    \\ V  V /|  __/| |_) |  / ___ \\ | |_) || |_) |
-   \\_/\\_/   |___|  |_|  |_|\\_\\\\____|    \\_/\\_/  \\___||_.__/  /_/   \\_\\| .__/ | .__/ 
-                                                                      |_|    |_|    
-  -- by Matthew Brazill (https://github.com/MatthewBrazill)
+ ____   _____  _____  _   _  _  __ ____  __        __     _        _                  
+/ ___| | ____||_   _|| | | || |/ // ___| \\ \\      / /___ | |__    / \\    _ __   _ __  
+\\___ \\ |  _|    | |  | | | || ' /| |      \\ \\ /\\ / // _ \\| '_ \\  / _ \\  | '_ \\ | '_ \\ 
+ ___) || |___   | |  | |_| || . \\| |___    \\ V  V /|  __/| |_) |/ ___ \\ | |_) || |_) |
+|____/ |_____|  |_|   \\___/ |_|\\_\\\\____|    \\_/\\_/  \\___||_.__//_/   \\_\\| .__/ | .__/ 
+                                                                        |_|    |_|    
+  -- by Matthew Brazill (https://github.com/MatthewBrazill)  --  ${process.env.DD_ENV}
 
 
 `)
