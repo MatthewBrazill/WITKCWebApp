@@ -16,10 +16,10 @@ const helper = {
         var data = {
             title: title,
             scripts: {
-                global: process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/js/global_scripts.js' : 'js/global_scripts.js' //s3.getSignedUrl('getObject', { Bucket: 'setukc', Key: 'js/global_scripts.js' })
+                global: process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/js/global_scripts.js' : '/js/global_scripts.js' //s3.getSignedUrl('getObject', { Bucket: 'setukc', Key: '/js/global_scripts.js' })
             },
-            setukcLogo: process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/img/witkc_logo.webp' : 'img/witkc_logo.webp',
-            setukcIcon: process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/img/witkc_icon.ico' : 'img/witkc_icon.ico',
+            setukcLogo: process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/img/witkc_logo.webp' : '/img/witkc_logo.webp',
+            setukcIcon: process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/img/witkc_icon.ico' : '/img/witkc_icon.ico',
             loggedIn: false,
             env: process.env.DD_ENV
         }

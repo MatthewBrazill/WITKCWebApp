@@ -14,7 +14,7 @@ const committee = require('../../data_managers/committee.js')
 const expenses = {
     async expensesPage(req, res) {
         var data = await helper.viewData(req, 'Submit Expense')
-        data.scripts.expense = process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/js/expense_scripts.js' : 'js/expense_scripts.js'
+        data.scripts.expense = process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/js/expense_scripts.js' : '/js/expense_scripts.js'
 
         // Autheticate user
         if (data.loggedIn) if (data.member.verified) {

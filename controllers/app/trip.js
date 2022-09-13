@@ -12,7 +12,7 @@ const members = require('../../data_managers/members.js')
 const trip = {
     async createPage(req, res) {
         var data = await helper.viewData(req, 'Create Trip')
-        data.scripts.trip = process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/js/trip_scripts.js' : 'js/trip_scripts.js'
+        data.scripts.trip = process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/js/trip_scripts.js' : '/js/trip_scripts.js'
 
         // Authenticate user
         if (data.loggedIn) if (data.member.verified) {
@@ -110,7 +110,7 @@ const trip = {
 
     async editPage(req, res) {
         var data = await helper.viewData(req, 'Edit Trip')
-        data.scripts.trip = process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/js/trip_scripts.js' : 'js/trip_scripts.js'
+        data.scripts.trip = process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/js/trip_scripts.js' : '/js/trip_scripts.js'
 
         // Authenticate user
         if (data.loggedIn) if (data.member.verified) {

@@ -16,7 +16,7 @@ const committee = require('../../data_managers/committee.js')
 const profile = {
     async profilePage(req, res) {
         var data = await helper.viewData(req, 'My Profile')
-        data.scripts.profile = process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/js/profile_scripts.js' : 'js/profile_scripts.js'
+        data.scripts.profile = process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/js/profile_scripts.js' : '/js/profile_scripts.js'
 
         // Authenticate user
         if (data.loggedIn) {
@@ -31,7 +31,7 @@ const profile = {
                     urlPath: req.url,
                     message: `Committee User`
                 })
-                data.scripts.committee = process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/js/committee_scripts.js' : 'js/committee_scripts.js'
+                data.scripts.committee = process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/js/committee_scripts.js' : '/js/committee_scripts.js'
                 data[data.committee] = await committee.getRole(data.committee)
                 data.scripts[data.committee] = process.env.DD_ENV == 'prod' ? `https://setukc.s3.eu-west-1.amazonaws.com/js/${data.committee}_scripts.js` : `js/${data.committee}_scripts.js`
 
@@ -53,8 +53,8 @@ const profile = {
                     message: `Admin User`
                 })
                 data.committee = true
-                data.scripts.admin = process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/js/admin_scripts.js' : 'js/admin_scripts.js'
-                data.scripts.committee = process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/js/committee_scripts.js' : 'js/committee_scripts.js'
+                data.scripts.admin = process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/js/admin_scripts.js' : '/js/admin_scripts.js'
+                data.scripts.committee = process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/js/committee_scripts.js' : '/js/committee_scripts.js'
                 for (var role of ['captain', 'vice', 'safety', 'treasurer', 'equipments', 'pro', 'freshers']) {
                     data[role] = await committee.getRole(role)
                     data.scripts[role] = process.env.DD_ENV == 'prod' ? `https://setukc.s3.eu-west-1.amazonaws.com/js/${role}_scripts.js` : `js/${role}_scripts.js`
@@ -71,7 +71,7 @@ const profile = {
 
     async userPage(req, res) {
         var data = await helper.viewData(req, 'View Profile')
-        data.scripts.profile = process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/js/profile_scripts.js' : 'js/profile_scripts.js'
+        data.scripts.profile = process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/js/profile_scripts.js' : '/js/profile_scripts.js'
 
         // Authenticate user
         if (data.loggedIn) {
@@ -92,7 +92,7 @@ const profile = {
 
     async settingsPage(req, res) {
         var data = await helper.viewData(req, 'Settings')
-        data.scripts.profile = process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/js/profile_scripts.js' : 'js/profile_scripts.js'
+        data.scripts.profile = process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/js/profile_scripts.js' : '/js/profile_scripts.js'
 
         // Authenticate user
         if (data.loggedIn) {
