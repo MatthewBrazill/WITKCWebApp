@@ -12,7 +12,7 @@ const helper = require('../helper.js')
 const login = {
     async loginPage(req, res) {
         var data = await helper.viewData(req, 'Login')
-        data.scripts.login = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/login_scripts.js' })
+        data.scripts.login = process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/js/login_scripts.js' : 'js/login_scripts.js'
 
         if (data.loggedIn) req.session.destroy()
         res.render('login', data)

@@ -10,7 +10,7 @@ const helper = require('../helper.js')
 const events = {
     async eventsPage(req, res) {
         var data = await helper.viewData(req, 'Events')
-        data.scripts.events = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/events_scripts.js' })
+        data.scripts.events = process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/js/events_scripts.js' : 'js/events_scripts.js'
 
         // Process all events to get the next 5
         data.events = await trips.from(new Date()).then((result) => {

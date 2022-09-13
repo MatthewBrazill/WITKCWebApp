@@ -12,7 +12,7 @@ const equipment = require('../../data_managers/equipment.js')
 const gear = {
     async bookPage(req, res) {
         var data = await helper.viewData(req, 'Book Equipment')
-        data.scripts.gear = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/bookings_scripts.js' })
+        data.scripts.bookings = process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/js/bookings_scripts.js' : 'js/bookings_scripts.js'
 
         //Authenticate user
         if (data.loggedIn) if (data.member.verified) {

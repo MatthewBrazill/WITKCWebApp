@@ -54,7 +54,7 @@ const equipment = {
                     gearName: data.Item['gearName'].S,
                     brand: data.Item['brand'].S,
                     type: data.Item['type'].S,
-                    img: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: data.Item['img'].S })
+                    img: s3.getSignedUrl('getObject', { Bucket: 'setukc-private', Key: data.Item['img'].S })
                 }
                 if (data.Item['unavailableDates'] != undefined) gear.unavailableDates = data.Item['unavailableDates'].SS
                 if (data.Item['type'].S == 'boat') {
@@ -116,7 +116,7 @@ const equipment = {
                         brand: item['brand'].S,
                         type: item['type'].S,
                         unavailableDates: [],
-                        img: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: item['img'].S })
+                        img: s3.getSignedUrl('getObject', { Bucket: 'setukc-private', Key: item['img'].S })
                     }
                     if (item['unavailableDates'] != undefined) gear.unavailableDates = item['unavailableDates'].SS
                     if (item['type'].S == 'boat') {

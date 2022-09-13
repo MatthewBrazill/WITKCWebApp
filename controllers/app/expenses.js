@@ -14,7 +14,7 @@ const committee = require('../../data_managers/committee.js')
 const expenses = {
     async expensesPage(req, res) {
         var data = await helper.viewData(req, 'Submit Expense')
-        data.scripts.expense = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/expense_scripts.js' })
+        data.scripts.expense = process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/js/expense_scripts.js' : 'js/expense_scripts.js'
 
         // Autheticate user
         if (data.loggedIn) if (data.member.verified) {
@@ -150,7 +150,7 @@ const expenses = {
                     // Filter expense request out
                     for (var expenseRequest of treasurer.expenseRequests) {
                         if (expenseRequest.expenseId == req.body.expenseId) {
-                            for (var i in expenseRequest.receipts) expenseRequest.receipts[i] = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: expenseRequest.receipts[i] })
+                            for (var i in expenseRequest.receipts) expenseRequest.receipts[i] = s3.getSignedUrl('getObject', { Bucket: 'setukc-private', Key: expenseRequest.receipts[i] })
                             res.status(200).json(expenseRequest)
                             return
                         }

@@ -16,10 +16,10 @@ const helper = {
         var data = {
             title: title,
             scripts: {
-                global: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'js/global_scripts.js' }),
+                global: process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/js/global_scripts.js' : 'js/global_scripts.js' //s3.getSignedUrl('getObject', { Bucket: 'setukc', Key: 'js/global_scripts.js' })
             },
-            setukcLogo: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'img/witkc_logo.webp' }),
-            setukcIcon: s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: 'img/witkc_icon.ico' }),
+            setukcLogo: process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/img/witkc_logo.webp' : 'img/witkc_logo.webp',
+            setukcIcon: process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/img/witkc_icon.ico' : 'img/witkc_icon.ico',
             loggedIn: false,
             env: process.env.DD_ENV
         }
@@ -83,7 +83,7 @@ const helper = {
                 /* Some places need the Profile image to not be resolved to a sgned
                 URL, as such any time the title is set to API, dont resolve the image. */
                 if (title != 'API') {
-                    data.member.img = s3.getSignedUrl('getObject', { Bucket: 'witkc', Key: data.member.img })
+                    data.member.img = s3.getSignedUrl('getObject', { Bucket: 'setukc-private', Key: data.member.img })
                     logger.debug({
                         sessionId: req.sessionID,
                         loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
