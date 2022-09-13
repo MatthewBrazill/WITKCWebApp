@@ -34,7 +34,7 @@ $(document).ready(() => {
     })
 
 
-
+    
     $.ajax({
         url: '/api/cookie/check',
         method: 'GET',
@@ -46,7 +46,7 @@ $(document).ready(() => {
                     clientToken: 'pub86493d96655e179161fb37ff340b7255',
                     site: 'datadoghq.com',
                     service: 'setukc-webapp',
-                    env: '{{env}}',
+                    env: res.env,
                     sampleRate: 100,
                     premiumSampleRate: 100,
                     trackFrustrations: true,
@@ -56,6 +56,8 @@ $(document).ready(() => {
             }
         }
     })
+
+
 
     $('#nag_decline').click(() => $('#cookie_nag').hide())
     $('#nag_accept').click(() => {

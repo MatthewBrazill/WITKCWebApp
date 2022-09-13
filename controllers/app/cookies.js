@@ -7,8 +7,8 @@ const cookies = {
     async check(req, res) {
         try {
             // If allowCookies is set, cookies are allowed, if not, not
-            if (req.session.allowCookies) res.status(200).json({ allowCookies: true })
-            else res.status(200).json({ allowCookies: false })
+            if (req.session.allowCookies) res.status(200).json({ allowCookies: true, env: process.env.DD_ENV })
+            else res.status(200).json({ allowCookies: false, env: process.env.DD_ENV })
         } catch (err) {
             logger.error({
                 sessionId: req.sessionID,
