@@ -80,7 +80,7 @@ const profile = {
             if (req.params.memberId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
                 var result = await members.get(req.params.memberId)
                 if (result != null) {
-                    result.dateJoined = new Date(result.dateJoined).toUTCString()
+                    result.dateJoined = result.dateJoined.substring(5, 16)
                     result.img = s3.getSignedUrl('getObject', { Bucket: 'setukc-private', Key: result.img })
                     data.user = result
 

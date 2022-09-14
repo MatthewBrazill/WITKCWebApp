@@ -84,6 +84,7 @@ const helper = {
                 URL, as such any time the title is set to API, dont resolve the image. */
                 if (title != 'API') {
                     data.member.img = s3.getSignedUrl('getObject', { Bucket: 'setukc-private', Key: data.member.img })
+                    data.member.dateJoined = data.member.dateJoined.substring(5, 16)
                     logger.debug({
                         sessionId: req.sessionID,
                         loggedIn: typeof req.session.memberId !== "undefined" ? true : false,

@@ -2,7 +2,7 @@
 <div class="twelve wide column">
 
     <!-- Option buttons -->
-    <div class="ui three column grid">
+    <div class="ui three column grid" {{#if member.verified}}{{else}}data-tooltip="To enable these features, verifiy yourself in the settings!"{{/if}}>
 
         <!-- Request trip button -->
         <div class="column">
