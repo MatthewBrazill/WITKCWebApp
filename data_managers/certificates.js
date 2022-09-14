@@ -45,7 +45,6 @@ const certificates = {
             var res = []
             for (var cert of certs) res.push(cert)
             logger.info({
-                memberId: memberId,
                 objectType: 'certificate',
                 storageType: 'json',
                 message: `Listed Certificates`
