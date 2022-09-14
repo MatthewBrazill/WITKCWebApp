@@ -1,0 +1,327 @@
+<script src="{{scripts.profile}}" hidden></script>
+<div class="four wide column">
+
+    <!-- Top menu choices -->
+    {{#if admin}}
+    <div class="ui vertical menu" style="width: 100%;">
+        <div class="active link item" id="password">Change Password</div>
+    </div>
+    {{else}}
+    <div class="ui vertical menu" style="width: 100%;">
+        <div class="active link item" id="personal">Personal Details</div>
+        <div class="link item" id="customize">Customize Profile</div>
+        <div class="link item" id="password">Change Password</div>
+    </div>
+    {{/if}}
+
+    <!-- Back button -->
+    <div class="ui blue inverted vertical menu" style="width: 100%;">
+        <a class="item" href="/profile/me">Back <i class="back icon"></i></a>
+    </div>
+
+</div>
+
+<div class="twelve wide column">
+
+    {{#if admin}}
+    {{else}}
+    <div class="ui tab active segment" data-tab="personal" style="margin: 0px;">
+
+        <h3>Personal Details</h3>
+
+        <!-- Tab to update Personal Data -->
+        <div class="ui grid" style="padding-left: 12%;">
+
+            <div class="ui three wide column" style="font-weight: 700;">
+                <div style="margin-bottom: 14px;">Username:</div>
+                <div style="padding: 9px 0px; margin-bottom: 14px;">Name:</div>
+                <div style="padding: 9px 0px; margin-bottom: 14px;">E-Mail:</div>
+                <div style="padding: 9px 0px; margin-bottom: 14px;">Phone Number:</div>
+                <div style="margin-bottom: 14px;">Verification:</div>
+                <div style="padding: 9px 0px; margin-bottom: 162px;">Address:</div>
+                <div style="padding: 9px 0px;">Promotions:</div>
+            </div>
+
+            <div class="ui seven wide column">
+
+                <form class="ui form" id="personal_form" autocomplete="off">
+
+                    <!-- Username (Doesn't Update) -->
+                    <div class="field">
+                        {{member.username}}
+                    </div>
+
+                    <!-- Name -->
+                    <div class="two fields">
+                        <div class="field">
+                            <input type="text" id="firstName" placeholder="First Name" value="{{member.firstName}}">
+                        </div>
+                        <div class="field">
+                            <input type="text" id="lastName" placeholder="Last Name" value="{{member.lastName}}">
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="field">
+                        <input type="text" id="email" placeholder="Email Address" value="{{member.email}}">
+                    </div>
+
+                    <!-- Phone number -->
+                    <div class="field">
+                        <input type="text" id="phone" placeholder="Phone Number" value="{{member.phone}}">
+                    </div>
+
+                    <!-- Verification status -->
+                    <div class="field">
+                        {{#if member.verified}}
+                        Verified!
+                        {{else}}
+                        {{#if verificationRequested}}
+                        Verification Requested!
+                        {{else}}
+                        Unverified, <a id="verify_link" href="">Verify Now!</a>
+                        {{/if}}
+                        {{/if}}
+                    </div>
+
+                    <!-- ===Address=== -->
+                    <!-- Line one -->
+                    <div class="field">
+                        <input type="text" id="lineOne" placeholder="First Line" value="{{member.address.lineOne}}">
+                    </div>
+
+                    <!-- Line two -->
+                    <div class="field">
+                        <input type="text" id="lineTwo" placeholder="Second Line" value="{{member.address.lineTwo}}">
+                    </div>
+
+                    <!-- City -->
+                    <div class="field">
+                        <input type="text" id="city" placeholder="City" value="{{member.address.city}}">
+                    </div>
+                    <div class="fields">
+
+                        <!-- County -->
+                        <div class="ten wide field">
+                            <div class="ui search selection dropdown" id="county_dropdown">
+                                <input type="hidden" id="county" value="{{member.address.county}}">
+                                <div class="default text">Select County...</div>
+                                <div class="menu">
+                                    <div class="item" data-value="antrim">Antrim</div>
+                                    <div class="item" data-value="armagh">Armagh</div>
+                                    <div class="item" data-value="carlow">Carlow</div>
+                                    <div class="item" data-value="cavan">Cavan</div>
+                                    <div class="item" data-value="clare">Clare</div>
+                                    <div class="item" data-value="cork">Cork</div>
+                                    <div class="item" data-value="derry">Derry</div>
+                                    <div class="item" data-value="donegal">Donegal</div>
+                                    <div class="item" data-value="down">Down</div>
+                                    <div class="item" data-value="dublin">Dublin</div>
+                                    <div class="item" data-value="fermanagh">Fermanagh</div>
+                                    <div class="item" data-value="galway">Galway</div>
+                                    <div class="item" data-value="kerry">Kerry</div>
+                                    <div class="item" data-value="kildare">Kildare</div>
+                                    <div class="item" data-value="kilkenny">Kilkenny</div>
+                                    <div class="item" data-value="laois">Laois</div>
+                                    <div class="item" data-value="leitrim">Leitrim</div>
+                                    <div class="item" data-value="limerick">Limerick</div>
+                                    <div class="item" data-value="longford">Longford</div>
+                                    <div class="item" data-value="louth">Louth</div>
+                                    <div class="item" data-value="mayo">Mayo</div>
+                                    <div class="item" data-value="meath">Meath</div>
+                                    <div class="item" data-value="monaghan">Monaghan</div>
+                                    <div class="item" data-value="offaly">Offaly</div>
+                                    <div class="item" data-value="roscommon">Roscommon</div>
+                                    <div class="item" data-value="sligo">Sligo</div>
+                                    <div class="item" data-value="tipperary">Tipperary</div>
+                                    <div class="item" data-value="tyrone">Tyrone</div>
+                                    <div class="item" data-value="waterford">Waterford</div>
+                                    <div class="item" data-value="westmeath">Westmeath</div>
+                                    <div class="item" data-value="wexford">Wexford</div>
+                                    <div class="item" data-value="wicklow">Wicklow</div>
+                                </div>
+                                <i class="dropdown icon"></i>
+                            </div>
+                        </div>
+
+                        <!-- Post code -->
+                        <div class="six wide field">
+                            <input type="text" id="code" placeholder="Post Code" value="{{member.address.code}}">
+                        </div>
+
+                    </div>
+
+                    <!-- Promotion -->
+                    <div class="inline field">
+                        <div class="ui toggle checkbox">
+                            <input type="checkbox" id="promotion" {{#if member.promotion}}checked{{/if}}>
+                            <label id="promotion_text"></label>
+                        </div>
+                    </div>
+
+                    <!-- Delete Account -->
+                    <button class="negative fluid ui button" type="button" id="prompt_delete">Delete Account</button>
+                    <div class="ui modal" id="modal">
+                        <div class="header">Warning!</div>
+                        <div class="content">
+                            <p>
+                                This action will <strong>permanently delete</strong> your account. This action cannot be
+                                undone. All you personal data will be deleted.
+                            </p>
+                            <div class="ui negative message" id="modal_error" hidden="true">
+                                <div class="header">Couldn't delete account!</div>
+                                <p>
+                                    An error occurred and the server couldn't delete your account. We apologize for
+                                    this, and if you wish you may contact us as indicated in the privacy policy, or wait
+                                    to try again!
+                                </p>
+                            </div>
+                        </div>
+                        <div class="actions">
+                            <div class="negative ui button" id="delete">Delete</div>
+                            <div class="ui button" id="cancel">Cancel</div>
+                        </div>
+                    </div>
+                    <br>
+
+                    <!-- Error -->
+                    <div class="ui error message">
+                        <div class="header">Couldn't submit form!</div>
+                        <p id="customize_error_description"></p>
+                    </div>
+                    <!-- Success -->
+                    <div class="ui success message">
+                        <div class="header">Personal details updated!</div>
+                    </div>
+                    <button class="positive fluid ui button" type="submit">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Tab to customize profile -->
+    <div class="ui tab segment" data-tab="customize" style="margin: 0px;">
+
+        <h3>Customize Profile</h3>
+
+        <div class="ui grid" style="padding-left: 12%;">
+
+            <div class="ui three wide column" style="font-weight: 700;">
+                <div style="padding: 9px 0px; margin-bottom: 90px;">Biography:</div>
+                <div style="padding: 9px 0px">Profile Picture:</div>
+            </div>
+
+            <div class="ui seven wide column">
+
+                <form class="ui form" id="customize_form" autocomplete="off">
+
+                    <div class="field">
+                        <textarea style="resize: none" rows="5" id="bio" placeholder="Biography..." maxlength="500">{{member.bio}}</textarea>
+                    </div>
+
+                    <!-- User image -->
+                    <img class="ui rounded fluid image field" src="{{member.img}}" alt="User Image" id="image">
+
+                    <!-- Upload filed -->
+                    <div class="field">
+                        <input class="ui file input" type="file" id="file" accept="image/*">
+                    </div>
+
+                    <!-- Error -->
+                    <div class="ui error message">
+                        <div class="header">Couldn't update profile!</div>
+                        <p id="customize_error_description"></p>
+                    </div>
+                    <!-- Success -->
+                    <div class="ui success message">
+                        <div class="header">Profile updated!</div>
+                    </div>
+                    <button class="positive fluid ui button" type="submit">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {{/if}}
+
+
+
+    <!--  Tab to change password -->
+    <div class="ui tab {{#if admin}}active {{/if}}segment" data-tab="password" style="margin: 0px;">
+
+        <h3>Change Password</h3>
+
+        <div class="ui grid" style="padding-left: 12%;">
+
+            <div class="ui three wide column" style="font-weight: 700;">
+                <div style="padding: 9px 0px; margin-bottom: 33px;">Password:</div>
+                <div style="padding: 9px 0px; margin-bottom: 13px;">New Password:</div>
+            </div>
+
+            <div class="ui seven wide column">
+
+                <form class="ui form" id="password_form" autocomplete="on">
+
+                    <!-- Username field for accessability - Does nothing -->
+                    <input type="hidden" autocomplete="username">
+
+                    <!-- Old password -->
+                    <div class="field">
+                        <div class="ui action input">
+                            <input type="password" placeholder="Password" id="old_password" autocomplete="current-password">
+                            <button class="ui icon button" type="button" id="hide_old_password">
+                                <i class="eye slash icon"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <br>
+
+                    <!-- New password -->
+                    <div class="field">
+                        <div class="ui action input">
+                            <input type="password" placeholder="New Password" id="new_password" autocomplete="new-password">
+                            <button class="ui icon button" type="button" id="hide_new_password">
+                                <i class="eye slash icon"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Strength meter info message -->
+                    <div class="ui info message">
+                        <div class="header">
+                            Your password is good but could be stronger, maybe consider improving it?
+                        </div>
+                        <p>
+                            It is considered best practice to use fully randomized passwords that are stored in a
+                            password manager!
+                        </p>
+                    </div>
+
+                    <!-- Strength meter warning message -->
+                    <div class="ui warning message">
+                        <div class="header" id="password_warning_header"></div>
+                        <p id="password_warning"></p>
+                    </div>
+
+                    <!-- Confirm new password -->
+                    <div class="field">
+                        <input type="password" placeholder="Confirm Password" id="confirm_password" autocomplete="new-password">
+                    </div>
+                    <br>
+
+                    <!-- Error -->
+                    <div class="ui error message">
+                        <div class="header">Couldn't submit form!</div>
+                        <p id="password_error_description"></p>
+                    </div>
+                    <!-- Success -->
+                    <div class="ui success message">
+                        <div class="header">Password changed!</div>
+                    </div>
+                    <button class="positive fluid ui button" type="submit">Change Password</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

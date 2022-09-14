@@ -1,0 +1,14 @@
+<div class="twelve wide column">
+    <div class="ui segment" style="height: 100%">
+        <div class="ui grid">
+            {{#each articles}}
+            <div class="ui sixteen wide column">
+                <h2 class="ui dividing header">{{this.title}}</h2>
+                {{{this.article}}}
+            </div>
+            {{/each}}
+        </div>
+    </div>
+</div>
+
+{{> sidebar}}

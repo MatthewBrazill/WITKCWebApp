@@ -1,0 +1,41 @@
+<script src="{{scripts.login}}" hidden></script>
+<div class="twelve wide column">
+
+    <div class="ui centered grid">
+
+        <div class="eight wide column">
+
+            <div class="ui segment">
+
+                <h1 class="ui center aligned header">Please Log-In</h1>
+
+                <form class="ui form" id="login_form">
+
+                    <!-- Username -->
+                    <div class="field">
+                        <input type="text" id="username" placeholder="Username" autocomplete="username">
+                    </div>
+
+                    <!-- Password -->
+                    <div class="field">
+                        <div class="ui action input">
+                            <input type="password" id="password" placeholder="Password" autocomplete="current-password">
+                            <button class="ui icon button" type="button" id="hide_password">
+                                <i class="eye slash icon"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <br>
+
+                    <!-- Error -->
+                    <div class="ui error message">
+                        <div class="header">Login Failed!</div>
+                        <p>The given username or password are incorrect!</p>
+                    </div>
+                    <button class="positive fluid ui button" type="submit">Login</button>
+                </form>
+                <a class="primary fluid ui button" href="/signup">Sign Up</a>
+            </div>
+        </div>
+    </div>
+</div>

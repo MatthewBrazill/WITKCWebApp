@@ -1,0 +1,240 @@
+<script src="{{scripts.bookings}}" hidden></script>
+<div class="twelve wide column">
+    <div class="ui centered grid">
+        <div class="sixteen wide column">
+
+            <div class="ui segment">
+
+                <h1 class="ui center aligned header">Book Equipment</h1>
+
+                <form class="ui form" id="booking_form" autocomplete="off" onsubmit="return false;">
+
+                    <div class="fields" style="width: 100%;">
+
+                        <!-- From -->
+                        <div class="four wide field">
+                            <label>From</label>
+                            <div class="ui calendar" id="from_calendar">
+                                <div class="ui input left icon">
+                                    <i class="calendar icon"></i>
+                                    <input type="text" id="fromDate" placeholder="Book From">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- To -->
+                        <div class="four wide field" hidden>
+                            <label>To</label>
+                            <div class="ui calendar" id="to_calendar">
+                                <div class="ui input left icon">
+                                    <i class="calendar icon"></i>
+                                    <input type="text" id="toDate" placeholder="Book Until">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Other Filters -->
+                    <hr style="border-color: gray">
+                    <div class="fields">
+
+                        <!-- Type Filter -->
+                        <div class="four wide field">
+                            <label>Filters</label>
+                            <div class="ui clearable selection dropdown">
+                                <input class="filter" type="hidden" id="type">
+                                <div class="default text">Type</div>
+                                <div class="menu">
+                                    <div class="item" data-value="boat">Boat</div>
+                                    <div class="item" data-value="paddle">Paddle</div>
+                                    <div class="item" data-value="deck">Spray-Deck</div>
+                                    <div class="item" data-value="ba">Buoyancy Aid</div>
+                                    <div class="item" data-value="helmet">Helmet</div>
+                                    <div class="item" data-value="wetsuit">Wetsuit</div>
+                                </div>
+                                <i class="dropdown icon"></i>
+                            </div>
+                        </div>
+
+                        <!-- Search Bar -->
+                        <div class="ten wide field">
+                            <input type="text" id="search" placeholder="Search..." style="margin-top: 24px;">
+                        </div>
+
+                        <!-- Cart -->
+                        <div class="two wide field">
+                            <div class="ui fluid icon button" style="margin-top: 24px; padding: 12px" id="cart_button">0 <i class="ui cart icon"></i></div>
+                        </div>
+                    </div>
+
+                    <!-- Boat Type -->
+                    <div class="fields" id="boat_filters">
+                        <div class="four wide field">
+                            <div class="ui clearable selection dropdown">
+                                <input class="filter" type="hidden" id="boatType">
+                                <div class="default text">Boat Type</div>
+                                <div class="menu">
+                                    <div class="item" data-value="polo">Polo Boat</div>
+                                    <div class="item" data-value="whitewater">Whitewater Boat</div>
+                                    <div class="item" data-value="freestyle">Freestyle Boat</div>
+                                    <div class="item" data-value="other">Other</div>
+                                </div>
+                                <i class="dropdown icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="four wide field">
+                            <div class="ui clearable selection dropdown">
+                                <input class="filter" type="hidden" id="boatSize">
+                                <div class="default text">Boat Size</div>
+                                <div class="menu">
+                                    <div class="item" data-value="s">S</div>
+                                    <div class="item" data-value="m">M</div>
+                                    <div class="item" data-value="l">L</div>
+                                </div>
+                                <i class="dropdown icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="four wide field">
+                            <div class="ui clearable selection dropdown">
+                                <input class="filter" type="hidden" id="boatCockpit">
+                                <div class="default text">Cockpit Size</div>
+                                <div class="menu">
+                                    <div class="item" data-value="big">Big Cockpit</div>
+                                    <div class="item" data-value="key">Keyhole Cockpit</div>
+                                </div>
+                                <i class="dropdown icon"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Paddle Type -->
+                    <div class="fields" id="paddle_filters">
+                        <div class="four wide field">
+                            <div class="ui clearable selection dropdown">
+                                <input class="filter" type="hidden" id="paddleType">
+                                <div class="default text">Paddle Type</div>
+                                <div class="menu">
+                                    <div class="item" data-value="polo">Polo Paddle</div>
+                                    <div class="item" data-value="straight">Crank Shaft Paddle</div>
+                                    <div class="item" data-value="crank">Straight Shaft Paddle</div>
+                                </div>
+                                <i class="dropdown icon"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Deck Type -->
+                    <div class="fields" id="deck_filters">
+                        <div class="four wide field">
+                            <div class="ui clearable selection dropdown">
+                                <input class="filter" type="hidden" id="deckType">
+                                <div class="default text">Deck Type</div>
+                                <div class="menu">
+                                    <div class="item" data-value="key">Keyhole</div>
+                                    <div class="item" data-value="big">Big Deck</div>
+                                </div>
+                                <i class="dropdown icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="four wide field">
+                            <div class="ui clearable selection dropdown">
+                                <input class="filter" type="hidden" id="deckSize">
+                                <div class="default text">Deck Size</div>
+                                <div class="menu">
+                                    <div class="item" data-value="xxxs/xxs">XXXS/XXS</div>
+                                    <div class="item" data-value="xxs/xs">XXS/XS</div>
+                                    <div class="item" data-value="xs/s">XS/S</div>
+                                    <div class="item" data-value="m/l">M/L</div>
+                                    <div class="item" data-value="xl/xxl">XL/XXL</div>
+                                </div>
+                                <i class="dropdown icon"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ba Type -->
+                    <div class="fields" id="ba_filters">
+                        <div class="four wide field">
+                            <div class="ui clearable selection dropdown">
+                                <input class="filter" type="hidden" id="baSize">
+                                <div class="default text">BA Size</div>
+                                <div class="menu">
+                                    <div class="item" data-value="s">S</div>
+                                    <div class="item" data-value="l">L</div>
+                                </div>
+                                <i class="dropdown icon"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Helmet Type -->
+                    <div class="fields" id="helmet_filters">
+                        <div class="four wide field">
+                            <div class="ui clearable selection dropdown">
+                                <input class="filter" type="hidden" id="helmetType">
+                                <div class="default text">Helmet Type</div>
+                                <div class="menu">
+                                    <div class="item" data-value="polo">Polo Helmet</div>
+                                    <div class="item" data-value="full">Full Face Helmet</div>
+                                    <div class="item" data-value="half">Standard Helmet</div>
+                                </div>
+                                <i class="dropdown icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="four wide field">
+                            <div class="ui clearable selection dropdown">
+                                <input class="filter" type="hidden" id="helmetSize">
+                                <div class="default text">Helmet Size</div>
+                                <div class="menu">
+                                    <div class="item" data-value="s">S</div>
+                                    <div class="item" data-value="m">M</div>
+                                    <div class="item" data-value="l">L</div>
+                                    <div class="item" data-value="xl">XL</div>
+                                </div>
+                                <i class="dropdown icon"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Wetsuit Type -->
+                    <div class="fields" id="wetsuit_filters">
+                        <div class="four wide field">
+                            <div class="ui clearable selection dropdown">
+                                <input class="filter" type="hidden" id="wetsuitSize">
+                                <div class="default text">Wetsuit Size</div>
+                                <div class="menu">
+                                    <div class="item" data-value="s">S</div>
+                                    <div class="item" data-value="m">M</div>
+                                    <div class="item" data-value="l">L</div>
+                                    <div class="item" data-value="xl">XL</div>
+                                </div>
+                                <i class="dropdown icon"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr style="border-color: gray">
+                    <div class="ui items" id="search_results"></div>
+                </form>
+            </div>
+
+            <div class="ui tiny modal" id="cart_screen">
+                <div class="header" id="cart_header"></div>
+                <div class="content" style="height: 40rem">
+                    <div class="ui items" id="cart_content"></div>
+                </div>
+                <div class="actions">
+                    <div class="ui negative icon button">Cancel</div>
+                    <div class="ui positive icon button" id="booking_button">Make Booking <i class="ui cart icon"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{> sidebar}}
