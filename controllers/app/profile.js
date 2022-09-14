@@ -65,7 +65,7 @@ const profile = {
                     if (!['equipmentId', 'img'].includes(a)) gear[a] = helper.capitalize(gear[a].toString())
             }
 
-            res.render('profile', data)
+            res.render(`${req.device.type}/profile`, data)
         } else res.redirect('/login')
     },
 
@@ -84,9 +84,9 @@ const profile = {
                     result.img = s3.getSignedUrl('getObject', { Bucket: 'setukc-private', Key: result.img })
                     data.user = result
 
-                    res.render('user', data)
-                } else res.render('404', data)
-            } else res.render('404', data)
+                    res.render(`${req.device.type}/user`, data)
+                } else res.render(`${req.device.type}/404`, data)
+            } else res.render(`${req.device.type}/404`, data)
         } else res.redirect('/login')
     },
 
@@ -102,7 +102,7 @@ const profile = {
             })
             if (data.member.committeeRole == 'admin') data.admin = true
 
-            res.render('settings', data)
+            res.render(`${req.device.type}/settings`, data)
         } else res.redirect('/login')
     },
 

@@ -15,7 +15,7 @@ const login = {
         data.scripts.login = process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/js/login_scripts.js' : '/js/login_scripts.js'
 
         if (data.loggedIn) req.session.destroy()
-        res.render('login', data)
+        res.render(`${req.device.type}/login`, data)
     },
 
     async login(req, res) {

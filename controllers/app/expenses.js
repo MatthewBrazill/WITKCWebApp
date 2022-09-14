@@ -19,7 +19,7 @@ const expenses = {
         // Autheticate user
         if (data.loggedIn) if (data.member.verified) {
 
-            res.render('expense', data)
+            res.render(`${req.device.type}/expense`, data)
         } else res.status(403).redirect('/profile/me')
         else res.status(401).redirect('/login')
     },

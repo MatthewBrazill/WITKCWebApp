@@ -10,7 +10,7 @@ const committeeData = require('../../data_managers/committee.js')
 const about = {
     async historyPage(req, res) {
         var data = await helper.viewData(req, 'About Us')
-        res.render('about', data)
+        res.render(`${req.device.type}/about`, data)
     },
 
     async committeePage(req, res) {
@@ -19,12 +19,12 @@ const about = {
 
         // Since the images come from the committee call and not view data, the images still need to be resolved
         for (var role of data.committee) role.member.img = s3.getSignedUrl('getObject', { Bucket: 'setukc-private', Key: role.member.img })
-        res.render('committee', data)
+        res.render(`${req.device.type}/committee`, data)
     },
 
     async constitutionPage(req, res) {
         var data = await helper.viewData(req, 'Constitution')
-        res.render('constitution', data)
+        res.render(`${req.device.type}/constitution`, data)
     }
 }
 

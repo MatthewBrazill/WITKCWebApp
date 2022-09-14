@@ -12,7 +12,7 @@ const contact = {
     async contactPage(req, res) {
         var data = await helper.viewData(req, 'Contact Us')
         data.scripts.contact = process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/js/contact_scripts.js' : '/js/contact_scripts.js'
-        res.render('contact', data)
+        res.render(`${req.device.type}/contact`, data)
     },
 
     async sendMessage(req, res) {
