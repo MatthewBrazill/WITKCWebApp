@@ -96,8 +96,7 @@ const gear = {
             var data = await helper.viewData(req, 'API')
 
             // Authenticate user
-            if (data.loggedIn) if (data.member.verified) {
-
+            if (data.loggedIn) {
                 var result = await bookings.getAllFor(data.member.memberId)
                 if (result != null) {
                     var dates = []
@@ -116,8 +115,7 @@ const gear = {
                     }
                     res.status(200).json(dates)
                 } else res.sendStatus(404)
-            } else res.sendStatus(403)
-            else res.sendStatus(401)
+            } else res.sendStatus(401)
         } catch (err) {
             logger.error({
                 sessionId: req.sessionID,
@@ -138,7 +136,7 @@ const gear = {
             var data = await helper.viewData(req, 'API')
 
             // Authenticate user
-            if (data.loggedIn) if (data.member.verified) {
+            if (data.loggedIn) {
 
                 // Validate input
                 if (req.body.date.match(/^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)$/)) {
@@ -155,8 +153,7 @@ const gear = {
                         res.status(200).json(list)
                     } else res.sendStatus(404)
                 } else res.sendStatus(400)
-            } else res.sendStatus(403)
-            else res.sendStatus(401)
+            } else res.sendStatus(401)
         } catch (err) {
             logger.error({
                 sessionId: req.sessionID,
@@ -247,12 +244,12 @@ const gear = {
             var data = await helper.viewData(req, 'API')
 
             // Authenticate user
-            if (data.loggedIn) if (data.committee == 'equipments' || data.admin) {
+            if (data.loggedIn) if (data.member.verified) {
 
                 // Validate input
                 if (req.body.bookingId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
                     var result = await bookings.get(req.body.bookingId)
-                    if (result != null && result.memberId == data.member.memberId) {
+                    if (result != null && (result.memberId == data.member.memberId || data.committee == 'equipments' || data.admin)) {
                         if (await bookings.delete(req.body.bookingId)) res.sendStatus(204)
                         else res.sendStatus(503)
                     } else res.sendStatus(403)

@@ -24,7 +24,7 @@ const committee = {
                 if (data.Item['memberId'].S == '') role.member = {
                     firstName: 'Currently',
                     lastName: 'Vacant',
-                    img: '/img/placeholder_avatar.webp'
+                    img: 'img/placeholder_avatar.webp'
                 }
                 else role.member = await members.get(data.Item['memberId'].S)
 
@@ -93,7 +93,7 @@ const committee = {
                         memberId: '',
                         firstName: 'Currently',
                         lastName: 'Vacant',
-                        img: '/img/placeholder_avatar.webp'
+                        img: 'img/placeholder_avatar.webp'
                     }
                     else role.member = await members.get(item['memberId'].S)
                     committee.push(role)
