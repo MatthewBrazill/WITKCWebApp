@@ -33,7 +33,7 @@ const members = {
                 'dateJoined': { S: member.dateJoined }
             },
             TableName: 'witkc-members'
-        }).promise().then(() => {
+        }).promise().then((data) => {
             if (data) {
                 logger.info({
                     member: member,
@@ -117,7 +117,15 @@ const members = {
                     message: `Got Member`
                 })
                 return member
-            } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
+            } else {
+                logger.info({
+                    memberId: memberId,
+                    objectType: 'member',
+                    storageType: 'dynamo',
+                    message: `Member Does Not Exists`
+                })
+                return null
+            }
         }).catch((err) => {
             logger.warn({
                 memberId: memberId,

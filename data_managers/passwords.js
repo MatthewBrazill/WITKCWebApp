@@ -74,7 +74,7 @@ const passwords = {
                 'hash': { S: hash }
             },
             TableName: 'witkc-passwords'
-        }).promise().then(() => {
+        }).promise().then((data) => {
             if (data) {
                 logger.info({
                     memberId: memberId,
@@ -102,7 +102,7 @@ const passwords = {
         return dynamo.deleteItem({
             Key: { 'memberId': { S: memberId } },
             TableName: 'witkc-passwords'
-        }).promise().then(() => {
+        }).promise().then((data) => {
             if (data) {
                 logger.info({
                     memberId: memberId,
