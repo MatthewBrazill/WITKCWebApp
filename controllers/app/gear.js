@@ -82,7 +82,7 @@ const gear = {
                         type: fields.type,
                         brand: helper.capitalize(fields.brand),
                         dateAdded: new Date().toUTCString(),
-                        img: '/img/placeholder_equipment.webp'
+                        img: 'img/placeholder_equipment.webp'
                     }
 
                     // Populate gear object based on type

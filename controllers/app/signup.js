@@ -63,7 +63,7 @@ const signup = {
                         county: req.body.county,
                         code: req.body.code.toUpperCase().replace(/\s/g, ''),
                     },
-                    img: '/img/placeholder_avatar.webp',
+                    img: 'img/placeholder_avatar.webp',
                     dateJoined: new Date().toUTCString()
                 }
 
