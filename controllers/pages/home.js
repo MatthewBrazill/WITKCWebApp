@@ -9,7 +9,6 @@ const home = {
     async homePage(req, res) {
         var data = await helper.viewData(req, 'Home')
         data.articles = await articles.getAll()
-        console.log(req.device)
         res.render(`${req.device.type}/home`, data)
     }
 }
