@@ -57,7 +57,6 @@ $(document).ready(() => {
                 var valid = true
 
                 inputs.trigger('change')
-                inputs.trigger('input')
                 inputs.each((index, element) => {
                     var input = $(element)
                     if (!input.prop('valid') && input.attr('type') != 'checkbox') valid = false
@@ -86,7 +85,7 @@ $(document).ready(() => {
                 }
             })
 
-            $('#tripName').on('input', () => {
+            $('#tripName').change(() => {
                 const name = $('#tripName')
                 const field = name.parent()
                 if (!name.val().match(/^[\p{L}\d!?&() ]{1,64}$/u)) {
@@ -98,7 +97,7 @@ $(document).ready(() => {
                 }
             })
 
-            $('#description').on('input', () => {
+            $('#description').change(() => {
                 const description = $('#description')
                 const field = description.parent()
                 if (!description.val().match(/^[^<>]{1,500}$/u)) {
@@ -110,7 +109,7 @@ $(document).ready(() => {
                 }
             })
 
-            $('#lineOne').on('input', () => {
+            $('#lineOne').change(() => {
                 const line = $('#lineOne')
                 const field = line.parent()
                 if (!line.val().match(/^[\w- ]{1,32}$/)) {
@@ -122,7 +121,7 @@ $(document).ready(() => {
                 }
             })
 
-            $('#lineTwo').on('input', () => {
+            $('#lineTwo').change(() => {
                 const line = $('#lineTwo')
                 const field = line.parent()
                 if (line.val() == '') {
@@ -137,7 +136,7 @@ $(document).ready(() => {
                 }
             })
 
-            $('#city').on('input', () => {
+            $('#city').change(() => {
                 const city = $('#city')
                 const field = city.parent()
                 if (!city.val().match(/^[\w- ]{1,32}$/)) {
@@ -150,7 +149,7 @@ $(document).ready(() => {
             })
 
             $('#county_dropdown').dropdown()
-            $('#county').on('change', () => {
+            $('#county').change(() => {
                 const county = $('#county')
                 const field = county.parent().parent()
                 var counties = [
@@ -169,7 +168,7 @@ $(document).ready(() => {
                 }
             })
 
-            $('#code').on('input', () => {
+            $('#code').change(() => {
                 const code = $('#code')
                 const field = code.parent()
                 if (!code.val().match(/^[a-z0-9]{3}[ ]?[a-z0-9]{4}$/i) && !code.val().match(/^[a-z0-9]{2,4}[ ]?[a-z0-9]{3}$/i)) {
@@ -182,7 +181,7 @@ $(document).ready(() => {
             })
 
             $('#skillLevel_dropdown').dropdown()
-            $('#skillLevel').on('change', () => {
+            $('#skillLevel').change(() => {
                 const skillLevel = $('#skillLevel')
                 const field = skillLevel.parent().parent()
 
@@ -215,7 +214,7 @@ $(document).ready(() => {
                 },
                 values: values
             })
-            $('#safety').on('change', () => {
+            $('#safety').change(() => {
                 const safety = $('#safety')
                 const field = safety.parent().parent()
                 if (!safety.val().split(',').every(item => memberIds.includes(item))) {
@@ -227,7 +226,7 @@ $(document).ready(() => {
                 }
             })
 
-            $('#enoughSafety').on('change', () => {
+            $('#enoughSafety').change(() => {
                 const box = $('#enoughSafety')
 
                 if (!box.prop('checked')) box.siblings().text(`No (This does not mean your trip will be denied! We will try to find additional safety boaters for your trip.)`)
@@ -235,7 +234,7 @@ $(document).ready(() => {
             })
             $('#enoughSafety').trigger('change')
 
-            $('#other_hazards_checkbox').on('change', () => {
+            $('#other_hazards_checkbox').change(() => {
                 const box = $('#other_hazards_checkbox')
                 const text = $('#other_hazards')
 
@@ -243,10 +242,10 @@ $(document).ready(() => {
                     text.attr('disabled', true)
                     text.val('')
                 } else text.attr('disabled', false)
-                text.trigger('input')
+                text.trigger('change')
             })
 
-            $('#other_hazards').on('input', () => {
+            $('#other_hazards').change(() => {
                 const text = $('#other_hazards')
                 const field = text.parent()
 

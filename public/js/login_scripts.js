@@ -7,7 +7,7 @@ $(document).ready(() => {
         const inputs = $("form#login_form input[type!=button]")
         var valid = true
 
-        inputs.trigger('input')
+        inputs.trigger('change')
         inputs.each((index, element) => {
             var input = $(element)
             if (!input.prop('valid')) valid = false
@@ -34,13 +34,13 @@ $(document).ready(() => {
         }
     })
 
-    $('#username').on('input', () => {
+    $('#username').change(() => {
         const username = $('#username')
         if (!username.val().match(/^[\w-]{1,16}$/)) username.prop('valid', false)
         else username.prop('valid', true)
     })
 
-    $('#password').on('input', () => {
+    $('#password').change(() => {
         const password = $('#password')
         if (!password.val().match(/^.{1,64}$/)) password.prop('valid', false)
         else password.prop('valid', true)

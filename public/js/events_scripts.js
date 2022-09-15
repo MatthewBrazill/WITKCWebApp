@@ -20,7 +20,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#event_calendar').on('change', () => {
+    $('#event_calendar').change(() => {
         const calendar = $('#event_calendar')
         const list = $('#event_list')
 

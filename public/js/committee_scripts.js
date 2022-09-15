@@ -12,7 +12,7 @@ $(document).ready(() => {
         const inputs = $("form#announcement_form input[type!=button], form#announcement_form textarea")
 
         var valid = true
-        inputs.trigger('input')
+        inputs.trigger('change')
         inputs.each((index, element) => {
             var input = $(element)
             if (!input.prop('valid')) valid = false
@@ -41,7 +41,7 @@ $(document).ready(() => {
         $('#announcement_modal').modal('hide')
     })
 
-    $('#title').on('input', () => {
+    $('#title').change(() => {
         const title = $('#title')
         const field = title.parent()
 
@@ -54,7 +54,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#content').on('input', () => {
+    $('#content').change(() => {
         const content = $('#content')
         const field = content.parent()
 

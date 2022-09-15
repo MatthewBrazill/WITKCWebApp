@@ -44,7 +44,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#bookings_calendar').on('change', () => {
+    $('#bookings_calendar').change(() => {
         const calendar = $('#bookings_calendar')
         const list = $('#bookings_list')
 
@@ -99,7 +99,6 @@ $(document).ready(() => {
         var valid = true
 
         inputs.trigger('change')
-        inputs.trigger('input')
         inputs.each((index, element) => {
             var input = $(element)
             if (!input.prop('valid')) valid = false
@@ -123,7 +122,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#firstName').on('input', () => {
+    $('#firstName').change(() => {
         const name = $('#firstName')
         const field = name.parent()
         if (!name.val().match(/^\p{L}{1,16}$/u)) {
@@ -135,7 +134,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#lastName').on('input', () => {
+    $('#lastName').change(() => {
         const name = $('#lastName')
         const field = name.parent()
         if (!name.val().match(/^\p{L}{1,16}$/u)) {
@@ -147,7 +146,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#email').on('input', () => {
+    $('#email').change(() => {
         const email = $('#email')
         const field = email.parent()
         if (!email.val().match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.[a-z]{2,})$/i)) {
@@ -159,7 +158,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#phone').on('input', () => {
+    $('#phone').change(() => {
         const phone = $('#phone')
         const field = phone.parent()
         if (phone.val() == '') {
@@ -190,7 +189,7 @@ $(document).ready(() => {
         })
     })
 
-    $('#lineOne').on('input', () => {
+    $('#lineOne').change(() => {
         const line = $('#lineOne')
         const field = line.parent()
         if (!line.val().match(/^[\w- ]{1,32}$/)) {
@@ -202,7 +201,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#lineTwo').on('input', () => {
+    $('#lineTwo').change(() => {
         const line = $('#lineTwo')
         const field = line.parent()
         if (line.val() == '') {
@@ -217,7 +216,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#city').on('input', () => {
+    $('#city').change(() => {
         const city = $('#city')
         const field = city.parent()
         if (!city.val().match(/^[\w- ]{1,32}$/)) {
@@ -230,7 +229,7 @@ $(document).ready(() => {
     })
 
     $('#county_dropdown').dropdown()
-    $('#county').on('change', () => {
+    $('#county').change(() => {
         const county = $('#county')
         const field = county.parent().parent()
         var counties = [
@@ -249,7 +248,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#code').on('input', () => {
+    $('#code').change(() => {
         const code = $('#code')
         const field = code.parent()
         if (!code.val().match(/^[a-z0-9]{3}[ ]?[a-z0-9]{4}$/i) && !code.val().match(/^[a-z0-9]{2,4}[ ]?[a-z0-9]{3}$/i)) {
@@ -261,7 +260,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#promotion').on('change', () => {
+    $('#promotion').change(() => {
         const box = $('#promotion')
 
         if (!box.prop('checked')) {
@@ -305,7 +304,6 @@ $(document).ready(() => {
 
         var valid = true
         inputs.trigger('change')
-        inputs.trigger('input')
         inputs.each((index, element) => {
             var input = $(element)
             if (!input.prop('valid')) valid = false
@@ -335,7 +333,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#bio').on('input', () => {
+    $('#bio').change(() => {
         const bio = $('#bio')
         const field = bio.parent()
 
@@ -351,7 +349,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#file').on('change', () => {
+    $('#file').change(() => {
         const file = $('#file')
         const field = file.parent()
 
@@ -378,7 +376,7 @@ $(document).ready(() => {
         const inputs = $("form#password_form input[type=password]")
         var valid = true
 
-        inputs.trigger('input')
+        inputs.trigger('change')
         inputs.each((index, element) => {
             var input = $(element)
             if (!input.prop('valid')) valid = false
@@ -408,7 +406,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#old_password').on('input', () => {
+    $('#old_password').change(() => {
         const password = $('#old_password')
 
         if (password.val() == '') {
@@ -420,7 +418,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#new_password').on('input', () => {
+    $('#new_password').change(() => {
         const password = $('#new_password')
         const field = password.parent().parent()
         const form = field.parent()
@@ -458,7 +456,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#confirm_password').on('input', () => {
+    $('#confirm_password').change(() => {
         const confirm_password = $('#confirm_password')
 
         if (confirm_password.val() != $('#new_password').val() || confirm_password.val() == '') {
