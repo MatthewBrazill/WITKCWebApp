@@ -101,7 +101,7 @@ $(document).ready(() => {
         })
     })
 
-    $('#revoke_cert_modal_member_dropdown_input').on('change', () => {
+    $('#revoke_cert_modal_member_dropdown_input').change(() => {
         const cards = $('#revoke_cert_modal_cards')
 
         $.ajax({

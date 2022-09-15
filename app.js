@@ -9,6 +9,7 @@ const cookie = require('cookie-parser')
 const session = require('express-session')
 const sessionStore = require('connect-dynamodb')({ session: session })
 const handlebars = require('express-handlebars')
+const device = require('express-device');
 const logger = require('./log.js')
 const helper = require('./controllers/helper.js')
 
@@ -84,6 +85,18 @@ async function start() {
     app.set('views', 'views')
     logger.debug('Handlebars Loaded')
 
+    // Set up device capture
+    app.use(device.capture({
+        emptyUserAgentDeviceType: 'desktop',
+        unknownUserAgentDeviceType: 'phone',
+        botUserAgentDeviceType: 'desktop',
+        carUserAgentDeviceType: 'desktop',
+        consoleUserAgentDeviceType: 'desktop',
+        tvUserAgentDeviceType: 'desktop',
+        parseUserAgent: false
+    }))
+    logger.debug('Device Capture Loaded')
+
     // Remaining WebApp settings
     app.set(express.json())
     app.use(express.urlencoded({ extended: true }))
@@ -96,7 +109,7 @@ async function start() {
     app.use((req, res) => {
         res.status(404)
         // Respond with HTML page
-        if (req.accepts('html')) helper.viewData(req, '404 - Page not found').then((data) => res.render('404', data))
+        if (req.accepts('html')) helper.viewData(req, '404 - Page not found').then((data) => res.render(`${req.device.type}/404`, data))
         // Respond with JSON
         else if (req.accepts('json')) res.json({ err: 'Not found' })
         // Default: Plain-Text

@@ -7,7 +7,7 @@ $(document).ready(() => {
         const inputs = $("form#contact_form input[type!=button], textarea")
         var valid = true
 
-        inputs.trigger('input')
+        inputs.trigger('change')
         inputs.each((index, element) => {
             var input = $(element)
             if (!input.prop('valid')) valid = false
@@ -37,7 +37,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#firstName').on('input', () => {
+    $('#firstName').change(() => {
         const name = $('#firstName')
         if (!name.val().match(/^\p{L}{1,16}$/u)) {
             name.prop('valid', false)
@@ -48,7 +48,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#lastName').on('input', () => {
+    $('#lastName').change(() => {
         const name = $('#lastName')
         if (!name.val().match(/^\p{L}{1,16}$/u)) {
             name.prop('valid', false)
@@ -59,7 +59,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#email').on('input', () => {
+    $('#email').change(() => {
         const email = $('#email')
         if (!email.val().match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.[a-z]{2,})$/i)) {
             email.prop('valid', false)
@@ -70,7 +70,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#message').on('input', () => {
+    $('#message').change(() => {
         const message = $('#message')
         if (!message.val().match(/^[^<>]{1,500}$/u)) {
             message.prop('valid', false)

@@ -6,7 +6,6 @@ $(document).ready(() => {
 
         var valid = true
         inputs.trigger('change')
-        inputs.trigger('input')
         inputs.each((index, element) => {
             var input = $(element)
             if (!input.prop('valid')) valid = false
@@ -49,7 +48,7 @@ $(document).ready(() => {
 
         var element = $('<div class="ui fields"></div>')
             .append($('<div class="eleven wide field"></div>')
-                .append($('<input type="text" placeholder="Purchase Description">').on('input', function () {
+                .append($('<input type="text" placeholder="Purchase Description">').change(function () {
                     const desc = $(this)
                     const field = desc.parent()
 
@@ -63,7 +62,7 @@ $(document).ready(() => {
                 })))
             .append($('<div class="five wide field"></div>')
                 .append($('<div class="ui icon input"></div>')
-                    .append($('<input type="number" min="0" step="any" placeholder="Price">').on('input', function () {
+                    .append($('<input type="number" min="0" step="any" placeholder="Price">').change(function () {
                         const price = $(this)
                         const field = price.parent().parent()
 
@@ -85,7 +84,7 @@ $(document).ready(() => {
         if (button.prev().prev().prev().length == 1) button.prev().prev().remove()
     })
 
-    $('#receipts').on('change', () => {
+    $('#receipts').change(() => {
         const receipts = $('#receipts')
         const field = receipts.parent()
         var valid = true

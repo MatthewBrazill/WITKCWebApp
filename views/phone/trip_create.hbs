@@ -1,0 +1,244 @@
+<script src="{{scripts.trip}}" hidden></script>
+<div class="twelve wide column">
+
+    <div class="ui segment">
+
+        <h1 class="ui center aligned header">Request Trip</h1>
+
+        <form class="ui loading form" id="trip_form" autocomplete="off">
+
+            <!-- Name -->
+            <div class="field">
+                <label>Trip Name</label>
+                <input type="text" id="tripName" placeholder="Trip Name">
+            </div>
+            <div class="fields">
+
+                <!-- Start -->
+                <div class="inline field">
+                    <label>From</label>
+                    <div class="ui calendar" id="start_calendar">
+                        <div class="ui input left icon">
+                            <i class="calendar icon"></i>
+                            <input type="text" id="startDate" placeholder="Start Date">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- End -->
+                <div class="inline field" hidden>
+                    <label>To</label>
+                    <div class="ui calendar" id="end_calendar">
+                        <div class="ui input left icon">
+                            <i class="calendar icon"></i>
+                            <input type="text" id="endDate" placeholder="End Date">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ui two column grid">
+
+                <div class="ui column">
+
+                    <!-- ===Description=== -->
+                    <h4 class="ui dividing header">Description</h4>
+                    <div class="field">
+                        <textarea style="height:194px" id="description" placeholder="Description..." maxlength="500"></textarea>
+                    </div>
+                </div>
+
+                <!-- ===Location=== -->
+                <div class="ui column" id="address_location">
+
+                    <h4 class="ui dividing header">Location - Address</h4>
+
+                    <!-- Line one -->
+                    <div class="field">
+                        <input type="text" id="lineOne" placeholder="First Line">
+                    </div>
+
+                    <!-- Line two -->
+                    <div class="field">
+                        <input type="text" id="lineTwo" placeholder="Second Line">
+                    </div>
+
+                    <!-- City -->
+                    <div class="field">
+                        <input type="text" id="city" placeholder="City">
+                    </div>
+                    <div class="fields">
+
+                        <!-- County -->
+                        <div class="ten wide field">
+                            <div class="ui search selection dropdown" id="county_dropdown">
+                                <input type="hidden" id="county">
+                                <div class="default text">Select County...</div>
+                                <div class="menu">
+                                    <div class="item" data-value="antrim">Antrim</div>
+                                    <div class="item" data-value="armagh">Armagh</div>
+                                    <div class="item" data-value="carlow">Carlow</div>
+                                    <div class="item" data-value="cavan">Cavan</div>
+                                    <div class="item" data-value="clare">Clare</div>
+                                    <div class="item" data-value="cork">Cork</div>
+                                    <div class="item" data-value="derry">Derry</div>
+                                    <div class="item" data-value="donegal">Donegal</div>
+                                    <div class="item" data-value="down">Down</div>
+                                    <div class="item" data-value="dublin">Dublin</div>
+                                    <div class="item" data-value="fermanagh">Fermanagh</div>
+                                    <div class="item" data-value="galway">Galway</div>
+                                    <div class="item" data-value="kerry">Kerry</div>
+                                    <div class="item" data-value="kildare">Kildare</div>
+                                    <div class="item" data-value="kilkenny">Kilkenny</div>
+                                    <div class="item" data-value="laois">Laois</div>
+                                    <div class="item" data-value="leitrim">Leitrim</div>
+                                    <div class="item" data-value="limerick">Limerick</div>
+                                    <div class="item" data-value="longford">Longford</div>
+                                    <div class="item" data-value="louth">Louth</div>
+                                    <div class="item" data-value="mayo">Mayo</div>
+                                    <div class="item" data-value="meath">Meath</div>
+                                    <div class="item" data-value="monaghan">Monaghan</div>
+                                    <div class="item" data-value="offaly">Offaly</div>
+                                    <div class="item" data-value="roscommon">Roscommon</div>
+                                    <div class="item" data-value="sligo">Sligo</div>
+                                    <div class="item" data-value="tipperary">Tipperary</div>
+                                    <div class="item" data-value="tyrone">Tyrone</div>
+                                    <div class="item" data-value="waterford">Waterford</div>
+                                    <div class="item" data-value="westmeath">Westmeath</div>
+                                    <div class="item" data-value="wexford">Wexford</div>
+                                    <div class="item" data-value="wicklow">Wicklow</div>
+                                </div>
+                                <i class="dropdown icon"></i>
+                            </div>
+                        </div>
+
+                        <!-- Post code -->
+                        <div class="six wide field">
+                            <input type="text" id="code" placeholder="Post Code">
+                        </div>
+                    </div>
+                </div>
+
+                <!--
+                <div class="ui column" id="coord_location">
+
+                    <h4 class="ui dividing header">Location - Coordinates</h4>
+
+                    <div class="field">
+                        <input type="text" id="lineOne" placeholder="North/South Coordinates">
+                    </div>
+
+                    <div class="field">
+                        <input type="text" id="lineTwo" placeholder="East/West Coordinates">
+                    </div>
+                </div>
+                -->
+            </div>
+
+
+
+            <!-- ===Safety=== -->
+            <h4 class="ui dividing header">Safety Concerns</h4>
+            <div class="ui two column grid">
+                <div class="ui column">
+
+                    <!-- Skill Level -->
+                    <div class="field">
+                        <label>Minimum Skill Level</label>
+                        <div class="ui selection dropdown" id="skillLevel_dropdown">
+                            <input type="hidden" id="skillLevel">
+                            <div class="default text">Select Minimum Skill Level</div>
+                            <div class="menu">
+                                <div class="item" data-value="1">Level 1</div>
+                                <div class="item" data-value="2">Level 2</div>
+                                <div class="item" data-value="3">Level 3</div>
+                                <div class="item" data-value="4">Level 4</div>
+                                <div class="item" data-value="5">Level 5</div>
+                            </div>
+                            <i class="dropdown icon"></i>
+                        </div>
+                    </div>
+
+                    <!-- Safety Boaters -->
+                    <div class="field">
+                        <label>Who is running safety?</label>
+                        <div class="ui fluid multiple search selection dropdown" id="safety_dropdown">
+                            <input type="hidden" id="safety">
+                            <div class="text"></div>
+                            <i class="dropdown icon"></i>
+                        </div>
+                    </div>
+
+                    <!-- Safety Reasoning -->
+                    <div class="field">
+                        <label>
+                            Do you think this is enough safety?
+                        </label>
+                        <div class="ui toggle checkbox">
+                            <input type="checkbox" id="enoughSafety">
+                            <label id="enoughSafety_text"></label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Safety Checklist -->
+                <div class="ui column">
+                    <p style="font-weight: 700">We will probably be encountering the following hazards:</p>
+
+                    <!-- Strainers -->
+                    <div class="field">
+                        <div class="ui checkbox">
+                            <input type="checkbox" id="strainers">
+                            <label>Strainers and/or Sweepers</label>
+                        </div>
+                    </div>
+
+                    <!-- Waterfalls -->
+                    <div class="field">
+                        <div class="ui checkbox">
+                            <input type="checkbox" id="falls">
+                            <label>Waterfalls and/or Other Drops</label>
+                        </div>
+                    </div>
+
+                    <!-- Dams -->
+                    <div class="field">
+                        <div class="ui checkbox">
+                            <input type="checkbox" id="dams">
+                            <label>Dams and/or Spillways</label>
+                        </div>
+                    </div>
+
+                    <!-- Undercuts -->
+                    <div class="field">
+                        <div class="ui checkbox">
+                            <input type="checkbox" id="undercuts">
+                            <label>Undercut Riverbanks/Ledges</label>
+                        </div>
+                    </div>
+
+                    <!-- Others -->
+                    <div class="field">
+                        <div class="ui checkbox">
+                            <input type="checkbox" id="other_hazards_checkbox">
+                            <label>Other notable Hazards:</label>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <input type="text" id="other_hazards" placeholder="Other Hazards (Please Describe)" disabled>
+                    </div>
+                </div>
+            </div>
+            <br>
+
+            <!-- Error -->
+            <div class="ui error message">
+                <div class="header">Couldn't create trip!</div>
+                <p>Red fields are required! Please check your input!</p>
+            </div>
+            <button class="positive fluid ui button" type="submit">Request Trip</button>
+        </form>
+    </div>
+</div>
+
+{{> sidebar}}

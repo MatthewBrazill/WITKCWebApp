@@ -61,7 +61,7 @@ const events = {
             urlPath: req.url,
             message: `Cleaned Event Dates`
         })
-        res.render('events', data)
+        res.render(`${req.device.type}/events`, data)
     },
 
     async day(req, res) {

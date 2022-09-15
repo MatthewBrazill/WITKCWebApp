@@ -21,7 +21,8 @@ const helper = {
             setukcLogo: process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/img/witkc_logo.webp' : '/img/witkc_logo.webp',
             setukcIcon: process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/img/witkc_icon.ico' : '/img/witkc_icon.ico',
             loggedIn: false,
-            env: process.env.DD_ENV
+            env: process.env.DD_ENV,
+            phone: req.device.type == 'phone'
         }
 
         logger.debug({
@@ -80,28 +81,6 @@ const helper = {
                     message: `Unread Announcements Retrieved`
                 })
 
-                /* Some places need the Profile image to not be resolved to a sgned
-                URL, as such any time the title is set to API, dont resolve the image. */
-                if (title != 'API') {
-                    data.member.img = s3.getSignedUrl('getObject', { Bucket: 'setukc-private', Key: data.member.img })
-                    data.member.dateJoined = data.member.dateJoined.substring(5, 16)
-                    logger.debug({
-                        sessionId: req.sessionID,
-                        loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
-                        memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
-                        method: req.method,
-                        urlPath: req.url,
-                        message: `Profile Image Resolved`
-                    })
-                } else logger.debug({
-                    sessionId: req.sessionID,
-                    loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
-                    memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
-                    method: req.method,
-                    urlPath: req.url,
-                    message: `Profile Image NOT Resolved`
-                })
-
                 /* If the memberId matches this the user is admin => set admin flag
                 
                 If user is not admin, retrieve the committee status. Value is false
@@ -124,6 +103,28 @@ const helper = {
                     method: req.method,
                     urlPath: req.url,
                     message: `Committee Status => ${data.committee}`
+                })
+
+                /* Some places need the Profile image to not be resolved to a sgned
+                URL, as such any time the title is set to API, dont resolve the image. */
+                if (title != 'API') {
+                    data.member.img = s3.getSignedUrl('getObject', { Bucket: 'setukc-private', Key: data.member.img })
+                    if (!data.admin) data.member.dateJoined = data.member.dateJoined.substring(5, 16)
+                    logger.debug({
+                        sessionId: req.sessionID,
+                        loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                        memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                        method: req.method,
+                        urlPath: req.url,
+                        message: `Profile Image Resolved`
+                    })
+                } else logger.debug({
+                    sessionId: req.sessionID,
+                    loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                    memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                    method: req.method,
+                    urlPath: req.url,
+                    message: `Profile Image NOT Resolved`
                 })
             }
         }

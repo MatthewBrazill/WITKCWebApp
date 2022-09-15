@@ -16,7 +16,7 @@ const trip = {
 
         // Authenticate user
         if (data.loggedIn) if (data.member.verified) {
-            res.render('trip_create', data)
+            res.render(`${req.device.type}/trip_create`, data)
         } else res.redirect('/profile/me')
         else res.redirect('/login')
     },
@@ -103,9 +103,9 @@ const trip = {
                     message: `Trip Member Count => ${data.trip.attendees.length}`
                 })
 
-                res.render('trip_view', data)
-            } else res.render('404', data)
-        } else res.render('404', data)
+                res.render(`${req.device.type}/trip_view`, data)
+            } else res.render(`${req.device.type}/404`, data)
+        } else res.render(`${req.device.type}/404`, data)
     },
 
     async editPage(req, res) {
@@ -184,10 +184,10 @@ const trip = {
                         if (data.trip.enoughSafety) data.trip.enoughSafety = 'checked=""'
                         else data.trip.enoughSafety = ''
 
-                        res.render('trip_edit', data)
+                        res.render(`${req.device.type}/trip_edit`, data)
                     } else res.redirect(`/trip/${req.params.tripId}`)
-                } else res.render('404', data)
-            } else res.render('404', data)
+                } else res.render(`${req.device.type}/404`, data)
+            } else res.render(`${req.device.type}/404`, data)
         } else res.redirect('/profile/me')
         else res.redirect('/login')
     },

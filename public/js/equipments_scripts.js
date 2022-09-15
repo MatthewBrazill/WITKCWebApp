@@ -15,7 +15,6 @@ $(document).ready(() => {
 
         var valid = true
         inputs.trigger('change')
-        inputs.trigger('input')
         inputs.each((index, element) => {
             var input = $(element)
             if (input.attr('id').split('_')[0] == $('#type').val() || input.attr('id') == 'gearName' || input.attr('id') == 'brand' || input.attr('id') == 'file') {
@@ -52,7 +51,7 @@ $(document).ready(() => {
         $('#add_equipment_modal').modal('hide')
     })
 
-    $('#paddle_length').on('input', () => {
+    $('#paddle_length').change(() => {
         const length = $('#paddle_length')
         const field = length.parent()
         if (length.val() < 0 || length.val() > 1000 || length.val() == '') {
@@ -64,7 +63,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#gearName').on('input', () => {
+    $('#gearName').change(() => {
         const name = $('#gearName')
         const field = name.parent()
         if (!name.val().match(/^[\w- ]{1,24}$/)) {
@@ -76,7 +75,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#brand').on('input', () => {
+    $('#brand').change(() => {
         const brand = $('#brand')
         const field = brand.parent()
         if (!brand.val().match(/^[\w- ]{1,24}$/)) {
@@ -88,7 +87,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#file').on('change', () => {
+    $('#file').change(() => {
         const file = $('#file')
         const field = file.parent()
 
@@ -105,7 +104,7 @@ $(document).ready(() => {
     })
 
     $('.add_equipments_modal_dropdown').dropdown()
-    $('.add_equipments_modal_dropdown_input').on('change', function () {
+    $('.add_equipments_modal_dropdown_input').change(function () {
         const dropdown = $(this)
 
         if (dropdown.val() == null || dropdown.val() == '') {
@@ -131,7 +130,7 @@ $(document).ready(() => {
         })
     })
 
-    $('#type').on('change', () => {
+    $('#type').change(() => {
         const type = $('#type')
 
         $('#boat_fields').hide()

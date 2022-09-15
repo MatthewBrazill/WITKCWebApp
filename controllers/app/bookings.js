@@ -21,7 +21,7 @@ const gear = {
             // Capitalize all of the Gear Data
             for (var attr in data.equipment) for (var gear of data.equipment[attr]) for (var a in gear)
                 if (!['equipmentId', 'img'].includes(a)) gear[a] = helper.capitalize(gear[a].toString())
-            res.render('bookings', data)
+            res.render(`${req.device.type}/bookings`, data)
         } else res.status(403).redirect('/profile/me')
         else res.status(401).redirect('/login')
     },

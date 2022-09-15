@@ -17,7 +17,7 @@ const signup = {
 
         if (data.loggedIn) req.session.destroy()
 
-        res.render('signup', data)
+        res.render(`${req.device.type}/signup`, data)
     },
 
     async createAccount(req, res) {

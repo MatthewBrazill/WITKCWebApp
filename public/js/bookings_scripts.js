@@ -49,7 +49,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#type').on('change', () => {
+    $('#type').change(() => {
         const type = $('#type')
         $('#boat_filters').hide()
         $('#paddle_filters').hide()
@@ -68,7 +68,7 @@ $(document).ready(() => {
         updateQuery()
     })
 
-    $('#search').on('input', () => {
+    $('#search').change(() => {
         const search = $('#search')
         const field = search.parent()
         if (!search.val().match(/^[\w- ]{0,32}$/)) {
@@ -81,7 +81,7 @@ $(document).ready(() => {
         }
     })
 
-    $('.filter').on('change', function () {
+    $('.filter').change(function () {
         const dropdown = $(this)
         if (dropdown.val() == null || dropdown.val() == '') {
             dropdown.prop('valid', true)
@@ -93,7 +93,7 @@ $(document).ready(() => {
         updateQuery()
     })
 
-    $('#type').on('change', () => {
+    $('#type').change(() => {
         $('.filter').each(function () {
             if ($(this).attr('id') != 'type') {
                 $(this).parent().dropdown('clear')
@@ -117,7 +117,6 @@ $(document).ready(() => {
     $('#fromDate').prop('date', '')
     $('#toDate').prop('date', '')
     $("form#booking_form input[type!=button][id!=fromDate][id!=toDate]").trigger('change')
-    $("form#booking_form input[type!=button][id!=fromDate][id!=toDate]").trigger('input')
 })
 
 function updateQuery() {

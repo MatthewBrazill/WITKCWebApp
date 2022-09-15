@@ -1,5 +1,5 @@
 $(document).ready(() => {
- 
+
     $('.expenseRequest').click(function () {
         $('#expense_modal').modal({
             closeIcon: true,
@@ -61,7 +61,7 @@ $(document).ready(() => {
     })
 
     $('#expense_modal_reject').click(() => {
-        $('#expense_modal_reason').trigger('input')
+        $('#expense_modal_reason').trigger('change')
         if ($('#expense_modal_reason').prop('valid')) {
             $.ajax({
                 url: '/api/expenses/resolve',
@@ -83,7 +83,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#expense_modal_reason').on('input', () => {
+    $('#expense_modal_reason').change(() => {
         const reason = $('#expense_modal_reason')
         const field = reason.parent()
         if (!reason.val().match(/^[^<>]{1,200}$/u)) {

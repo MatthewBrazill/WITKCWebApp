@@ -7,7 +7,7 @@ const fs = require('fs')
 const certificates = {
     async get(certId) {
         try {
-            // Verify input
+            // Validate input
             if (certId == null || certId == undefined) throw `Received invalid certificate ID!`
 
             // Load certificates file
