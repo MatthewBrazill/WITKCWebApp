@@ -94,7 +94,7 @@ async function start() {
         consoleUserAgentDeviceType: 'desktop',
         tvUserAgentDeviceType: 'desktop',
         parseUserAgent: false
-      }))
+    }))
     logger.debug('Device Capture Loaded')
 
     // Remaining WebApp settings
