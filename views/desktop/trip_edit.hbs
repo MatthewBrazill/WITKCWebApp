@@ -56,7 +56,7 @@
                         url: '/api/trip/delete',
                         method: 'POST',
                         data: { tripId: '{{trip.tripId}}' },
-                        success: (res) => window.location = res.url,
+                        success: () => window.location = '/profile/me',
                         error: () => $('#trip_form').attr('class', 'ui error form')
                     })
                 })
