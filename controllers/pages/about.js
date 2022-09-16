@@ -3,7 +3,6 @@
 // Imports
 const AWS = require('aws-sdk')
 const s3 = new AWS.S3()
-const logger = require('../../log.js')
 const helper = require('../helper.js')
 const committeeData = require('../../data_managers/committee.js')
 
