@@ -39,7 +39,7 @@ $(document).ready(() => {
 
     $('#firstName').on('input change', () => {
         const name = $('#firstName')
-        if (!name.val().match(/^\p{L}{1,16}$/u)) {
+        if (!name.val().match(/^['-\.\p{L}]{1,16}$/u)) {
             name.prop('valid', false)
             name.parent().attr('class', 'field error')
         } else {
@@ -50,7 +50,7 @@ $(document).ready(() => {
 
     $('#lastName').on('input change', () => {
         const name = $('#lastName')
-        if (!name.val().match(/^\p{L}{1,16}$/u)) {
+        if (!name.val().match(/^['-\.\p{L}]{1,16}$/u)) {
             name.prop('valid', false)
             name.parent().attr('class', 'field error')
         } else {

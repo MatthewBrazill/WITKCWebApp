@@ -121,12 +121,12 @@ const profile = {
                 ]
 
                 // Validate input
-                if (!req.body.firstName.match(/^\p{L}{1,16}$/u)) valid = false
-                if (!req.body.lastName.match(/^\p{L}{1,16}$/u)) valid = false
+                if (!req.body.firstName.match(/^['-\.\p{L}]{1,16}$/u)) valid = false
+                if (!req.body.lastName.match(/^['-\.\p{L}]{1,16}$/u)) valid = false
                 if (!req.body.email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.[a-z]{2,})$/i)) valid = false
                 if (!req.body.phone.match(/^[+0]+\d{8,12}$/) && req.body.phone != '') valid = false
-                if (!req.body.lineOne.match(/^[\w- ]{1,32}$/)) valid = false
-                if (!req.body.lineTwo.match(/^[\w- ]{1,32}$/) && req.body.lineTwo != '') valid = false
+                if (!req.body.lineOne.match(/^[\w-\.,' ]{1,32}$/)) valid = false
+                if (!req.body.lineTwo.match(/^[\w-\.,' ]{1,32}$/) && req.body.lineTwo != '') valid = false
                 if (!req.body.city.match(/^[\w- ]{1,32}$/)) valid = false
                 if (!counties.includes(req.body.county)) valid = false
                 if (!req.body.code.match(/^[a-z0-9]{3}[ ]?[a-z0-9]{4}$/i) && !req.body.code.match(/^[a-z0-9]{2,4}[ ]?[a-z0-9]{3}$/i)) valid = false
@@ -177,14 +177,13 @@ const profile = {
                 }))
 
                 // Validate file
-                console.log(fields, files)
                 if (files.file !== undefined) if (files.file.mimetype.split('/')[0] == 'image') {
                     await sharp(files.file.filepath).resize({ width: 400 }).webp().toFile(`${files.file.filepath}-new`).catch((err) => { throw err })
                     s3.putObject({
-                        Bucket: 'witkc',
+                        Bucket: 'setukc-private',
                         Key: data.member.img,
                         Body: fs.readFileSync(`${files.file.filepath}-new`)
-                    })
+                    }, (err) => { if (err) throw err })
                 }
 
                 // Validate fields

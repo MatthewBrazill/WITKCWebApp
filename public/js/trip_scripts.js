@@ -113,7 +113,7 @@ $(document).ready(() => {
             $('#lineOne').on('input change', () => {
                 const line = $('#lineOne')
                 const field = line.parent()
-                if (!line.val().match(/^[\w- ]{1,32}$/)) {
+                if (!line.val().match(/^[\w-\.,' ]{1,32}$/)) {
                     field.attr('class', 'field error')
                     line.prop('valid', false)
                 } else {
@@ -128,7 +128,7 @@ $(document).ready(() => {
                 if (line.val() == '') {
                     field.attr('class', 'field')
                     line.prop('valid', true)
-                } else if (!line.val().match(/^[\w- ]{1,32}$/)) {
+                } else if (!line.val().match(/^[\w-\.,' ]{1,32}$/)) {
                     field.attr('class', 'field error')
                     line.prop('valid', false)
                 } else {

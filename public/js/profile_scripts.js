@@ -125,7 +125,7 @@ $(document).ready(() => {
     $('#firstName').on('input change', () => {
         const name = $('#firstName')
         const field = name.parent()
-        if (!name.val().match(/^\p{L}{1,16}$/u)) {
+        if (!name.val().match(/^['-\.\p{L}]{1,16}$/u)) {
             field.attr('class', 'field error')
             name.prop('valid', false)
         } else {
@@ -137,7 +137,7 @@ $(document).ready(() => {
     $('#lastName').on('input change', () => {
         const name = $('#lastName')
         const field = name.parent()
-        if (!name.val().match(/^\p{L}{1,16}$/u)) {
+        if (!name.val().match(/^['-\.\p{L}]{1,16}$/u)) {
             field.attr('class', 'field error')
             name.prop('valid', false)
         } else {
@@ -192,7 +192,7 @@ $(document).ready(() => {
     $('#lineOne').on('input change', () => {
         const line = $('#lineOne')
         const field = line.parent()
-        if (!line.val().match(/^[\w- ]{1,32}$/)) {
+        if (!line.val().match(/^[\w-\.,' ]{1,32}$/)) {
             field.attr('class', 'field error')
             line.prop('valid', false)
         } else {
@@ -207,7 +207,7 @@ $(document).ready(() => {
         if (line.val() == '') {
             field.attr('class', 'field')
             line.prop('valid', true)
-        } else if (!line.val().match(/^[\w- ]{1,32}$/)) {
+        } else if (!line.val().match(/^[\w-\.,' ]{1,32}$/)) {
             field.attr('class', 'field error')
             line.prop('valid', false)
         } else {
