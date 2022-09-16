@@ -22,7 +22,7 @@ $(document).ready(() => {
                         start.prop('valid', false)
                     } else {
                         startField.attr('class', 'inline field success')
-                        start.prop('date', new Date(startDate).toISOString())
+                        start.prop('date', startDate)
                         start.prop('valid', true)
                         $('#end_calendar').parent().show()
                         $('#end_calendar').calendar({
@@ -41,7 +41,7 @@ $(document).ready(() => {
                                     end.prop('valid', false)
                                 } else {
                                     endField.attr('class', 'inline field success')
-                                    end.prop('date', new Date(endDate).toISOString())
+                                    end.prop('date', endDate)
                                     end.prop('valid', true)
                                 }
                             }
@@ -72,9 +72,10 @@ $(document).ready(() => {
                             if (input.attr('id') == 'enoughSafety') data.enoughSafety = input.prop('checked')
                             else if (input.attr('id') == 'other_hazards_checkbox' && input.prop('checked')) data.hazards.push($('#other_hazards').val())
                             else if (input.prop('checked')) data.hazards.push(input.attr('id'))
-                        } else if (input.attr('id').split('_')[1] == 'date') data[input.attr('id')] = input.prop('date')
+                        } else if (input.attr('id').includes('Date')) data[input.attr('id')] = new Date(input.prop('date')).toISOString()
                         else if (input.attr('id') != 'other_hazards') data[input.attr('id')] = input.val()
                     })
+                    console.log(data)
                     $.ajax({
                         url: '/api/trip/create',
                         method: 'POST',

@@ -23,7 +23,7 @@
                             start.prop('valid', false)
                         } else {
                             startField.attr('class', 'inline field success')
-                            start.prop('date', new Date(startDate).toISOString())
+                            start.prop('date', startDate)
                             start.prop('valid', true)
                         }
                     }
@@ -45,7 +45,7 @@
                             end.prop('valid', false)
                         } else {
                             endField.attr('class', 'inline field success')
-                            end.prop('date', new Date(endDate).toISOString())
+                            end.prop('date', endDate)
                             end.prop('valid', true)
                         }
                     }
@@ -83,7 +83,7 @@
                                 if (input.attr('id') == 'enoughSafety') data.enoughSafety = input.prop('checked')
                                 else if (input.attr('id') == 'other_hazards_checkbox' && input.prop('checked')) data.hazards.push($('#other_hazards').val())
                                 else if (input.prop('checked')) data.hazards.push(input.attr('id'))
-                            } else if (input.attr('id').split('_')[1] == 'date') data[input.attr('id')] = input.prop('date')
+                            } else if (input.attr('id').includes('Date')) data[input.attr('id')] = new Date(input.prop('date')).toISOString()
                             else if (input.attr('id') != 'other_hazards') data[input.attr('id')] = input.val()
                         })
                         $.ajax({
@@ -105,36 +105,6 @@
                     } else {
                         field.attr('class', 'field success')
                         name.prop('valid', true)
-                    }
-                })
-
-                $('#startDate').change(() => {
-                    const start = $('#startDate')
-                    const date = new Date(start.parent().parent().calendar('get date'))
-                    const field = start.parent().parent().parent()
-                    if (date === null) {
-                        field.attr('class', 'inline field error')
-                        start.prop('date', '')
-                        start.prop('valid', false)
-                    } else {
-                        field.attr('class', 'inline field success')
-                        start.prop('date', date.toISOString())
-                        start.prop('valid', true)
-                    }
-                })
-
-                $('#endDate').change(() => {
-                    const end = $('#endDate')
-                    const date = new Date(end.parent().parent().calendar('get date'))
-                    const field = end.parent().parent().parent()
-                    if (date === null) {
-                        field.attr('class', 'inline field error')
-                        end.prop('date', '')
-                        end.prop('valid', false)
-                    } else {
-                        field.attr('class', 'inline field success')
-                        end.prop('date', date.toISOString())
-                        end.prop('valid', true)
                     }
                 })
 
