@@ -2,8 +2,6 @@
 
 // Imports
 const logger = require('../../log.js')
-const AWS = require('aws-sdk')
-const s3 = new AWS.S3()
 const helper = require('../helper.js')
 const uuid = require('uuid')
 const bookings = require('../../data_managers/bookings.js')

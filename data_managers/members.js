@@ -2,8 +2,8 @@
 
 // Imports
 const logger = require('../log.js')
-const AWS = require('aws-sdk')
 const certificates = require('./certificates.js')
+const AWS = require('aws-sdk')
 const dynamo = new AWS.DynamoDB()
 const s3 = new AWS.S3()
 
