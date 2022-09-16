@@ -24,10 +24,8 @@
 
             <a class="ui fluid link card" href="/trip/{{this.tripId}}" target="_blank" style="color: black;">
                 <div class="content">
-                    <div class="header">
-                        <div class="ui left floated">{{this.tripName}}</div>
-                        <div class="ui right floated">Minimum Level: {{this.skillLevel}}</div>
-                    </div>
+                    <div class="header">{{this.tripName}}</div>
+                    <div class="header" style="font-size: small;">Minimum Level: {{this.skillLevel}}</div>
                     <h5>From {{this.startDate}} to {{this.endDate}}</h5>
                 </div>
             </a>
