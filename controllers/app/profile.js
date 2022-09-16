@@ -177,7 +177,8 @@ const profile = {
                 }))
 
                 // Validate file
-                if (files.file !== undefined) if (files.file.type.split('/')[0] == 'image') {
+                console.log(fields, files)
+                if (files.file !== undefined) if (files.file.mimetype.split('/')[0] == 'image') {
                     await sharp(files.file.filepath).resize({ width: 400 }).webp().toFile(`${files.file.filepath}-new`).catch((err) => { throw err })
                     s3.putObject({
                         Bucket: 'witkc',
