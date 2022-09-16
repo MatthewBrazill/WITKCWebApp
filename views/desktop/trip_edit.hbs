@@ -18,11 +18,11 @@
                         const startDate = $('#start_calendar').calendar('get date')
                         const startField = $('#start_calendar').parent()
                         if (startDate == null) {
-                            startField.attr('class', 'inline field error')
+                            startField.attr('class', 'field error')
                             start.prop('date', '')
                             start.prop('valid', false)
                         } else {
-                            startField.attr('class', 'inline field success')
+                            startField.attr('class', 'field success')
                             start.prop('date', startDate)
                             start.prop('valid', true)
                         }
@@ -40,11 +40,11 @@
                         const endDate = $('#end_calendar').calendar('get date')
                         const endField = $('#end_calendar').parent()
                         if (endDate === null) {
-                            endField.attr('class', 'inline field error')
+                            endField.attr('class', 'field error')
                             end.prop('date', '')
                             end.prop('valid', false)
                         } else {
-                            endField.attr('class', 'inline field success')
+                            endField.attr('class', 'field success')
                             end.prop('date', endDate)
                             end.prop('valid', true)
                         }
@@ -273,11 +273,10 @@
                     }
                 })
 
-                $('#safety_dropdown').dropdown('set exactly', [{{{ trip.safety }}
-        }])
-        $('form#trip_form input[type!=button][class!=search], textarea').trigger('change')
-    },
-        error: () => { form.attr('class', 'ui error form') }
+                $('#safety_dropdown').dropdown('set exactly', [{{{ trip.safety }}}])
+                $('form#trip_form input[type!=button][class!=search], textarea').trigger('change')
+            },
+            error: () => { form.attr('class', 'ui error form') }
         })
     })
 </script>
@@ -294,10 +293,10 @@
                 <label>Trip Name</label>
                 <input type="text" id="tripName" placeholder="Trip Name" value="{{trip.tripName}}">
             </div>
-            <div class="fields">
+            <div class="four fields">
 
                 <!-- Start -->
-                <div class="inline field">
+                <div class="field">
                     <label>From</label>
                     <div class="ui calendar" id="start_calendar">
                         <div class="ui input left icon">
@@ -308,7 +307,7 @@
                 </div>
 
                 <!-- End -->
-                <div class="inline field">
+                <div class="field">
                     <label>To</label>
                     <div class="ui calendar" id="end_calendar">
                         <div class="ui input left icon">
