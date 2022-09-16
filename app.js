@@ -118,8 +118,8 @@ async function start() {
     logger.debug('"Not Found" Handeling Loaded')
 
     app.listen(8000, () => {
-        logger.info(`Started! => https://witkc.brazill.net`)
-        console.log(`  Listening on port 8000  ->  https://witkc.brazill.net`)
+        logger.info(`Started! => https://setukc.brazill.net`)
+        console.log(`  Listening on port 8000  ->  https://setukc.brazill.net`)
     })
 }
 

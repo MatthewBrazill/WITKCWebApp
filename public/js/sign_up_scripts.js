@@ -31,10 +31,10 @@ $(document).ready(() => {
         }
     })
 
-    $('#firstName').change(() => {
+    $('#firstName').on('input change', () => {
         const name = $('#firstName')
         const field = name.parent()
-        if (!name.val().match(/^\p{L}{1,16}$/u)) {
+        if (!name.val().match(/^['-\.\p{L}]{1,16}$/u)) {
             field.attr('class', 'field error')
             name.prop('valid', false)
         } else {
@@ -43,10 +43,10 @@ $(document).ready(() => {
         }
     })
 
-    $('#lastName').change(() => {
+    $('#lastName').on('input change', () => {
         const name = $('#lastName')
         const field = name.parent()
-        if (!name.val().match(/^\p{L}{1,16}$/u)) {
+        if (!name.val().match(/^['-\.\p{L}]{1,16}$/u)) {
             field.attr('class', 'field error')
             name.prop('valid', false)
         } else {
@@ -55,7 +55,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#username').change(() => {
+    $('#username').on('input change', () => {
         const name = $('#username')
         const field = name.parent()
         if (!name.val().match(/^[\w-]{1,16}$/)) {
@@ -79,7 +79,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#email').change(() => {
+    $('#email').on('input change', () => {
         const email = $('#email')
         const field = email.parent()
         if (!email.val().match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.[a-z]{2,})$/i)) {
@@ -91,7 +91,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#phone').change(() => {
+    $('#phone').on('input change', () => {
         const phone = $('#phone')
         const field = phone.parent()
         if (phone.val() == '') {
@@ -106,10 +106,10 @@ $(document).ready(() => {
         }
     })
 
-    $('#lineOne').change(() => {
+    $('#lineOne').on('input change', () => {
         const line = $('#lineOne')
         const field = line.parent()
-        if (!line.val().match(/^[\w- ]{1,32}$/)) {
+        if (!line.val().match(/^[\w-\.,' ]{1,32}$/)) {
             field.attr('class', 'field error')
             line.prop('valid', false)
         } else {
@@ -118,13 +118,13 @@ $(document).ready(() => {
         }
     })
 
-    $('#lineTwo').change(() => {
+    $('#lineTwo').on('input change', () => {
         const line = $('#lineTwo')
         const field = line.parent()
         if (line.val() == '') {
             field.attr('class', 'field')
             line.prop('valid', true)
-        } else if (!line.val().match(/^[\w- ]{1,32}$/)) {
+        } else if (!line.val().match(/^[\w-\.,' ]{1,32}$/)) {
             field.attr('class', 'field error')
             line.prop('valid', false)
         } else {
@@ -133,7 +133,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#city').change(() => {
+    $('#city').on('input change', () => {
         const city = $('#city')
         const field = city.parent()
         if (!city.val().match(/^[\w- ]{1,32}$/)) {
@@ -146,7 +146,7 @@ $(document).ready(() => {
     })
 
     $('#county_dropdown').dropdown()
-    $('#county').change(() => {
+    $('#county').on('input change', () => {
         const county = $('#county')
         const field = county.parent().parent()
         var counties = [
@@ -165,7 +165,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#code').change(() => {
+    $('#code').on('input change', () => {
         const code = $('#code')
         const field = code.parent()
         if (!code.val().match(/^[a-z0-9]{3}[ ]?[a-z0-9]{4}$/i) && !code.val().match(/^[a-z0-9]{2,4}[ ]?[a-z0-9]{3}$/i)) {
@@ -177,7 +177,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#password').change(() => {
+    $('#password').on('input change', () => {
         const password = $('#password')
         const field = password.parent().parent()
         const form = field.parent()
@@ -215,7 +215,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#confirm_password').change(() => {
+    $('#confirm_password').on('input change', () => {
         const confirm_password = $('#confirm_password')
 
         if (confirm_password.val() != $('#password').val() || confirm_password.val() == '') {
@@ -227,7 +227,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#terms').change(() => {
+    $('#terms').on('input change', () => {
         const box = $('#terms')
 
         if (!box.prop('checked')) {
@@ -239,7 +239,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#privacy').change(() => {
+    $('#privacy').on('input change', () => {
         const box = $('#privacy')
 
         if (!box.prop('checked')) {

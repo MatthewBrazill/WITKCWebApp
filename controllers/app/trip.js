@@ -217,8 +217,8 @@ const trip = {
                 if (!req.body.startDate.match(/^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)$/)) valid = false
                 if (!req.body.endDate.match(/^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)$/)) valid = false
                 if (!req.body.description.match(/^[^<>]{1,500}$/u)) valid = false
-                if (!req.body.lineOne.match(/^[\w- ]{1,32}$/)) valid = false
-                if (!req.body.lineTwo.match(/^[\w- ]{1,32}$/) && req.body.lineTwo != '') valid = false
+                if (!req.body.lineOne.match(/^[\w-\.,' ]{1,32}$/)) valid = false
+                if (!req.body.lineTwo.match(/^[\w-\.,' ]{1,32}$/) && req.body.lineTwo != '') valid = false
                 if (!req.body.city.match(/^[\w- ]{1,32}$/)) valid = false
                 if (!counties.includes(req.body.county)) valid = false
                 if (!req.body.code.match(/^[a-z0-9]{3}[ ]?[a-z0-9]{4}$/i) && !req.body.code.match(/^[a-z0-9]{2,4}[ ]?[a-z0-9]{3}$/i)) valid = false
@@ -356,8 +356,8 @@ const trip = {
                             if (!req.body.startDate.match(/^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)$/)) valid = false
                             if (!req.body.endDate.match(/^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)$/)) valid = false
                             if (!req.body.description.match(/^[^<>]{1,500}$/u)) valid = false
-                            if (!req.body.lineOne.match(/^[\w- ]{1,32}$/)) valid = false
-                            if (!req.body.lineTwo.match(/^[\w- ]{1,32}$/) && req.body.lineTwo != '') valid = false
+                            if (!req.body.lineOne.match(/^[\w-\.,' ]{1,32}$/)) valid = false
+                            if (!req.body.lineTwo.match(/^[\w-\.,' ]{1,32}$/) && req.body.lineTwo != '') valid = false
                             if (!req.body.city.match(/^[\w- ]{1,32}$/)) valid = false
                             if (!counties.includes(req.body.county)) valid = false
                             if (!req.body.code.match(/^[a-z0-9]{3}[ ]?[a-z0-9]{4}$/i) && !req.body.code.match(/^[a-z0-9]{2,4}[ ]?[a-z0-9]{3}$/i)) valid = false
@@ -512,10 +512,10 @@ const trip = {
                     if (data.trip != null) {
                         if (data.member.memberId == data.trip.creator || data.admin || data.committee) {
                             s3.putObject({
-                                Bucket: 'witkc',
+                                Bucket: 'setukc-private',
                                 Key: `deletedTrips/${req.body.tripId}.json`,
                                 Body: JSON.stringify(await trips.get(req.body.tripId))
-                            })
+                            }, (err) => { if (err) throw err })
 
                             if (await trips.delete(req.body.tripId)) res.sendStatus(200)
                             else res.sendStatus(503)

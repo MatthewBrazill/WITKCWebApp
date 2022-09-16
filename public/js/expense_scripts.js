@@ -84,7 +84,7 @@ $(document).ready(() => {
         if (button.prev().prev().prev().length == 1) button.prev().prev().remove()
     })
 
-    $('#receipts').change(() => {
+    $('#receipts').on('input change', () => {
         const receipts = $('#receipts')
         const field = receipts.parent()
         var valid = true

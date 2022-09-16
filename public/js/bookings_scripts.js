@@ -49,7 +49,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#type').change(() => {
+    $('#type').on('input change', () => {
         const type = $('#type')
         $('#boat_filters').hide()
         $('#paddle_filters').hide()
@@ -68,7 +68,7 @@ $(document).ready(() => {
         updateQuery()
     })
 
-    $('#search').change(() => {
+    $('#search').on('input change', () => {
         const search = $('#search')
         const field = search.parent()
         if (!search.val().match(/^[\w- ]{0,32}$/)) {
@@ -93,7 +93,7 @@ $(document).ready(() => {
         updateQuery()
     })
 
-    $('#type').change(() => {
+    $('#type').on('input change', () => {
         $('.filter').each(function () {
             if ($(this).attr('id') != 'type') {
                 $(this).parent().dropdown('clear')

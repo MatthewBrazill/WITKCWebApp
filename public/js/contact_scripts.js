@@ -37,9 +37,9 @@ $(document).ready(() => {
         }
     })
 
-    $('#firstName').change(() => {
+    $('#firstName').on('input change', () => {
         const name = $('#firstName')
-        if (!name.val().match(/^\p{L}{1,16}$/u)) {
+        if (!name.val().match(/^['-\.\p{L}]{1,16}$/u)) {
             name.prop('valid', false)
             name.parent().attr('class', 'field error')
         } else {
@@ -48,9 +48,9 @@ $(document).ready(() => {
         }
     })
 
-    $('#lastName').change(() => {
+    $('#lastName').on('input change', () => {
         const name = $('#lastName')
-        if (!name.val().match(/^\p{L}{1,16}$/u)) {
+        if (!name.val().match(/^['-\.\p{L}]{1,16}$/u)) {
             name.prop('valid', false)
             name.parent().attr('class', 'field error')
         } else {
@@ -59,7 +59,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#email').change(() => {
+    $('#email').on('input change', () => {
         const email = $('#email')
         if (!email.val().match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.[a-z]{2,})$/i)) {
             email.prop('valid', false)
@@ -70,7 +70,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#message').change(() => {
+    $('#message').on('input change', () => {
         const message = $('#message')
         if (!message.val().match(/^[^<>]{1,500}$/u)) {
             message.prop('valid', false)

@@ -83,7 +83,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#expense_modal_reason').change(() => {
+    $('#expense_modal_reason').on('input change', () => {
         const reason = $('#expense_modal_reason')
         const field = reason.parent()
         if (!reason.val().match(/^[^<>]{1,200}$/u)) {
