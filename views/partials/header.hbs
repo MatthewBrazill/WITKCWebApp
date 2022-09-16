@@ -1,8 +1,8 @@
-{{#if phone}}
+{{#if loggedIn}}
 <nav class="ui sixteen wide column">
-    <div class="ui menu">
+    <div class="ui borderless menu">
         <a class="ui icon item" id="phone_menu_button" onclick="$('#phone_menu').sidebar('toggle');"><i class="ui icon bars"></i></a>
-        <div class="item" style="width: 100%; text-align: center !important;">SETUKC</div>
+        <div class="ui right item" style="font-size: 28; padding: 5px 20px"><b>SETUKC</b></div>
     </div>
 </nav>
 {{else}}
