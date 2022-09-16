@@ -38,9 +38,9 @@
                         tripId: '{{trip.tripId}}'
                     },
                     success: () => {
-                        button.text('Join Trip')
-                        button.attr('class', 'ui right floated positive button')
-                        button.prop('joined', false)
+                        button.html('<i class="ui sign in alternate icon"></i>')
+                        button.attr('class', 'ui right floated positive icon button')
+                        button.attr('data-state', false)
                     }
                 })
             } else {
@@ -51,9 +51,9 @@
                         tripId: '{{trip.tripId}}'
                     },
                     success: () => {
-                        button.text('Leave Trip')
-                        button.attr('class', 'ui right floated negative button')
-                        button.prop('joined', false)
+                        button.html('<i class="ui sign out alternate icon"></i>')
+                        button.attr('class', 'ui right floated negative icon button')
+                        button.attr('data-state', true)
                     }
                 })
             }
@@ -65,15 +65,15 @@
     <div class="ui segment">
 
         <h1 class="ui dividing header">
-            {{trip.tripName}}
+            {{trip.tripName}} - {{#if approved}}{{else}}Pending Approval{{/if}}
             {{#if editable}}
             <a class="ui right floated icon button" href="/trip/edit/{{trip.tripId}}"><i class="ui pen icon"></i></a>
             {{/if}}
             {{#if trip.joinable}}
             {{#if joined}}
-            <div class="ui right floated negative button" id="participation" data-state="{{joined}}"><i class="ui sign out alternate icon"></i></div>
+            <div class="ui right floated negative icon button" id="participation" data-state="{{joined}}"><i class="ui sign out alternate icon"></i></div>
             {{else}}
-            <div class="ui right floated positive button" id="participation" data-state="{{joined}}"><i class="ui sign in alternate icon"></i></div>
+            <div class="ui right floated positive icon button" id="participation" data-state="{{joined}}"><i class="ui sign in alternate icon"></i></div>
             {{/if}}
             {{/if}}
         </h1>
