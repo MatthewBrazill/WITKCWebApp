@@ -1,6 +1,6 @@
 {
   "name": "setukc-webapp",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "description": "A Web App for the SETU Kayaking Club.",
   "main": "app.js",
   "scripts": {

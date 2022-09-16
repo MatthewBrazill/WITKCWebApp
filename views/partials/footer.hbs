@@ -1,3 +1,23 @@
+{{#if phone}}
+<footer class="sixteen wide column">
+    <div class="ui center aligned footer segment" attached="bottom">
+        <div class="ui big horizontal link list">
+            <div class="item">
+                <a href="https://www.facebook.com/witkayaking" target="_blank"><i class="large facebook square icon"></i></a>
+            </div>
+            <div class="item">
+                <a href="https://www.instagram.com/witkayaking" target="_blank"><i class="large instagram icon"></i></a>
+            </div>
+            <div class="item">
+                <a href="mailto:witkayakingclub@gmail.com"><i class="large envelope icon"></i></a>
+            </div>
+        </div>
+        <p><a href="/privacy" target="_blank">Privacy and Cookie Policy</a></p>
+        <p><a href="/terms" target="_blank">Terms and Conditions</a></p>
+        <p>©Matthew Brazill - 2022</p>
+    </div>
+</footer>
+{{else}}
 <footer class="sixteen wide column">
     <div class="ui center aligned footer segment" attached="bottom">
         <div class="ui big horizontal link list">
@@ -12,6 +32,7 @@
             </div>
         </div>
         <p><a href="/privacy" target="_blank">Privacy and Cookie Policy</a> - <a href="/terms" target="_blank">Terms and Conditions</a></p>
-        <p>© Matthew Brazill 2022</p>
+        <p>©Matthew Brazill - 2022</p>
     </div>
 </footer>
+{{/if}}

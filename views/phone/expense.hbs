@@ -1,55 +1,48 @@
 <script src="{{scripts.expense}}" hidden></script>
-<div class="twelve wide column">
-    <div class="ui centered grid">
+<div class="sixteen wide column">
 
-        <div class="eight wide column">
+    <div class="ui segment">
 
-            <div class="ui segment">
+        <h1 class="ui center aligned header">Submit Expense</h1>
+        <style hidden>
+            input[type="number"]::-webkit-outer-spin-button,
+            input[type="number"]::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
 
-                <h1 class="ui center aligned header">Submit Expense</h1>
-                <style hidden>
-                    input[type="number"]::-webkit-outer-spin-button,
-                    input[type="number"]::-webkit-inner-spin-button {
-                        -webkit-appearance: none;
-                        margin: 0;
-                    }
+            input[type="number"] {
+                -moz-appearance: textfield;
+            }
+        </style>
 
-                    input[type="number"] {
-                        -moz-appearance: textfield;
-                    }
-                </style>
+        <form class="ui form" id="expense_form" autocomplete="off">
 
-                <form class="ui form" id="expense_form" autocomplete="off">
+            <!-- Add button -->
+            <button class="ui teal icon button" type="button" style="margin-bottom: 25px;" id="add">
+                <i class="plus icon"></i>
+            </button>
+            <!-- Remove button -->
+            <button class="ui teal icon button" type="button" style="margin-bottom: 25px;" id="remove">
+                <i class="minus icon"></i>
+            </button>
 
-                    <!-- Add button -->
-                    <button class="ui teal icon button" type="button" style="margin-bottom: 25px;" id="add">
-                        <i class="plus icon"></i>
-                    </button>
-                    <!-- Remove button -->
-                    <button class="ui teal icon button" type="button" style="margin-bottom: 25px;" id="remove">
-                        <i class="minus icon"></i>
-                    </button>
-
-                    <!-- Upload filed -->
-                    <div class="field">
-                        <label>Upload Receipts</label>
-                        <input class="ui file input" type="file" id="receipts" accept="image/*" multiple>
-                    </div>
-
-                    <!-- Error -->
-                    <div class="ui error message">
-                        <div class="header">Couldn't submit expense!</div>
-                        <p id="customize_error_description"></p>
-                    </div>
-                    <!-- Success -->
-                    <div class="ui success message">
-                        <div class="header">Expense submitted!</div>
-                    </div>
-                    <button class="positive fluid ui button" type="submit">Submit Expense</button>
-                </form>
+            <!-- Upload filed -->
+            <div class="field">
+                <label>Upload Receipts</label>
+                <input class="ui file input" type="file" id="receipts" accept="image/*" multiple>
             </div>
-        </div>
+
+            <!-- Error -->
+            <div class="ui error message">
+                <div class="header">Couldn't submit expense!</div>
+                <p id="customize_error_description"></p>
+            </div>
+            <!-- Success -->
+            <div class="ui success message">
+                <div class="header">Expense submitted!</div>
+            </div>
+            <button class="positive fluid ui button" type="submit">Submit Expense</button>
+        </form>
     </div>
 </div>
-
-{{> sidebar}}

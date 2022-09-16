@@ -32,8 +32,8 @@ $(document).ready(() => {
 
             for (var item of cart) {
                 var data = {
-                    fromDate: $('#fromDate').prop('date'),
-                    toDate: $('#toDate').prop('date'),
+                    fromDate: new Date($('#fromDate').prop('date')).toISOString(),
+                    toDate: new Date($('#toDate').prop('date')).toISOString(),
                     equipmentId: item,
                 }
 
@@ -109,7 +109,7 @@ $(document).ready(() => {
         fromDateChange()
         toDateChange()
         if (from.prop('valid') && to.prop('valid')) {
-            $('#cart_header').text('Gear Cart - Book From ' + from.prop('date').substring(0, 10) + ' To ' + to.prop('date').substring(0, 10))
+            $('#cart_header').text('Gear Cart - Book From ' + new Date(from.prop('date')).toISOString().substring(0, 10) + ' To ' + new Date(to.prop('date')).toISOString().substring(0, 10))
             $('#cart_screen').modal('show')
         }
     })
@@ -134,8 +134,8 @@ function updateQuery() {
             var input = $(element)
             data[input.attr('id')] = input.val()
         })
-        data.fromDate = $('#fromDate').prop('date')
-        data.toDate = $('#toDate').prop('date')
+        data.fromDate = new Date($('#fromDate').prop('date')).toISOString()
+        data.toDate = new Date($('#toDate').prop('date')).toISOString()
 
         $('#search_results').html('')
         $('#search_results').attr('class', 'ui loading placeholder segment')
@@ -231,7 +231,7 @@ function fromDateChange() {
         from.prop('valid', false)
     } else {
         fromField.attr('class', 'four wide field success')
-        from.prop('date', new Date(fromDate).toISOString())
+        from.prop('date', fromDate)
         from.prop('valid', true)
         $('#to_calendar').parent().show()
         $('#to_calendar').calendar({
@@ -255,7 +255,7 @@ function toDateChange() {
         to.prop('valid', false)
     } else {
         toField.attr('class', 'four wide field success')
-        to.prop('date', new Date(toDate).toISOString())
+        to.prop('date', toDate)
         to.prop('valid', true)
     }
     updateQuery()

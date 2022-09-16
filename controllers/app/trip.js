@@ -233,6 +233,8 @@ const trip = {
                     } else return true
                 })) valid = false
 
+                console.log(req.body)
+
 
                 if (valid) {
                     var hazards = []
