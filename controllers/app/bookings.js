@@ -149,6 +149,8 @@ const gear = {
                         for (var i in list) {
                             list[i].equipment = await equipment.get(list[i].equipmentId)
                             list[i].equipment.type = helper.capitalize(list[i].equipment.type)
+                            list[i].fromDate = new Date(list[i].fromDate).toUTCString().substring(5, 16)
+                            list[i].toDate = new Date(list[i].toDate).toUTCString().substring(5, 16)
                         }
                         res.status(200).json(list)
                     } else res.sendStatus(404)
