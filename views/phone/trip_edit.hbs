@@ -273,11 +273,10 @@
                     }
                 })
 
-                $('#safety_dropdown').dropdown('set exactly', [{{{ trip.safety }}
-        }])
-        $('form#trip_form input[type!=button][class!=search], textarea').trigger('change')
-    },
-        error: () => { form.attr('class', 'ui error form') }
+                $('#safety_dropdown').dropdown('set exactly', [{{{trip.safety}}}])
+                $('form#trip_form input[type!=button][class!=search], textarea').trigger('change')
+            },
+            error: () => { form.attr('class', 'ui error form') }
         })
     })
 </script>

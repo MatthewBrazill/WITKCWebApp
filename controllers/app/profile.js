@@ -179,11 +179,24 @@ const profile = {
                 // Validate file
                 if (files.file !== undefined) if (files.file.mimetype.split('/')[0] == 'image') {
                     await sharp(files.file.filepath).resize({ width: 400 }).webp().toFile(`${files.file.filepath}-new`).catch((err) => { throw err })
-                    s3.putObject({
-                        Bucket: 'setukc-private',
-                        Key: data.member.img,
-                        Body: fs.readFileSync(`${files.file.filepath}-new`)
-                    }, (err) => { if (err) throw err })
+                    if (data.member.img == 'img/placeholder_avatar.webp') {
+                        s3.putObject({
+                            Bucket: 'setukc-private',
+                            Key: `img/users/${data.member.memberId}.webp`,
+                            Body: fs.readFileSync(`${files.file.filepath}-new`)
+                        }, (err) => { if (err) throw err })
+                        members.update({
+                            memberId: data.member.memberId,
+                            img: `img/users/${data.member.memberId}.webp`
+                        })
+                    } else {
+                        s3.putObject({
+                            Bucket: 'setukc-private',
+                            Key: data.member.img,
+                            Body: fs.readFileSync(`${files.file.filepath}-new`)
+                        }, (err) => { if (err) throw err })
+
+                    }
                 }
 
                 // Validate fields
