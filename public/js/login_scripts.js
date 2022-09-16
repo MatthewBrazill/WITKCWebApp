@@ -34,13 +34,13 @@ $(document).ready(() => {
         }
     })
 
-    $('#username').change(() => {
+    $('#username').on('input change', () => {
         const username = $('#username')
         if (!username.val().match(/^[\w-]{1,16}$/)) username.prop('valid', false)
         else username.prop('valid', true)
     })
 
-    $('#password').change(() => {
+    $('#password').on('input change', () => {
         const password = $('#password')
         if (!password.val().match(/^.{1,64}$/)) password.prop('valid', false)
         else password.prop('valid', true)

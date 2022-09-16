@@ -51,7 +51,7 @@ $(document).ready(() => {
         $('#add_equipment_modal').modal('hide')
     })
 
-    $('#paddle_length').change(() => {
+    $('#paddle_length').on('input change', () => {
         const length = $('#paddle_length')
         const field = length.parent()
         if (length.val() < 0 || length.val() > 1000 || length.val() == '') {
@@ -63,7 +63,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#gearName').change(() => {
+    $('#gearName').on('input change', () => {
         const name = $('#gearName')
         const field = name.parent()
         if (!name.val().match(/^[\w- ]{1,24}$/)) {
@@ -75,7 +75,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#brand').change(() => {
+    $('#brand').on('input change', () => {
         const brand = $('#brand')
         const field = brand.parent()
         if (!brand.val().match(/^[\w- ]{1,24}$/)) {
@@ -87,7 +87,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#file').change(() => {
+    $('#file').on('input change', () => {
         const file = $('#file')
         const field = file.parent()
 
@@ -130,7 +130,7 @@ $(document).ready(() => {
         })
     })
 
-    $('#type').change(() => {
+    $('#type').on('input change', () => {
         const type = $('#type')
 
         $('#boat_fields').hide()

@@ -41,7 +41,7 @@ $(document).ready(() => {
         $('#announcement_modal').modal('hide')
     })
 
-    $('#title').change(() => {
+    $('#title').on('input change', () => {
         const title = $('#title')
         const field = title.parent()
 
@@ -54,7 +54,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#content').change(() => {
+    $('#content').on('input change', () => {
         const content = $('#content')
         const field = content.parent()
 
