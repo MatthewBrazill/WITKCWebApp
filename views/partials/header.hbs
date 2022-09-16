@@ -1,3 +1,11 @@
+{{#if phone}}
+<nav class="ui sixteen wide column">
+    <div class="ui menu">
+        <a class="ui icon item" id="phone_menu_button" onclick="$('#phone_menu').sidebar('toggle');"><i class="ui icon bars"></i></a>
+        <div class="item" style="width: 100%; text-align: center !important;">SETUKC</div>
+    </div>
+</nav>
+{{else}}
 <nav class="ui sixteen wide column">
     <div class="ui eight item menu">
 
@@ -26,6 +34,7 @@
                 <a class="item" href="/trip/create">Request Trip</a>
                 <a class="item" href="/equipment/book">Book Gear</a>
                 <a class="item" href="/expenses">Expenses</a>
+                <a class="item" href="/profile/me/settings">Settings</a>
             </div>
         </div>
         {{/if}}
@@ -36,3 +45,4 @@
         </div>
     </div>
 </nav>
+{{/if}}

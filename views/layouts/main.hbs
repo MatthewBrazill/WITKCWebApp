@@ -2,6 +2,7 @@
 
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{title}}</title>
 
 
@@ -16,39 +17,134 @@
     <script src="{{scripts.global}}"></script>
 </head>
 
-<body style="background-color: teal; background-image: radial-gradient(farthest-corner, #91c3ff, #008080); background-attachment: fixed;">
-    <div style="padding: 15px">
+<body>
 
-        <div class="ui centered grid container">
+    {{#if phone}}
+    <div class="ui sidebar inverted vertical menu" id="phone_menu">
+        <a class="item" href="/home">Home</a>
 
-            <div class="row">
-                {{> header}}
+        <div class="item">
+            <header>About Us</header>
+            <div class="menu">
+                <a class="item" href="/about/history">Club History</a>
+                <a class="item" href="/about/committee">Committee</a>
+                <a class="item" href="/about/constitution">Constitution</a>
             </div>
+        </div>
 
-            <div class="row">
-                {{{body}}}
+        <a class="item" href="/events">Events</a>
+
+        <a class="item" href="/contact">Contact Us</a>
+
+        {{#if loggedIn}}
+        <div class="item" id="my_setukc_dropdown">
+            <header>My SETUKC</header>
+            <div class="menu">
+                <a class="item" href="/profile/me">My Profile</a>
+                <a class="item" href="/trip/create">Request Trip</a>
+                <a class="item" href="/equipment/book">Book Gear</a>
+                <a class="item" href="/expenses">Expenses</a>
+                <a class="item" href="/profile/me/settings">Settings</a>
             </div>
+        </div>
 
-            <div class="row">
-                {{> footer}}
+        <a class="ui item" style="background: #DB2828;" href="/logout">Logout</a>
+
+        <img class="ui fluid fitted image item" src="{{member.img}}" alt="User Image">
+
+        <div class="ui items inverted fitted item" style="padding-left: 16px; padding-bottom:13px">
+            <div class="item">
+                <div class="content">
+
+                    <div class="header" style="width: 100%;">{{member.firstName}} {{member.lastName}}</div>
+                    <div class="meta">Member since {{member.dateJoined}}</div>
+
+                </div>
             </div>
+        </div>
 
+        {{#each announcements}}
+        <div id="{{this.announcementId}}" class="ui inverted segment" style="margin: 0px 14px 14px 14px; background: #565656;">
+            <i class="close link icon announcement_icon" style="position: absolute; right: 0px; top: 7px"></i>
+            <h4 class="ui dividing header" style="margin-top: 0px;">
+                {{this.title}}
+            </h4>
+            <p>{{this.content}}</p>
+            <p style="font-size: 11; color: #00000099; text-align: right;">{{this.date}}</p>
+        </div>
+        {{/each}}
+
+        {{else}}
+        <a class="ui item" style="background: #016936;" href="/login">Login</a>
+        <a class="ui item" style="background: #0E6EB8;" href="/signup">Sign Up</a>
+
+        <img class="ui fluid fitted image item" src="{{setukcLogo}}" alt="Club Logo">
+
+        <div class="ui items inverted fitted item" style="padding: 0px 13px 16px 13px;">
+            <div class="item">
+                <div class="content">
+
+                    <div class="header">We are always exited about new members!</div>
+
+                    <div class="description">
+                        <p>
+                            Any active students at SETU are welcome to join us at our weekly pool meetings. We have
+                            several initiatives for new members who might want to chat to members of the club about
+                            different aspects of kayaking and get to know the ins and outs of the sport.
+                        </p>
+                        <p>
+                            To join, just come to a pool sessions Tuesdays and Thursdays at 9:30pm, or contact the
+                            club for more information!
+                        </p>
+                        <p>
+                            Once you've joined the club you can sign up to the online portal here, and get your
+                            SETUKC account.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        {{/if}}
+    </div>
+    {{/if}}
+
+    <div class="pusher" style="background-color: teal; background-image: radial-gradient(farthest-corner, #91c3ff, #008080); background-attachment: fixed; min-height: 100%">
+        <div style="padding: 15px">
+
+            <div class="ui centered grid container">
+
+                <div class="row">
+                    {{> header}}
+                </div>
+
+                <div class="row">
+                    {{{body}}}
+                </div>
+
+                <div class="row">
+                    {{> footer}}
+                </div>
+
+            </div>
+        </div>
+
+        <div class="ui fixed nag" id="cookie_nag">
+
+            <div class="title">Cookie Banner!</div>
+
+            <p>
+                This website uses cookies to function. To find out more about this websites use of cookies view our
+                <a style="color: purple;" href="/privacy#how_cookies">Privacy Policy</a>. To consent to the use of
+                non-functional cookies used to learn about how people use the website, click accept.
+            </p>
+
+            <button class="negative ui button" id="nag_decline">Decline</button>
+            <button class="positive ui button" id="nag_accept">Accept</button>
         </div>
     </div>
 
-    <div class="ui fixed nag" id="cookie_nag">
-
-        <div class="title">Cookie Banner!</div>
-
-        <p>
-            This website uses cookies to function. To find out more about this websites use of cookies view our
-            <a style="color: purple;" href="/privacy#how_cookies">Privacy Policy</a>. To consent to the use of
-            non-functional cookies used to learn about how people use the website, click accept.
-        </p>
-
-        <button class="negative ui button" id="nag_decline">Decline</button>
-        <button class="positive ui button" id="nag_accept">Accept</button>
-    </div>
 </body>
+
 
 </html>

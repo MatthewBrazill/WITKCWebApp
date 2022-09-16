@@ -1,55 +1,5 @@
 <script src="{{scripts.profile}}" hidden></script>
-<div class="twelve wide column">
-
-    <!-- Option buttons -->
-    <div class="ui three column grid" {{#if member.verified}}{{else}}data-tooltip="To enable these features, verifiy yourself in the settings!"{{/if}}>
-
-        <!-- Request trip button -->
-        <div class="column">
-
-            <a class="ui {{#if member.verified}}{{else}}disabled{{/if}} fluid teal button" href="/trip/create">
-                <div class="ui first center aligned icon header">
-                    <i class="big map icon"></i>
-                    Request Trip
-                </div>
-            </a>
-        </div>
-
-        <!-- Book gear button -->
-        <div class="column">
-
-            <a class="ui {{#if member.verified}}{{else}}disabled{{/if}} fluid teal button" href="/equipment/book">
-                <div class="ui first center aligned icon header">
-                    <i class="big shopping cart icon"></i>
-                    Book Gear
-                </div>
-            </a>
-        </div>
-
-        <!-- Expenses button -->
-        <div class="column">
-
-            <a class="ui {{#if member.verified}}{{else}}disabled{{/if}} fluid teal button" href="/expenses">
-                <div class="ui first center aligned icon header">
-                    <i class="big receipt icon"></i>
-                    Submit Expense
-                </div>
-            </a>
-        </div>
-
-        <!-- Volunteering button 
-        <div class="column">
-
-            <a class="ui disabled fluid teal button" href="/volunteer">
-                <div class="ui first center aligned icon header">
-                    <i class="big heart icon"></i>
-                    Volunteer
-                </div>
-            </a>
-        </div>-->
-    </div>
-
-
+<div class="sixteen wide column">
 
     <!-- Dashboard -->
     <div class="ui segment">
@@ -111,10 +61,8 @@
             {{#each member.certs}}
             <a class="ui fluid link card" href="{{this.link}}" target="_blank" style="color: black;">
                 <div class="content">
-                    <div class="header">
-                        <div class="ui left floated">{{this.tripName}}</div>
-                        <div class="ui right floated">{{this.category}} Certificate</div>
-                    </div>
+                    <div class="header">{{this.certName}}</div>
+                    <div class="header" style="font-size: small;">{{this.category}} Certificate</div>
                     <h5>This certificate shows the owner is able to:</h5>
                     <ol class="ui list">
                         {{#each this.aims}}
@@ -160,5 +108,3 @@
     {{#if freshers}}{{> freshers}}{{/if}}
 
 </div>
-
-{{> sidebar}}

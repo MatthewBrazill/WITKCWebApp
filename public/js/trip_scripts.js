@@ -17,11 +17,11 @@ $(document).ready(() => {
                     const startDate = $('#start_calendar').calendar('get date')
                     const startField = $('#start_calendar').parent()
                     if (startDate == null) {
-                        startField.attr('class', 'inline field error')
+                        startField.attr('class', 'field error')
                         start.prop('date', '')
                         start.prop('valid', false)
                     } else {
-                        startField.attr('class', 'inline field success')
+                        startField.attr('class', 'field success')
                         start.prop('date', startDate)
                         start.prop('valid', true)
                         $('#end_calendar').parent().show()
@@ -36,11 +36,11 @@ $(document).ready(() => {
                                 const endDate = $('#end_calendar').calendar('get date')
                                 const endField = $('#end_calendar').parent()
                                 if (endDate === null) {
-                                    endField.attr('class', 'inline field error')
+                                    endField.attr('class', 'field error')
                                     end.prop('date', '')
                                     end.prop('valid', false)
                                 } else {
-                                    endField.attr('class', 'inline field success')
+                                    endField.attr('class', 'field success')
                                     end.prop('date', endDate)
                                     end.prop('valid', true)
                                 }
