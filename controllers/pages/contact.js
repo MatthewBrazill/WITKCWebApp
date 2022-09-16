@@ -20,8 +20,8 @@ const contact = {
             var ticket = uuid.v4()
             var valid = true
 
-            if (!req.body.firstName.match(/^\p{L}{1,16}$/u)) valid = false
-            if (!req.body.lastName.match(/^\p{L}{1,16}$/u)) valid = false
+            if (!req.body.firstName.match(/^['-\.\p{L}]{1,16}$/u)) valid = false
+            if (!req.body.lastName.match(/^['-\.\p{L}]{1,16}$/u)) valid = false
             if (!req.body.email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.[a-z]{2,})$/i)) valid = false
             if (!req.body.message.match(/^[^<>]{1,500}$/u)) valid = false
 
