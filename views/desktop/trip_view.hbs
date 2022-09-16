@@ -78,6 +78,12 @@
             {{/if}}
         </h1>
 
+        {{#if approved}}{{else}}
+        <div class="ui warning message">
+            <header>Approval Pending</header>
+        </div>
+        {{/if}}
+
         <div class="ui two column grid">
 
             <!-- Description -->
