@@ -83,10 +83,10 @@ const expenses = {
                         var newPath = `expenseRequests/${expenseId}/receipts/${uuid.v4()}.webp`
                         await sharp(receipts[i]).webp().toFile(`${receipts[i]}.webp`).catch((err) => { throw err })
                         s3.putObject({
-                            Bucket: 'witkc',
+                            Bucket: 'setukc-private',
                             Key: newPath,
                             Body: fs.readFileSync(`${receipts[i]}.webp`)
-                        })
+                        }, (err) => { if (err) throw err })
                         receipts[i] = newPath
                     }
                     logger.debug({
@@ -207,10 +207,10 @@ const expenses = {
                                 message: `Expense Report Accepted`
                             })
                             s3.putObject({
-                                Bucket: 'witkc',
-                                Key: `expenseRequests / ${expenseRequest.expenseId} /request.json`,
+                                Bucket: 'setukc-private',
+                                Key: `expenseRequests/${expenseRequest.expenseId}/request.json`,
                                 Body: JSON.stringify(request)
-                            })
+                            }, (err) => { if (err) throw err })
 
                             // TODO Tell Creator Accepted
 
@@ -226,7 +226,7 @@ const expenses = {
                                 message: `Expense Report Rejected`
                             })
                             for (var receipt of request.receipts) await s3.deleteObject({
-                                Bucket: 'witkc',
+                                Bucket: 'setukc-private',
                                 Key: receipt,
                             }).promise().catch((err) => { throw err })
 

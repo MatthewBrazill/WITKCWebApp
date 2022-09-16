@@ -109,10 +109,10 @@ const gear = {
                     if (files.file != undefined) {
                         await sharp(files.file.filepath).webp().toFile(`${files.file.filepath}.webp`).catch((err) => { throw err })
                         s3.putObject({
-                            Bucket: 'witkc',
+                            Bucket: 'setukc',
                             Key: `img/equipment/${gear.equipmentId}.webp`,
                             Body: fs.readFileSync(`${files[i]}.webp`)
-                        })
+                        }, (err) => { if (err) throw err })
                         logger.debug({
                             sessionId: req.sessionID,
                             loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
