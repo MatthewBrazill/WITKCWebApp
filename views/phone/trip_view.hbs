@@ -79,9 +79,15 @@
         </h1>
 
         {{#if approved}}{{else}}
+        {{#if pending}}
         <div class="ui warning message">
             <header>Approval Pending</header>
         </div>
+        {{else}}
+        <div class="ui error message">
+            <header>Trip Denied</header>
+        </div>
+        {{/if}}
         {{/if}}
 
         <!-- Description -->

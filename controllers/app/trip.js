@@ -57,6 +57,12 @@ const trip = {
                     message: `Trip Joinable => ${data.joinable}`
                 })
 
+                if (data.trip.approved === undefined) data.pending = true
+                else {
+                    data.pending = false
+                    data.approved = data.trip.approved
+                }
+
                 // Get the safety boaters
                 for (var i in data.trip.safety) {
                     var member = await members.get(data.trip.safety[i])
@@ -477,8 +483,10 @@ const trip = {
             // Authenticate user
             if (data.loggedIn) if (data.member.verified) {
 
-                // Validate input
-                if (req.body.tripId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
+                if ((data.admin || data.committee == 'safety') && req.body.tripId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i) && req.body.memberId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
+                    if (await members.leaveTrip(req.body.memberId, req.body.tripId)) res.sendStatus(200)
+                    else res.sendStatus(503)
+                } else if (req.body.tripId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
                     if (await members.leaveTrip(data.member.memberId, req.body.tripId)) res.sendStatus(200)
                     else res.sendStatus(503)
                 } else res.sendStatus(400)

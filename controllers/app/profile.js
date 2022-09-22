@@ -178,7 +178,7 @@ const profile = {
 
                 // Validate file
                 if (files.file !== undefined) if (files.file.mimetype.split('/')[0] == 'image') {
-                    await sharp(files.file.filepath).resize({ width: 400 }).webp().toFile(`${files.file.filepath}-new`).catch((err) => { throw err })
+                    await sharp(files.file.filepath).resize({ width: 400, height: 400 }).webp().toFile(`${files.file.filepath}-new`).catch((err) => { throw err })
                     if (data.member.img == 'img/placeholder_avatar.webp') {
                         s3.putObject({
                             Bucket: 'setukc-private',
