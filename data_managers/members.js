@@ -159,7 +159,7 @@ const members = {
                         memberId: item['memberId'].S,
                         firstName: item['firstName'].S,
                         lastName: item['lastName'].S,
-                        img: s3.getSignedUrl('getObject', { Bucket: 'setukc-private', Key: item['img'].S })
+                        img: await s3.getSignedUrlPromise('getObject', { Bucket: 'setukc-private', Key: item['img'].S })
                     })
                 }
                 logger.info({

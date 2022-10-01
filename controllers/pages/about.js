@@ -17,7 +17,7 @@ const about = {
         data.committee = await committeeData.getAll()
 
         // Since the images come from the committee call and not view data, the images still need to be resolved
-        for (var role of data.committee) role.member.img = s3.getSignedUrl('getObject', { Bucket: 'setukc-private', Key: role.member.img })
+        for (var role of data.committee) role.member.img = await s3.getSignedUrlPromise('getObject', { Bucket: 'setukc-private', Key: role.member.img })
         res.render(`${req.device.type}/committee`, data)
     },
 

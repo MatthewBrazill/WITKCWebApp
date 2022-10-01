@@ -77,7 +77,7 @@ const trip = {
                         memberId: member.memberId,
                         firstName: member.firstName,
                         lastName: member.lastName,
-                        img: s3.getSignedUrl('getObject', { Bucket: 'setukc-private', Key: member.img }),
+                        img: await s3.getSignedUrlPromise('getObject', { Bucket: 'setukc-private', Key: member.img }),
                         cert: best.certName
                     }
                 }
@@ -97,7 +97,7 @@ const trip = {
                         memberId: member.memberId,
                         firstName: member.firstName,
                         lastName: member.lastName,
-                        img: s3.getSignedUrl('getObject', { Bucket: 'setukc-private', Key: member.img })
+                        img: await s3.getSignedUrlPromise('getObject', { Bucket: 'setukc-private', Key: member.img })
                     }
                 }
                 logger.debug({
@@ -150,7 +150,7 @@ const trip = {
                                 memberId: member.memberId,
                                 firstName: member.firstName,
                                 lastName: member.lastName,
-                                img: s3.getSignedUrl('getObject', { Bucket: 'setukc-private', Key: member.img })
+                                img: await s3.getSignedUrlPromise('getObject', { Bucket: 'setukc-private', Key: member.img })
                             }
                         }
                         logger.debug({
@@ -532,6 +532,40 @@ const trip = {
                 } else res.sendStatus(400)
             } else res.sendStatus(403)
             else res.sendStatus(401)
+        } catch (err) {
+            logger.error({
+                sessionId: req.sessionID,
+                loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                method: req.method,
+                urlPath: req.url,
+                error: err,
+                stack: err.stack,
+                message: `${req.method} ${req.url} Failed => ${err}`
+            })
+            res.status(500).json(err)
+        }
+    },
+
+    async download(req, res) {
+        try {
+            var data = await helper.viewData(req, 'API')
+
+            // Validate input
+            if (req.params.tripId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
+
+                // Authenticate if they are logged in
+                if (data.loggedIn) if (data.committee == 'captain' || data.admin) {
+                    data.trip = await trips.get(req.params.tripId)
+                    if (data.trip !== null) {
+
+                        data.gear = await booki
+
+                        res.download(``)
+                    } else res.sendStatus(404)
+                } else res.sendStatus(403)
+                else res.sendStatus(401)
+            } else res.sendStatus(400)
         } catch (err) {
             logger.error({
                 sessionId: req.sessionID,

@@ -81,7 +81,7 @@ const profile = {
                 var result = await members.get(req.params.memberId)
                 if (result != null) {
                     result.dateJoined = result.dateJoined.substring(5, 16)
-                    result.img = s3.getSignedUrl('getObject', { Bucket: 'setukc-private', Key: result.img })
+                    result.img = await s3.getSignedUrlPromise('getObject', { Bucket: 'setukc-private', Key: result.img })
                     data.user = result
 
                     res.render(`${req.device.type}/user`, data)
