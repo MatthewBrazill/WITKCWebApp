@@ -113,6 +113,7 @@ router.post('/api/pro/article/delete', pro.deleteArticle) // PRO POST to delete 
 router.get('/trip/create', trip.createPage) // GET HTML of create trip page
 router.get('/trip/edit/:tripId', trip.editPage) // GET HTML of edit trip page
 router.get('/trip/:tripId', trip.viewPage) // GET HTML of view trip page
+router.get('/trip/:tripId/gear', trip.download) // COMMITTEE GET a CSV file with details for all gear needed in the trip (technically just all equipmetn booked on the trip dates)
 
 // Trips APIs
 router.post('/api/trip/create', trip.create) // VERIFIED POST to create a trip request

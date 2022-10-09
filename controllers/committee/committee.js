@@ -107,8 +107,6 @@ const committee = {
             if (data.admin) {
                 var valid = true
 
-                console.log(req.body)
-
                 // Validate input
                 if (await members.get(req.body.captain) == null && req.body.captain != '') valid = false
                 if (await members.get(req.body.vice) == null && req.body.vice != '') valid = false

@@ -66,6 +66,9 @@
 
         <h1 class="ui dividing header">
             {{trip.tripName}}
+            {{#if downloadable}}
+            <a class="ui right floated button {{#if approved}}{{else}}disabled" data-tooltip="The trip needs to be approved before you can download the gead data!{{/if}}" href="/trip/{{trip.tripId}}/gear">Download Trip Gear</a>
+            {{/if}}
             {{#if editable}}
             <a class="ui right floated button" href="/trip/edit/{{trip.tripId}}">Edit Trip</a>
             {{/if}}
@@ -79,9 +82,15 @@
         </h1>
 
         {{#if approved}}{{else}}
+        {{#if pending}}
         <div class="ui warning message">
             <header>Approval Pending</header>
         </div>
+        {{else}}
+        <div class="ui error message">
+            <header>Trip Denied</header>
+        </div>
+        {{/if}}
         {{/if}}
 
         <div class="ui two column grid">

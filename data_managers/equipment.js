@@ -47,14 +47,14 @@ const equipment = {
         return dynamo.getItem({
             Key: { 'equipmentId': { S: equipmentId } },
             TableName: 'witkc-equipment'
-        }).promise().then((data) => {
+        }).promise().then(async (data) => {
             if (data.Item != undefined) {
                 var gear = {
                     equipmentId: data.Item['equipmentId'].S,
                     gearName: data.Item['gearName'].S,
                     brand: data.Item['brand'].S,
                     type: data.Item['type'].S,
-                    img: s3.getSignedUrl('getObject', { Bucket: 'setukc-private', Key: data.Item['img'].S })
+                    img: await s3.getSignedUrlPromise('getObject', { Bucket: 'setukc-private', Key: data.Item['img'].S })
                 }
                 if (data.Item['unavailableDates'] != undefined) gear.unavailableDates = data.Item['unavailableDates'].SS
                 if (data.Item['type'].S == 'boat') {
@@ -99,7 +99,7 @@ const equipment = {
     async getAll() {
         return dynamo.scan({
             TableName: 'witkc-equipment'
-        }).promise().then((data) => {
+        }).promise().then(async (data) => {
             if (data.Items != undefined) {
                 var equipment = {
                     boats: [],
@@ -116,7 +116,7 @@ const equipment = {
                         brand: item['brand'].S,
                         type: item['type'].S,
                         unavailableDates: [],
-                        img: s3.getSignedUrl('getObject', { Bucket: 'setukc-private', Key: item['img'].S })
+                        img: await s3.getSignedUrlPromise('getObject', { Bucket: 'setukc-private', Key: item['img'].S })
                     }
                     if (item['unavailableDates'] != undefined) gear.unavailableDates = item['unavailableDates'].SS
                     if (item['type'].S == 'boat') {

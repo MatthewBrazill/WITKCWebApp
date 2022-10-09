@@ -49,7 +49,7 @@ $(document).ready(() => {
         }
     })
 
-    $('#type').on('input change', () => {
+    $('#type').on('input change', function () {
         const type = $('#type')
         $('#boat_filters').hide()
         $('#paddle_filters').hide()
@@ -64,6 +64,13 @@ $(document).ready(() => {
         if (type.val() == 'ba') $('#ba_filters').show()
         if (type.val() == 'helmet') $('#helmet_filters').show()
         if (type.val() == 'wetsuit') $('#wetsuit_filters').show()
+
+        $('.filter').each(function () {
+            if ($(this).attr('id') != 'type') {
+                $(this).parent().dropdown('clear')
+                $(this).trigger('change')
+            }
+        })
 
         updateQuery()
     })
@@ -81,7 +88,7 @@ $(document).ready(() => {
         }
     })
 
-    $('.filter').change(function () {
+    $('.filter').on('input change', function () {
         const dropdown = $(this)
         if (dropdown.val() == null || dropdown.val() == '') {
             dropdown.prop('valid', true)
@@ -91,15 +98,6 @@ $(document).ready(() => {
             dropdown.parent().parent().attr('class', 'four wide field success')
         }
         updateQuery()
-    })
-
-    $('#type').on('input change', () => {
-        $('.filter').each(function () {
-            if ($(this).attr('id') != 'type') {
-                $(this).parent().dropdown('clear')
-                $(this).trigger('change')
-            }
-        })
     })
 
     updateCart()
@@ -134,8 +132,14 @@ function updateQuery() {
             var input = $(element)
             data[input.attr('id')] = input.val()
         })
-        data.fromDate = new Date($('#fromDate').prop('date')).toISOString()
-        data.toDate = new Date($('#toDate').prop('date')).toISOString()
+
+        if ($('#fromDate').prop('date') == '' || $('#toDate').prop('date') == '') {
+            data.fromDate = new Date(0).toISOString()
+            data.toDate = new Date(0).toISOString()
+        } else {
+            data.fromDate = new Date($('#fromDate').prop('date')).toISOString()
+            data.toDate = new Date($('#toDate').prop('date')).toISOString()
+        }
 
         $('#search_results').html('')
         $('#search_results').attr('class', 'ui loading placeholder segment')
@@ -149,7 +153,7 @@ function updateQuery() {
                 if (res.length > 0) {
                     $('#search_results').html('')
                     $('#search_results').attr('class', 'ui items')
-                    for (gear of res) {
+                    for (var gear of res) {
                         var content = $(`<div class="content"></div>`)
                         var cookies = document.cookie.replace(' ', '').split(';')
                         var cart = []
@@ -174,7 +178,7 @@ function updateQuery() {
                             }
                         }))
                         else content.append($(`<button class="ui right floated blue icon button add_cart_button" style="margin-top: 3px;">Added <i class="ui check icon"></i></button>`))
-                        content.append($(`<div class="ui header" style="margin: 0px;">${gear.brand}: ${gear.gearName}</div>`))
+                        content.append($(`<div class="ui header" style="margin: 0px;">${gear.type == 'ba' ? 'BA' : gear.type.charAt(0).toUpperCase() + gear.type.slice(1)}: ${gear.brand} - ${gear.gearName}</div>`))
 
                         if (gear.type == 'boat') content.append($(`<div>Type: ${gear.boatType[0].toUpperCase() + gear.boatType.slice(1)}, Size: ${gear.boatSize.toUpperCase()}, Cockpit: ${gear.boatCockpit[0].toUpperCase() + gear.boatCockpit.slice(1)}</div>`))
                         else if (gear.type == 'paddle') content.append($(`<div>Type: ${gear.paddleType[0].toUpperCase() + gear.paddleType.slice(1)}, Length: ${gear.paddleLength}</div>`))

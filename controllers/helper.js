@@ -16,7 +16,7 @@ const helper = {
         var data = {
             title: title,
             scripts: {
-                global: process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/js/global_scripts.js' : '/js/global_scripts.js' //s3.getSignedUrl('getObject', { Bucket: 'setukc', Key: '/js/global_scripts.js' })
+                global: process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/js/global_scripts.js' : '/js/global_scripts.js' //await s3.getSignedUrlPromise('getObject', { Bucket: 'setukc', Key: '/js/global_scripts.js' })
             },
             setukcLogo: process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/img/witkc_logo.webp' : '/img/witkc_logo.webp',
             setukcIcon: process.env.DD_ENV == 'prod' ? 'https://setukc.s3.eu-west-1.amazonaws.com/img/witkc_icon.ico' : '/img/witkc_icon.ico',
@@ -108,7 +108,7 @@ const helper = {
                 /* Some places need the Profile image to not be resolved to a sgned
                 URL, as such any time the title is set to API, dont resolve the image. */
                 if (title != 'API') {
-                    data.member.img = s3.getSignedUrl('getObject', { Bucket: 'setukc-private', Key: data.member.img })
+                    data.member.img = await s3.getSignedUrlPromise('getObject', { Bucket: 'setukc-private', Key: data.member.img })
                     for (var trip in data.member.trips) {
                         data.member.trips[trip].startDate = new Date(data.member.trips[trip].startDate).toUTCString().substring(5, 16)
                         data.member.trips[trip].endDate = new Date(data.member.trips[trip].endDate).toUTCString().substring(5, 16)

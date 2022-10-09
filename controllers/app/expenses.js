@@ -150,7 +150,7 @@ const expenses = {
                     // Filter expense request out
                     for (var expenseRequest of treasurer.expenseRequests) {
                         if (expenseRequest.expenseId == req.body.expenseId) {
-                            for (var i in expenseRequest.receipts) expenseRequest.receipts[i] = s3.getSignedUrl('getObject', { Bucket: 'setukc-private', Key: expenseRequest.receipts[i] })
+                            for (var i in expenseRequest.receipts) expenseRequest.receipts[i] = await s3.getSignedUrlPromise('getObject', { Bucket: 'setukc-private', Key: expenseRequest.receipts[i] })
                             res.status(200).json(expenseRequest)
                             return
                         }

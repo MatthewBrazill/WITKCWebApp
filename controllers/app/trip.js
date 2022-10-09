@@ -8,6 +8,8 @@ const uuid = require('uuid')
 const helper = require('../helper.js')
 const trips = require('../../data_managers/trips.js')
 const members = require('../../data_managers/members.js')
+const bookings = require('../../data_managers/bookings.js')
+const equipment = require('../../data_managers/equipment.js')
 
 const trip = {
     async createPage(req, res) {
@@ -47,6 +49,9 @@ const trip = {
 
                     if (data.admin || data.committee || data.member.memberId == data.trip.creator) data.editable = true
                     else data.editable = false
+
+                    if (data.admin || data.committee) data.downloadable = true
+                    else data.downloadable = false
                 } else data.trip.joinable = false
                 logger.debug({
                     sessionId: req.sessionID,
@@ -56,6 +61,12 @@ const trip = {
                     urlPath: req.url,
                     message: `Trip Joinable => ${data.joinable}`
                 })
+
+                if (data.trip.approved === undefined) data.pending = true
+                else {
+                    data.pending = false
+                    data.approved = data.trip.approved
+                }
 
                 // Get the safety boaters
                 for (var i in data.trip.safety) {
@@ -71,7 +82,7 @@ const trip = {
                         memberId: member.memberId,
                         firstName: member.firstName,
                         lastName: member.lastName,
-                        img: s3.getSignedUrl('getObject', { Bucket: 'setukc-private', Key: member.img }),
+                        img: await s3.getSignedUrlPromise('getObject', { Bucket: 'setukc-private', Key: member.img }),
                         cert: best.certName
                     }
                 }
@@ -91,7 +102,7 @@ const trip = {
                         memberId: member.memberId,
                         firstName: member.firstName,
                         lastName: member.lastName,
-                        img: s3.getSignedUrl('getObject', { Bucket: 'setukc-private', Key: member.img })
+                        img: await s3.getSignedUrlPromise('getObject', { Bucket: 'setukc-private', Key: member.img })
                     }
                 }
                 logger.debug({
@@ -144,7 +155,7 @@ const trip = {
                                 memberId: member.memberId,
                                 firstName: member.firstName,
                                 lastName: member.lastName,
-                                img: s3.getSignedUrl('getObject', { Bucket: 'setukc-private', Key: member.img })
+                                img: await s3.getSignedUrlPromise('getObject', { Bucket: 'setukc-private', Key: member.img })
                             }
                         }
                         logger.debug({
@@ -232,9 +243,6 @@ const trip = {
                         } else return false
                     } else return true
                 })) valid = false
-
-                console.log(req.body)
-
 
                 if (valid) {
                     var hazards = []
@@ -415,7 +423,6 @@ const trip = {
                                     skillLevel: req.body.skillLevel,
                                     safety: req.body.safety.split(','),
                                     enoughSafety: (req.body.enoughSafety == 'true'),
-                                    approved: (data.committee == 'safety'),
                                     hazards: hazards,
                                     attendees: req.body.safety.split(',')
                                 })) res.status(200).json({ url: `/trip/${req.body.tripId}` })
@@ -477,8 +484,10 @@ const trip = {
             // Authenticate user
             if (data.loggedIn) if (data.member.verified) {
 
-                // Validate input
-                if (req.body.tripId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
+                if ((data.admin || data.committee == 'safety') && req.body.tripId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i) && req.body.memberId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
+                    if (await members.leaveTrip(req.body.memberId, req.body.tripId)) res.sendStatus(200)
+                    else res.sendStatus(503)
+                } else if (req.body.tripId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
                     if (await members.leaveTrip(data.member.memberId, req.body.tripId)) res.sendStatus(200)
                     else res.sendStatus(503)
                 } else res.sendStatus(400)
@@ -524,6 +533,51 @@ const trip = {
                 } else res.sendStatus(400)
             } else res.sendStatus(403)
             else res.sendStatus(401)
+        } catch (err) {
+            logger.error({
+                sessionId: req.sessionID,
+                loggedIn: typeof req.session.memberId !== "undefined" ? true : false,
+                memberId: typeof req.session.memberId !== "undefined" ? req.session.memberId : null,
+                method: req.method,
+                urlPath: req.url,
+                error: err,
+                stack: err.stack,
+                message: `${req.method} ${req.url} Failed => ${err}`
+            })
+            res.status(500).json(err)
+        }
+    },
+
+    async download(req, res) {
+        try {
+            var data = await helper.viewData(req, 'API')
+
+            // Validate input
+            if (req.params.tripId.match(/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i)) {
+
+                // Authenticate if they are logged in
+                if (data.loggedIn) if (data.committee == 'captain' || data.admin) {
+                    data.trip = await trips.get(req.params.tripId)
+                    if (data.trip !== null) {
+
+                        var gearIds = await bookings.getBookingEquipmentBetween(data.trip.startDate, data.trip.endDate)
+                        var fileString = 'Equipment ID,Type,Name,Brand'
+                        for (var id of gearIds) {
+                            var gear = await equipment.get(id)
+                            console.log(id, gear)
+                            fileString = fileString.concat(`\n${gear.equipmentId},${gear.type == 'ba' ? 'BA' : gear.type.charAt(0).toUpperCase() + gear.type.slice(1)},${gear.gearName},${gear.brand}`)
+                        }
+
+                        res.writeHead(200, {
+                            'Content-Disposition': 'attachment; filename="gear-list.csv"',
+                            'Content-Type': 'text/csv'
+                        })
+                        console.log(gearIds, fileString)
+                        res.end(Buffer.from(fileString))
+                    } else res.sendStatus(404)
+                } else res.sendStatus(403)
+                else res.sendStatus(401)
+            } else res.sendStatus(400)
         } catch (err) {
             logger.error({
                 sessionId: req.sessionID,

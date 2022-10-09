@@ -126,6 +126,32 @@ const bookings = {
         })
     },
 
+    async getBookingEquipmentBetween(fromDate, toDate) {
+        if (fromDate === null || fromDate === undefined) return false
+        if (toDate === null || toDate === undefined) return false
+        return dynamo.scan({
+            TableName: 'witkc-bookings'
+        }).promise().then((data) => {
+            if (data.Items != undefined) {
+                var equipment = []
+                for (var booking of data.Items) if (new Date(fromDate).setHours(0, 0, 0, 0) == new Date(booking['fromDate'].S).setHours(0, 0, 0, 0) && new Date(booking['toDate'].S).setHours(0, 0, 0, 0) == new Date(toDate).setHours(0, 0, 0, 0)) equipment.push(booking['equipmentId'].S)
+                return equipment
+            } else throw `Received unexpected response from AWS! Got: ${JSON.stringify(data)}`
+        }).catch((err) => {
+            logger.warn({
+                equipmentId: equipmentId,
+                fromDate: fromDate,
+                toDate: toDate,
+                objectType: 'booking',
+                storageType: 'dynamo',
+                error: err,
+                stack: err.stack,
+                message: `Failed To Get Booked Equipment For 'Trip'`
+            })
+            return false
+        })
+    },
+
     async getAllFor(memberId) {
         if (memberId === null || memberId === undefined) return null
         return dynamo.scan({
