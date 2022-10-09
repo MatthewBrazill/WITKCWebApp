@@ -1,4 +1,35 @@
 <script hidden>
+    function startDateChange() {
+        const start = $('#startDate')
+        const startDate = $('#start_calendar').calendar('get date')
+        const startField = $('#start_calendar').parent()
+        if (startDate == null) {
+            startField.attr('class', 'field error')
+            start.prop('date', '')
+            start.prop('valid', false)
+        } else {
+            startField.attr('class', 'field success')
+            start.prop('date', startDate)
+            start.prop('valid', true)
+        }
+    }
+
+    function endDateChange() {
+        const end = $('#endDate')
+        const endDate = $('#end_calendar').calendar('get date')
+        const endField = $('#end_calendar').parent()
+        if (endDate == null) {
+            endField.attr('class', 'field error')
+            end.prop('date', '')
+            end.prop('valid', false)
+        } else {
+            endField.attr('class', 'field success')
+            end.prop('date', endDate)
+            end.prop('valid', true)
+        }
+    }
+
+
     $(document).ready(() => {
 
         $.ajax({
@@ -13,20 +44,7 @@
                     minDate: new Date(),
                     initialDate: new Date('{{trip.startDate}}'),
                     endCalendar: $('#end_calendar'),
-                    onChange: () => {
-                        const start = $('#startDate')
-                        const startDate = $('#start_calendar').calendar('get date')
-                        const startField = $('#start_calendar').parent()
-                        if (startDate == null) {
-                            startField.attr('class', 'field error')
-                            start.prop('date', '')
-                            start.prop('valid', false)
-                        } else {
-                            startField.attr('class', 'field success')
-                            start.prop('date', startDate)
-                            start.prop('valid', true)
-                        }
-                    }
+                    onChange: () => { startDateChange() }
                 })
                 $('#end_calendar').calendar({
                     selectAdjacentDays: true,
@@ -35,20 +53,7 @@
                     minDate: new Date(),
                     initialDate: new Date('{{trip.endDate}}'),
                     startCalendar: $('#start_calendar'),
-                    onChange: () => {
-                        const end = $('#endDate')
-                        const endDate = $('#end_calendar').calendar('get date')
-                        const endField = $('#end_calendar').parent()
-                        if (endDate === null) {
-                            endField.attr('class', 'field error')
-                            end.prop('date', '')
-                            end.prop('valid', false)
-                        } else {
-                            endField.attr('class', 'field success')
-                            end.prop('date', endDate)
-                            end.prop('valid', true)
-                        }
-                    }
+                    onChange: () => { endDateChange() }
                 })
 
                 $('#delete').click(() => {
@@ -68,6 +73,8 @@
                     var valid = true
 
                     inputs.trigger('change')
+                    startDateChange()
+                    endDateChange()
                     inputs.each((index, element) => {
                         var input = $(element)
                         if (!input.prop('valid') && input.attr('type') != 'checkbox') valid = false
@@ -275,7 +282,7 @@
 
                 $('.attendee_remove').click(function () {
                     const item = $(this).parent().parent().parent()
-                    $.ajax({
+                    if (!memberIds.includes(item.attr('id'))) $.ajax({
                         url: '/api/trip/leave',
                         method: 'POST',
                         data: {
@@ -288,6 +295,8 @@
 
                 $('#safety_dropdown').dropdown('set exactly', [{{{trip.safety}}}])
                 $('form#trip_form input[type!=button][class!=search], textarea').trigger('change')
+                startDateChange()
+                endDateChange()
             },
             error: () => { form.attr('class', 'ui error form') }
         })
@@ -527,18 +536,18 @@
 
 
             <!-- ===Committee=== -->
-            <h4 class="ui dividing header">Safety Officer</h4>
+            <h4 class="ui dividing header">Attendees</h4>
             <div class="ui grid">
                 <div class="ui column">
 
                     <div class="ui divided list">
                         {{#each trip.attendees}}
-                        <div class="ui item" id="{{this.memberId}}">
+                        <div class="ui fluid item" id="{{this.memberId}}">
                             <img class="ui avatar image" src="{{this.img}}">
                             <div class="content">
                                 <div class="header">
                                     <a href="/profile/{{this.memberId}}">{{this.firstName}} {{this.lastName}}</a>
-                                    <div class="ui negative icon button attendee_remove"><i class="ui trash icon"></i></div>
+                                    <div class="ui negative icon button attendee_remove" style="margin-top: -2px;"><i class="ui small trash icon"></i></div>
                                 </div>
                             </div>
                         </div>
