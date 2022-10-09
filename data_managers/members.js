@@ -151,7 +151,7 @@ const members = {
             FilterExpression: 'NOT username = :username',
             ProjectionExpression: '#ID, #FN, #LN, #IMG',
             TableName: 'witkc-members'
-        }).promise().then((data) => {
+        }).promise().then(async (data) => {
             if (data.Items != undefined) {
                 var members = []
                 for (var item of data.Items) {

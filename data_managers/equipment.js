@@ -47,7 +47,7 @@ const equipment = {
         return dynamo.getItem({
             Key: { 'equipmentId': { S: equipmentId } },
             TableName: 'witkc-equipment'
-        }).promise().then((data) => {
+        }).promise().then(async (data) => {
             if (data.Item != undefined) {
                 var gear = {
                     equipmentId: data.Item['equipmentId'].S,
@@ -99,7 +99,7 @@ const equipment = {
     async getAll() {
         return dynamo.scan({
             TableName: 'witkc-equipment'
-        }).promise().then((data) => {
+        }).promise().then(async (data) => {
             if (data.Items != undefined) {
                 var equipment = {
                     boats: [],

@@ -136,6 +136,9 @@ function updateQuery() {
         if ($('#fromDate').prop('date') == '' || $('#toDate').prop('date') == '') {
             data.fromDate = new Date(0).toISOString()
             data.toDate = new Date(0).toISOString()
+        } else {
+            data.fromDate = new Date($('#fromDate').prop('date')).toISOString()
+            data.toDate = new Date($('#toDate').prop('date')).toISOString()
         }
 
         $('#search_results').html('')
