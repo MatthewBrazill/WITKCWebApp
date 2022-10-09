@@ -229,27 +229,31 @@ const gear = {
                     var result = await equipment.getAll()
                     if (result != null) {
                         result = result.boats.concat(result.paddles, result.decks, result.bas, result.helmets, result.wetsuits)
+                        var matching = [...result]
+                        var output = []
 
                         /* Had to write some shitty custom filter. Should probably have just used a better kind of database 
                         for this but hey, not like this will ever get scaling issues. If youre the new guy handeling this, and
                         by some miricle you have too many pieces of equipment to handle: May god have mercy on you; don't call me. */
                         for (var i in result) {
-                            if (req.body.search != '' && !result[i].gearName.toLowerCase().includes(req.body.search.toLowerCase())) result.splice(i)
-                            else if (req.body.type != '' && result[i].type != req.body.type) result.splice(i)
-                            else if (req.body.boatType != '' && result[i].boatType != req.body.boatType) result.splice(i)
-                            else if (req.body.boatSize != '' && result[i].boatSize != req.body.boatSize) result.splice(i)
-                            else if (req.body.boatCockpit != '' && result[i].boatCockpit != req.body.boatCockpit) result.splice(i)
-                            else if (req.body.paddleType != '' && result[i].paddleType != req.body.paddleType) result.splice(i)
-                            else if (req.body.deckType != '' && result[i].deckType != req.body.deckType) result.splice(i)
-                            else if (req.body.deckSize != '' && result[i].deckSize != req.body.deckSize) result.splice(i)
-                            else if (req.body.baSize != '' && result[i].baSize != req.body.baSize) result.splice(i)
-                            else if (req.body.helmetType != '' && result[i].helmetType != req.body.helmetType) result.splice(i)
-                            else if (req.body.helmetSize != '' && result[i].helmetSize != req.body.helmetSize) result.splice(i)
-                            else if (req.body.wetsuitSize != '' && result[i].wetsuitSize != req.body.wetsuitSize) result.splice(i)
-                            else if (!await bookings.available(result[i].equipmentId, req.body.fromDate, req.body.toDate)) result.splice(i)
+                            if (req.body.search != '' && !(`${result[i].brand} - ${result[i].gearName}`.toLowerCase().includes(req.body.search.toLowerCase()))) matching[i] = ''
+                            else if (req.body.type != '' && result[i].type != req.body.type) matching[i] = ''
+                            else if (req.body.boatType != '' && result[i].boatType != req.body.boatType) matching[i] = ''
+                            else if (req.body.boatSize != '' && result[i].boatSize != req.body.boatSize) matching[i] = ''
+                            else if (req.body.boatCockpit != '' && result[i].boatCockpit != req.body.boatCockpit) matching[i] = ''
+                            else if (req.body.paddleType != '' && result[i].paddleType != req.body.paddleType) matching[i] = ''
+                            else if (req.body.deckType != '' && result[i].deckType != req.body.deckType) matching[i] = ''
+                            else if (req.body.deckSize != '' && result[i].deckSize != req.body.deckSize) matching[i] = ''
+                            else if (req.body.baSize != '' && result[i].baSize != req.body.baSize) matching[i] = ''
+                            else if (req.body.helmetType != '' && result[i].helmetType != req.body.helmetType) matching[i] = ''
+                            else if (req.body.helmetSize != '' && result[i].helmetSize != req.body.helmetSize) matching[i] = ''
+                            else if (req.body.wetsuitSize != '' && result[i].wetsuitSize != req.body.wetsuitSize) matching[i] = ''
+                            else if (!await bookings.available(result[i].equipmentId, req.body.fromDate, req.body.toDate)) matching[i] = ''
                         }
 
-                        res.status(200).json(result)
+                        for (var match of matching) if (match != '') output.push(match)
+
+                        res.status(200).json(output)
                     } else res.sendStatus(404)
                 } else res.sendStatus(400)
             } else res.sendStatus(403)
